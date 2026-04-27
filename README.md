@@ -67,6 +67,7 @@ ads-vit-forensics/
 
 ### Quick start
 
+```bash
 git clone https://github.com/djokobandjur/ads-vit-forensics.git
 cd ads-vit-forensics
 pip install -r requirements.txt
@@ -76,10 +77,11 @@ python reproduce.py
 
 ### Generate all 4 figures
 python generate_ads_figures.py
+```
 
 ---
 
-### Data Provenance
+### Data provenance
 
 The JSON files in `data/` were produced by training 24 ViT-Base models
 (4 PE strategies × 3 random seeds × 2 datasets) on ImageNet-100 and CIFAR-100,
@@ -196,10 +198,8 @@ For questions about the paper, code, or data:
 
 ### Acknowledgments
 
-We thank the anonymous reviewers (when available) for their feedback on this
-work. Computing resources were provided by `<acknowledgment placeholder>`.
+We thank the anonymous reviewers (when available) for their feedback on this work. 
 
 ---
-
 
 Last updated: April 2026.
