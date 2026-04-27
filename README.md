@@ -24,7 +24,7 @@ requiring GPU access or model retraining.
   same archived JSON data.
 - **`data/`** — pre-computed experimental data: per-seed attention distributions,
   layer-wise ADS values, accuracy trajectories, attack-specificity measurements,
-  and residual-stream probing results.
+  residual-stream probing results, interpolated thresholds per PE type/seed, etc.
 - **`paper/refs_ads.bib`** — verified bibliography file (23 entries, all cited in
   the manuscript).
 
@@ -52,6 +52,7 @@ ads-vit-forensics/
 │   ├── ads_ref_evasion.json             Reference Set Evasion experiment
 │   ├── ads_roc_v2.json                  ADS ROC Analysis
 │   ├── ads_threshold_fine.json          ADS Fine-Grid Threshold experiment
+│   ├── ads_ref_indices.json             256 reference images
 │   └── ads_probing_residual_cifar.json  CIFAR-100 residual-stream probing
 │
 ├── output/                             (created on first run)
@@ -64,58 +65,21 @@ ads-vit-forensics/
 
 ---
 
-## Quick start
+### Quick start
 
 git clone https://github.com/djokobandjur/ads-vit-forensics.git
 cd ads-vit-forensics
 pip install -r requirements.txt
 
-# Reproduce all numerical claims
+### Reproduce all numerical claims
 python reproduce.py
 
-# Generate all 4 figures
+### Generate all 4 figures
 python generate_ads_figures.py
 
-# Output structure:
-output/
-├── tables/        ← 6 .txt files with statistical tables
-├── figures/       ← 4 .png files matching paper figures
-└── reproduce_log.txt
-
 ---
 
-## What gets reproduced
-
-`reproduce.py` regenerates every numerical claim in the paper that depends on
-the experimental data. Verification against published values is included; each
-reproduced number passes a tolerance check against the paper's reported value
-(`Δ < 0.05` for confidence-interval widths, `Δ < 0.1` for ratio means).
-
-| Paper section | Quantity | File |
-|---|---|---|
-| §6.2 (Table VII) | PE attack signatures @ ε=0.2 (4 PE × 4 attacks × 2 datasets) | `output/tables/table_VII_specificity.txt` |
-| §6.2 | Damage asymmetry (MLP/PE drop ratio) | included in same file |
-| §6.2 (Effect 1) | Saturation-budget ratios (50% and 5% thresholds, 4 PE × 2 datasets) | `output/tables/stats_saturation_budget.txt` |
-| §6.3 (Table VI) | ADS(L4)/ADS(mean) fingerprint ± 95% CI, CV, ICC | `output/tables/table_VI_fingerprint.txt` |
-| §6.3 (Tables VII, VIII) | Hierarchical fingerprint: slope (Level 1) and 12-d profile LOO (Level 2) | `output/tables/stats_hierarchical_fingerprint.txt` |
-| §6.3 | ANOVA (ImageNet F=14.06 p=0.0015; CIFAR F=1.94 p=0.20) | `output/tables/stats_ANOVA.txt` |
-| §6.3 | Welch t-tests (ALiBi vs.\ rest, embedding vs.\ attention-space) | same file |
-| §6.3 | Pairwise Welch tests across all PE pairs | same file |
-| §6.3 | 1-NN LOO classification (50% acc, perm. p=0.047) | logged in `reproduce_log.txt` |
-| §6.3 | Cross-dataset profile transfer (50%, both directions) | logged in `reproduce_log.txt` |
-| §7.1 (Table IX) | Residual-stream probing peaks (4 PE × 2 datasets) | `output/tables/table_VIII_probing.txt` |
-
-The verification step at the end of `reproduce.py` prints PASS/FAIL for each
-table value against the published number. All 8 fingerprint values pass with
-`Δ = 0.00`, the saturation-budget range (17×–200×) matches the paper claim
-exactly, and the hierarchical fingerprint slope dichotomy (ALiBi ≈ +0.013,
-others ≈ -0.22; magnitude ratio 17×) reproduces with seed-level precision.
-
----
-
-## Data
-
-### Provenance
+### Data Provenance
 
 The JSON files in `data/` were produced by training 24 ViT-Base models
 (4 PE strategies × 3 random seeds × 2 datasets) on ImageNet-100 and CIFAR-100,
@@ -125,66 +89,7 @@ perturbations. Training and instrumentation code is **not** in this repository
 training details are documented in the paper's experimental section, and the
 training code is available on request from the corresponding author.
 
-### File schema
-
-Each JSON has the structure:
-
-```
-{
-  "<pe_type>": {                    # learned, sinusoidal, rope, alibi
-    "<seed>": {                     # 42, 123, 456
-      "epsilons":     [0.0, 0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1.0],
-      "accuracies":   [<top-1 accuracy at each ε>],
-      "ads_layer4":   [<KL divergence at L4 at each ε>],
-      "ads_mean":     [<mean across all 12 layers at each ε>],
-      "ads_per_layer":[[<12-element layer profile>] for each ε],
-      "clean_acc":    <baseline accuracy with no perturbation>
-    }
-  }
-}
-```
-
-For specificity files, the schema adds an attack-type level:
-
-```
-{
-  "<pe_type>": {
-    "<seed>": {
-      "<attack>": {                 # pe_only, qkv_only, mlp_only, all_weights
-        "epsilons":     [...],
-        "accuracies":   [...],
-        ...
-      }
-    }
-  }
-}
-```
-
-For probing files:
-
-```
-{
-  "<pe_type>": {
-    "<seed>": {
-      "peak_layer":   <int>,
-      "n_samples":    50176,        # ImageNet (256 imgs × 196 patches)
-      "feature_dim":  768,          # residual stream dimension
-      "layers": {
-        "<layer_idx>": {            # "1" through "12"
-          "r2_row":      <float>,
-          "r2_col":      <float>,
-          "r2_mean":     <float>,
-          "r2_position": <float>
-        }
-      }
-    }
-  }
-}
-```
-
----
-
-## Dependencies
+### Dependencies
 
 Listed in `requirements.txt`:
 
@@ -192,7 +97,7 @@ Listed in `requirements.txt`:
 - `scipy >= 1.7`
 - `matplotlib >= 3.4`
 
-That's it. The reproducibility script is intentionally light: no PyTorch, no
+The reproducibility script is intentionally light: no PyTorch, no
 GPU, no CUDA, no large model files. A standard scientific Python install is
 sufficient.
 
@@ -203,7 +108,7 @@ Tested on:
 
 ---
 
-## Citation
+### Citation
 
 If you use this code or data, please cite both the paper and the dataset:
 
@@ -236,7 +141,7 @@ If you use this code or data, please cite both the paper and the dataset:
 
 ---
 
-## Related work
+### Related work
 
 This work builds on, and extends, the prior PE-specific vulnerability analysis:
 
@@ -272,7 +177,7 @@ evaluation, operation-space taxonomy) around it.
 
 ---
 
-## Contact
+### Contact
 
 For questions about the paper, code, or data:
 
@@ -281,7 +186,7 @@ For questions about the paper, code, or data:
 
 ---
 
-## License
+### License
 
 - **Code** (`*.py`): MIT License — see [LICENSE](LICENSE).
 - **Data** (`data/*.json`): Creative Commons Attribution 4.0 (CC-BY 4.0) — see
@@ -289,21 +194,12 @@ For questions about the paper, code, or data:
 
 ---
 
-## Acknowledgments
+### Acknowledgments
 
 We thank the anonymous reviewers (when available) for their feedback on this
 work. Computing resources were provided by `<acknowledgment placeholder>`.
 
 ---
 
-## Status
-
-| Item | Status |
-|---|---|
-| Paper submitted to IEEE TIFS | ✓ |
-| Reproducibility script verified end-to-end | ✓ (all 8 table values pass) |
-| Data archived on Zenodo | placeholder |
-| Repository made public | upon acceptance |
-| Camera-ready DOI | upon acceptance |
 
 Last updated: April 2026.
