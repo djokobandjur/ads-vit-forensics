@@ -60,7 +60,7 @@ DEPENDENCIES
     (standard scientific Python; no GPU, no PyTorch required)
 
 Authors: Djoko Bandjur, Milos Bandjur
-Contact: <djoko.bandjur@pr.ac.rs>
+Contact: djoko.bandjur@pr.ac.rs
 Last updated: April 2026
 License: MIT (code) / CC-BY 4.0 (data)
 """
@@ -158,6 +158,13 @@ def load_all_data(log):
         'cif_spec': load_json('ads_specificity_cifar.json', log),
         'imn_probe': load_json('ads_probing_residual.json', log),
         'cif_probe': load_json('ads_probing_residual_cifar.json', log),
+        # ADS-specific experiment files (Sections 4.4, 5, 6.5, 6.6, 6.7)
+        'threshold': load_json('ads_threshold_fine.json', log),
+        'roc': load_json('ads_roc_v2.json', log),
+        'comparison': load_json('ads_comparison.json', log),
+        'evasion': load_json('ads_ref_evasion.json', log),
+        'adaptive': load_json('ads_adaptive.json', log),
+        'ref_indices': load_json('ads_ref_indices.json', log),
     }
     return data
 
@@ -725,6 +732,319 @@ def section_63_hierarchical_fingerprint(imn_main, cif_main, log, out_dir):
 
 
 # =============================================================================
+# Section 4.4 THRESHOLD CALIBRATION (interpolated baseline ε̂)
+# =============================================================================
+
+def section_44_threshold(threshold_data, log, out_dir):
+    """
+    Reproduce the interpolated detection threshold ε̂ ≈ 0.003 reported in
+    Section 4.4 (and referenced throughout). The threshold is computed per
+    (PE, seed) by interpolating the ε at which ADS(L4) reaches a multiple
+    of the clean baseline ADS.
+    """
+    log.section("SECTION 4.4: Threshold Calibration (ε̂ interpolation)")
+    log.log("Per-(PE, seed) interpolated threshold ε̂ at which ADS(L4) crosses")
+    log.log("a fixed multiple of the clean baseline ADS.")
+    log.log('')
+    log.log("Expected (paper): ε̂ ≈ 0.003 across all PE types (Kruskal-Wallis")
+    log.log("H = 5.05, p = 0.168, confirming universality).")
+    log.log('')
+
+    if threshold_data is None:
+        log.log("  [SKIP] ads_threshold_fine.json not available")
+        return None
+
+    log.log(f"  {'PE':<12} {'Seed 42':>10} {'Seed 123':>10} {'Seed 456':>10} {'Mean':>10}")
+    log.log('  ' + '-' * 55)
+
+    all_thresholds = {}
+    for pe in PE_TYPES:
+        per_seed = []
+        for seed in SEEDS:
+            sd = threshold_data[pe][seed]
+            per_seed.append(sd['interpolated_threshold'])
+        m = np.mean(per_seed)
+        all_thresholds[pe] = {'per_seed': per_seed, 'mean': m}
+        log.log(f"  {PE_DISPLAY[pe]:<12} "
+                f"{per_seed[0]:>10.4f} {per_seed[1]:>10.4f} {per_seed[2]:>10.4f} "
+                f"{m:>10.4f}")
+
+    # Kruskal-Wallis test for universality
+    groups = [all_thresholds[pe]['per_seed'] for pe in PE_TYPES]
+    h_stat, p_val = stats.kruskal(*groups)
+    log.log('')
+    log.log(f"  Kruskal-Wallis H = {h_stat:.2f}, p = {p_val:.4f} "
+            f"{'(non-significant — universal)' if p_val > 0.05 else '(significant)'}")
+    log.log(f"  Paper claim: H = 5.05, p = 0.168")
+
+    # Save
+    outpath = Path(out_dir) / 'tables' / 'stats_threshold_calibration.txt'
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+    with open(outpath, 'w') as f:
+        f.write(f"Section 4.4 Threshold Calibration (reproduced)\n")
+        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
+        for pe in PE_TYPES:
+            t = all_thresholds[pe]
+            f.write(f"  {PE_DISPLAY[pe]:<12}: ε̂ = {t['mean']:.4f} "
+                    f"(per-seed: {t['per_seed']})\n")
+        f.write(f"\nKruskal-Wallis H = {h_stat:.2f}, p = {p_val:.4f}\n")
+
+    return {'thresholds': all_thresholds, 'kw_H': h_stat, 'kw_p': p_val}
+
+
+# =============================================================================
+# Section 5: ROC ANALYSIS (deployment detection boundary)
+# =============================================================================
+
+def section_5_roc(roc_data, log, out_dir):
+    """
+    Reproduce the operational detection boundary (Section 5):
+    - Per-(PE, seed) AUC at each ε
+    - Confirm AUC ≥ 0.82 at ε ≥ 0.1 (Learned) / ε ≥ 0.2 (RoPE)
+    """
+    log.section("SECTION 5: ROC Analysis (Detection Boundary)")
+    log.log("Per-(PE, seed) AUC against benign distribution shifts (clean noise +")
+    log.log("JPEG compression + Gaussian blur + Gaussian noise as negatives).")
+    log.log('')
+    log.log("Expected (paper): AUC ≥ 0.82 at ε ≥ 0.1 (Learned), ε ≥ 0.2 (RoPE).")
+    log.log('')
+
+    if roc_data is None:
+        log.log("  [SKIP] ads_roc_v2.json not available")
+        return None
+
+    pe_list = [pe for pe in PE_TYPES if pe in roc_data]
+
+    # Find epsilons available
+    sample_pe = pe_list[0]
+    eps_keys = sorted(roc_data[sample_pe]['42']['roc_by_eps'].keys(), key=float)
+
+    log.log(f"  {'PE':<10} " + ' '.join(f"{'ε='+e:>10}" for e in eps_keys))
+    log.log('  ' + '-' * (10 + 11 * len(eps_keys)))
+
+    auc_results = {pe: {} for pe in pe_list}
+    for pe in pe_list:
+        line = f"  {PE_DISPLAY[pe]:<10} "
+        for eps in eps_keys:
+            seed_aucs = []
+            for seed in SEEDS:
+                roc_eps = roc_data[pe][seed]['roc_by_eps'][eps]
+                seed_aucs.append(roc_eps['auc'])
+            mean_auc = np.mean(seed_aucs)
+            auc_results[pe][eps] = mean_auc
+            line += f"{mean_auc:>10.3f} "
+        log.log(line)
+
+    # Verify operational boundary claim
+    log.log('')
+    log.log("Operational boundary verification:")
+    if 'learned' in auc_results:
+        l_01 = auc_results['learned'].get('0.1', 0)
+        log.log(f"  Learned at ε=0.1:  AUC = {l_01:.3f}  "
+                f"{'✓' if l_01 >= 0.82 else '✗'} (paper claim ≥ 0.82)")
+    if 'rope' in auc_results:
+        r_02 = auc_results['rope'].get('0.2', 0)
+        log.log(f"  RoPE at ε=0.2:    AUC = {r_02:.3f}  "
+                f"{'✓' if r_02 >= 0.82 else '✗'} (paper claim ≥ 0.82)")
+
+    # Save
+    outpath = Path(out_dir) / 'tables' / 'stats_roc_analysis.txt'
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+    with open(outpath, 'w') as f:
+        f.write(f"Section 5 ROC Analysis (reproduced)\n")
+        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
+        for pe in pe_list:
+            f.write(f"{PE_DISPLAY[pe]}:\n")
+            for eps in eps_keys:
+                f.write(f"  ε={eps}: AUC={auc_results[pe][eps]:.3f}\n")
+
+    return auc_results
+
+
+# =============================================================================
+# Section 6.6 COMPARISON: ADS vs Mahalanobis vs LogitKL (Table VIII)
+# =============================================================================
+
+def section_66_comparison(comparison_data, log, out_dir):
+    """
+    Reproduce Table VIII: Detection AUC comparison across methods (ADS,
+    Mahalanobis, LogitKL) at multiple ε.
+    """
+    log.section("SECTION 6.6: Detection Method Comparison (Table VIII)")
+    log.log("Detection AUC at each ε for ADS vs. Mahalanobis vs. LogitKL.")
+    log.log('')
+    log.log("Expected (paper Table VIII): ADS AUC ≈ 1.0 from ε ≥ 0.05;")
+    log.log("Mahalanobis AUC = 1.0 starting from ε = 0.001 (overconfident);")
+    log.log("LogitKL AUC = 0.0 throughout (fails for PE attacks).")
+    log.log('')
+
+    if comparison_data is None:
+        log.log("  [SKIP] ads_comparison.json not available")
+        return None
+
+    pe_list = [pe for pe in PE_TYPES if pe in comparison_data]
+    eps_keys = sorted(comparison_data[pe_list[0]]['42']['attack'].keys(),
+                      key=float)
+
+    for pe in pe_list:
+        log.subsection(f"{PE_DISPLAY[pe]}")
+        log.log(f"    {'ε':<8} {'ADS AUC':<10} {'Mahal AUC':<11} {'LogitKL AUC':<12}")
+        log.log('    ' + '-' * 42)
+        for eps in eps_keys:
+            seed_aucs = {'ads': [], 'mahalanobis': [], 'logit_kl': []}
+            for seed in SEEDS:
+                attack_data = comparison_data[pe][seed]['attack'][eps]
+                for method in seed_aucs:
+                    seed_aucs[method].append(attack_data[method]['auc'])
+            log.log(f"    {eps:<8} "
+                    f"{np.mean(seed_aucs['ads']):<10.3f} "
+                    f"{np.mean(seed_aucs['mahalanobis']):<11.3f} "
+                    f"{np.mean(seed_aucs['logit_kl']):<12.3f}")
+
+    # Calibration timing
+    log.log('')
+    log.log("Calibration time (seconds, mean over PE × seeds):")
+    timing_summary = {'ads': [], 'mahal': [], 'logit': []}
+    for pe in pe_list:
+        for seed in SEEDS:
+            t = comparison_data[pe][seed]['timing']
+            timing_summary['ads'].append(t['ads_calibration_s'])
+            timing_summary['mahal'].append(t['mahalanobis_calibration_s'])
+            timing_summary['logit'].append(t['logit_calibration_s'])
+    log.log(f"  ADS:        {np.mean(timing_summary['ads']):.2f} s (paper: ~2s)")
+    log.log(f"  Mahalanobis: {np.mean(timing_summary['mahal']):.2f} s")
+    log.log(f"  LogitKL:    {np.mean(timing_summary['logit']):.2f} s")
+
+    return None
+
+
+# =============================================================================
+# Section 6.6 REFERENCE SET EVASION (Table IX in paper text — actually reuses
+# the "lambda regularization on ref vs hold" concept)
+# =============================================================================
+
+def section_66_evasion(evasion_data, log, out_dir):
+    """
+    Reproduce reference set evasion analysis: does an attacker who knows
+    the reference set indices evade detection on the held-out set as well?
+    """
+    log.section("SECTION 6.6: Reference Set Evasion")
+    log.log("Adaptive attacker that minimizes ADS on the reference set:")
+    log.log("does the resulting attack also evade detection on a held-out set?")
+    log.log('')
+    log.log("Expected (paper): No --- adaptive attacker fails to evade")
+    log.log("on held-out set in operational regime, demonstrating robustness")
+    log.log("to reference-set-specific overfitting.")
+    log.log('')
+
+    if evasion_data is None:
+        log.log("  [SKIP] ads_ref_evasion.json not available")
+        return None
+
+    pe_list = [pe for pe in PE_TYPES if pe in evasion_data]
+
+    for pe in pe_list:
+        log.subsection(f"{PE_DISPLAY[pe]}")
+        eps_keys = sorted(evasion_data[pe]['42'].keys(), key=float)
+        for eps in eps_keys:
+            lam_keys = sorted(evasion_data[pe]['42'][eps].keys(), key=float)
+            log.log(f"    ε = {eps}:")
+            log.log(f"      {'λ':<6} {'AccDrop':<10} {'ADS_ref':<12} "
+                    f"{'ADS_hold':<12} {'Evades_ref':<11} {'Evades_hold':<11}")
+            for lam in lam_keys:
+                vals = {'acc_drop': [], 'ads_ref': [], 'ads_hold': [],
+                        'evades_ref': [], 'evades_hold': []}
+                for seed in SEEDS:
+                    d = evasion_data[pe][seed][eps][lam]
+                    vals['acc_drop'].append(d['acc_drop'])
+                    vals['ads_ref'].append(d['ads_ref'])
+                    vals['ads_hold'].append(d['ads_hold'])
+                    vals['evades_ref'].append(d['evades_ref'])
+                    vals['evades_hold'].append(d['evades_hold'])
+                log.log(f"      {lam:<6} "
+                        f"{np.mean(vals['acc_drop']):<10.2f} "
+                        f"{np.mean(vals['ads_ref']):<12.4f} "
+                        f"{np.mean(vals['ads_hold']):<12.4f} "
+                        f"{sum(vals['evades_ref'])}/{len(vals['evades_ref'])}{'':<7} "
+                        f"{sum(vals['evades_hold'])}/{len(vals['evades_hold'])}")
+
+    return None
+
+
+# =============================================================================
+# Section 6.7 ADAPTIVE ATTACKER (PGD with ADS-minimization regularization)
+# =============================================================================
+
+def section_67_adaptive(adaptive_data, log, out_dir):
+    """
+    Reproduce the adaptive attacker analysis (Section 6.7): a PGD attacker
+    that adds an ADS-minimization term to its loss, parameterized by λ.
+    Verify that increasing λ does NOT enable evasion in operational regime.
+    """
+    log.section("SECTION 6.7: Adaptive Attacker (PGD + ADS-min regularization)")
+    log.log("PGD attacker with loss: L = L_attack - λ * ADS_L4")
+    log.log("Higher λ should reduce ADS, but at the cost of attack effectiveness.")
+    log.log('')
+    log.log("Expected (paper): At ε ≥ 0.1, ADS remains structurally above")
+    log.log("baseline regardless of λ; adaptive attacker cannot evade detection.")
+    log.log('')
+
+    if adaptive_data is None:
+        log.log("  [SKIP] ads_adaptive.json not available")
+        return None
+
+    pe_list = [pe for pe in PE_TYPES if pe in adaptive_data]
+
+    for pe in pe_list:
+        log.subsection(f"{PE_DISPLAY[pe]}")
+        eps_keys = sorted(adaptive_data[pe]['42'].keys(), key=float)
+        for eps in eps_keys:
+            lam_keys = sorted(adaptive_data[pe]['42'][eps].keys(), key=float)
+            log.log(f"    ε = {eps}:")
+            log.log(f"      {'λ':<6} {'AccDrop':<10} {'ADS_L4':<10} "
+                    f"{'ADS_ratio':<11} {'Evades?'}")
+            for lam in lam_keys:
+                vals = {'acc_drop': [], 'ads_l4': [], 'ratio': [], 'evades': []}
+                for seed in SEEDS:
+                    d = adaptive_data[pe][seed][eps][lam]
+                    vals['acc_drop'].append(d['acc_drop'])
+                    vals['ads_l4'].append(d['ads_l4'])
+                    vals['ratio'].append(d['ads_ratio'])
+                    vals['evades'].append(d['evades_detection'])
+                evades_count = sum(vals['evades'])
+                log.log(f"      {lam:<6} "
+                        f"{np.mean(vals['acc_drop']):<10.2f} "
+                        f"{np.mean(vals['ads_l4']):<10.4f} "
+                        f"{np.mean(vals['ratio']):<11.2f} "
+                        f"{evades_count}/{len(vals['evades'])}")
+
+    return None
+
+
+# =============================================================================
+# Reference Set Indices verification
+# =============================================================================
+
+def section_4_ref_indices(ref_indices_data, log, out_dir):
+    """Verify that the reference set has 256 indices as reported in the paper."""
+    log.section("Reference Set Indices Verification")
+    if ref_indices_data is None:
+        log.log("  [SKIP] ads_ref_indices.json not available")
+        return None
+
+    n = len(ref_indices_data)
+    is_unique = len(set(ref_indices_data)) == n
+    in_range = all(0 <= i < 5000 for i in ref_indices_data)  # ImageNet-100 val: 5k images
+
+    log.log(f"  Reference set size: {n} (paper claim: 256)")
+    log.log(f"  All unique: {'✓' if is_unique else '✗'}")
+    log.log(f"  All in [0, 5000): {'✓' if in_range else '✗'}")
+    log.log(f"  Min index: {min(ref_indices_data)}, Max: {max(ref_indices_data)}")
+
+    return {'n': n, 'unique': is_unique, 'in_range': in_range}
+
+
+# =============================================================================
 # TABLE IX: RESIDUAL STREAM PROBING (Section 7.1)
 # =============================================================================
 
@@ -776,15 +1096,14 @@ def generate_figures(log, out_dir):
     log.log("Figures are generated via a separate script (generate_ads_figures.py)")
     log.log("which reads the same JSONs from data/ and writes PNGs to output/figures/.")
     log.log('')
-    log.log("To regenerate all 5 figures:")
+    log.log("To regenerate all 4 figures:")
     log.log("    python generate_ads_figures.py")
     log.log('')
     log.log("Expected outputs in output/figures/:")
-    log.log("    ads_fig1_l4_vs_epsilon.png   (Fig 1 in paper)")
-    log.log("    ads_fig2_early_warning.png   (Fig 2 in paper)")
-    log.log("    ads_fig3_l4_ratio.png        (Fig 3 in paper)")
-    log.log("    ads_fig4_per_layer_heatmap.png (Fig 4 in paper)")
-    log.log("    ads_fig5_early_warning_combined.png (Fig 5 in paper)")
+    log.log("    ads_fig1_l4_vs_epsilon.png         (Fig 1 in paper)")
+    log.log("    ads_fig2_per_layer_heatmap.png     (Fig 2 in paper)")
+    log.log("    ads_fig3_layer_profile.png         (Fig 3 in paper)")
+    log.log("    ads_fig4_early_warning_combined.png (Fig 4 in paper)")
 
 
 # =============================================================================
@@ -899,6 +1218,15 @@ def main():
     sat_results = None
 
     # Run each section's reproduction
+    if args.section is None or args.section == '4':
+        section_4_ref_indices(data['ref_indices'], log, OUTPUT_DIR)
+
+    if args.section is None or args.section == '4.4':
+        section_44_threshold(data['threshold'], log, OUTPUT_DIR)
+
+    if args.section is None or args.section == '5':
+        section_5_roc(data['roc'], log, OUTPUT_DIR)
+
     if args.section is None or args.section == '6.2':
         if data['imn_spec'] and data['cif_spec']:
             section_62_specificity(data['imn_spec'], data['cif_spec'], log, OUTPUT_DIR)
@@ -917,6 +1245,13 @@ def main():
                                                 log, OUTPUT_DIR)
         else:
             log.log("\n[SKIP] Section 6.3 — main ADS data missing")
+
+    if args.section is None or args.section == '6.6':
+        section_66_comparison(data['comparison'], log, OUTPUT_DIR)
+        section_66_evasion(data['evasion'], log, OUTPUT_DIR)
+
+    if args.section is None or args.section == '6.7':
+        section_67_adaptive(data['adaptive'], log, OUTPUT_DIR)
 
     if args.section is None or args.section == '7.1':
         section_71_probing(data['imn_probe'], data['cif_probe'], log, OUTPUT_DIR)
