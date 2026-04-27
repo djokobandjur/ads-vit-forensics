@@ -38,21 +38,25 @@ clone, install dependencies, place the data, run one script.
 ```
 ads-vit-forensics/
 ├── README.md                       (this file)
-├── LICENSE                         (MIT for code)
-├── DATA_LICENSE                    (CC-BY 4.0 for data)
 ├── reproduce.py                    (main reproducibility script)
 ├── generate_ads_figures.py         (figure regeneration)
 ├── requirements.txt                (Python dependencies)
 ├── data/
-│   ├── ads_results.json                ImageNet-100 main ADS experiment
-│   ├── ads_results_cifar100.json       CIFAR-100 main ADS experiment
-│   ├── ads_specificity.json            ImageNet-100 specificity (4 PE × 4 attacks)
-│   ├── ads_specificity_cifar.json      CIFAR-100 specificity (4 PE × 4 attacks)
-│   ├── ads_probing_residual.json       ImageNet-100 residual-stream probing
-│   └── ads_probing_residual_cifar.json CIFAR-100 residual-stream probing
-├── output/                         (created on first run)
-│   ├── tables/                         per-table reproductions
-│   ├── figures/                        regenerated PNGs
+│   ├── ads_results.json                 ImageNet-100 main ADS experiment
+│   ├── ads_results_cifar100.json        CIFAR-100 main ADS experiment
+│   ├── ads_specificity.json             ImageNet-100 specificity (4 PE × 4 attacks)
+│   ├── ads_specificity_cifar.json       CIFAR-100 specificity (4 PE × 4 attacks)
+│   ├── ads_probing_residual.json        ImageNet-100 residual-stream probing
+│   ├── ads_adaptive.json                Adaptive Attacker experiment 
+│   ├── ads_comparison.json              Detection Method Comparison experiment
+│   ├── ads_ref_evasion.json             Reference Set Evasion experiment
+│   ├── ads_roc_v2.json                  ADS ROC Analysis
+│   ├── ads_threshold_fine.json          ADS Fine-Grid Threshold experiment
+│   └── ads_probing_residual_cifar.json  CIFAR-100 residual-stream probing
+│
+├── output/                             (created on first run)
+│   ├── tables/                         ← 6 .txt files with statistical tables
+│   ├── figures/                        ← 4 .png files matching paper figures
 │   └── reproduce_log.txt               full reproduction log
 └── paper/
     └── refs_ads.bib                bibliography
@@ -62,30 +66,21 @@ ads-vit-forensics/
 
 ## Quick start
 
-```bash
-# Clone repo
-git clone https://github.com/<USER>/ads-vit-forensics.git
+git clone https://github.com/djokobandjur/ads-vit-forensics.git
 cd ads-vit-forensics
-
-# Set up environment
-python -m venv venv
-source venv/bin/activate            # Linux/macOS
-# venv\Scripts\activate              # Windows
 pip install -r requirements.txt
 
-# Reproduce all numbers from paper
+# Reproduce all numerical claims
 python reproduce.py
 
-# Regenerate all 4 figures
+# Generate all 4 figures
 python generate_ads_figures.py
-```
 
-Output appears in `output/`:
-
-- `output/tables/table_VI_fingerprint.txt` — Table VI (fingerprint ratios)
-- `output/tables/stats_ANOVA.txt` — Section 6.3 statistics
-- `output/figures/ads_fig{1..4}_*.png` — paper figures
-- `output/reproduce_log.txt` — full timestamped log with verification assertions
+# Output structure:
+output/
+├── tables/        ← 6 .txt files with statistical tables
+├── figures/       ← 4 .png files matching paper figures
+└── reproduce_log.txt
 
 ---
 
