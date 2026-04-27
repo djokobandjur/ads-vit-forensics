@@ -1,0 +1,954 @@
+{
+  "learned": {
+    "42": {
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.2399999999999949,
+          "ads_ref": 0.08584602177143097,
+          "ads_hold": 0.08705873787403107,
+          "ads_ref_ratio": 5.539167748834106,
+          "ads_hold_ratio": 5.617417594143184,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.2199999999999989,
+          "ads_ref": 0.08932160586118698,
+          "ads_hold": 0.09050963819026947,
+          "ads_ref_ratio": 5.763427917227189,
+          "ads_hold_ratio": 5.8400850555084185,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.3400000000000034,
+          "ads_ref": 0.08640538156032562,
+          "ads_hold": 0.08760000765323639,
+          "ads_ref_ratio": 5.575260134231876,
+          "ads_hold_ratio": 5.6523427315289965,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.2999999999999972,
+          "ads_ref": 0.08072058111429214,
+          "ads_hold": 0.0818396732211113,
+          "ads_ref_ratio": 5.208451484984653,
+          "ads_hold_ratio": 5.280660293012731,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.3999999999999915,
+          "ads_ref": 0.08959030359983444,
+          "ads_hold": 0.09066624939441681,
+          "ads_ref_ratio": 5.780765492310907,
+          "ads_hold_ratio": 5.850190308066642,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 9.259999999999991,
+          "ads_ref": 0.2721085250377655,
+          "ads_hold": 0.2751412093639374,
+          "ads_ref_ratio": 17.557654215883694,
+          "ads_hold_ratio": 17.753336518514477,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 9.459999999999994,
+          "ads_ref": 0.274852991104126,
+          "ads_hold": 0.27856865525245667,
+          "ads_ref_ratio": 17.734739392445864,
+          "ads_hold_ratio": 17.97449059571923,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 8.719999999999999,
+          "ads_ref": 0.2806256115436554,
+          "ads_hold": 0.2842889130115509,
+          "ads_ref_ratio": 18.107214578891174,
+          "ads_hold_ratio": 18.34358710875925,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 9.620000000000005,
+          "ads_ref": 0.27797436714172363,
+          "ads_hold": 0.28172969818115234,
+          "ads_ref_ratio": 17.936144479398866,
+          "ads_hold_ratio": 18.17845516719269,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 9.700000000000003,
+          "ads_ref": 0.26475146412849426,
+          "ads_hold": 0.2682933807373047,
+          "ads_ref_ratio": 17.082943872015374,
+          "ads_hold_ratio": 17.311484110033856,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.5": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 74.82,
+          "ads_ref": 0.7441312670707703,
+          "ads_hold": 0.7517485618591309,
+          "ads_ref_ratio": 48.01466428382825,
+          "ads_hold_ratio": 48.50616607685707,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 73.17999999999999,
+          "ads_ref": 0.7552611231803894,
+          "ads_hold": 0.7619513869285583,
+          "ads_ref_ratio": 48.7328121809517,
+          "ads_hold_ratio": 49.1644978015588,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 75.98,
+          "ads_ref": 0.7553659081459045,
+          "ads_hold": 0.7628909349441528,
+          "ads_ref_ratio": 48.73957337371948,
+          "ads_hold_ratio": 49.22512162499373,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 76.3,
+          "ads_ref": 0.7699315547943115,
+          "ads_hold": 0.7759799361228943,
+          "ads_ref_ratio": 49.67941378205649,
+          "ads_hold_ratio": 50.06968228951441,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 73.98,
+          "ads_ref": 0.7684699296951294,
+          "ads_hold": 0.7744539380073547,
+          "ads_ref_ratio": 49.58510321945602,
+          "ads_hold_ratio": 49.971218093131675,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      }
+    },
+    "123": {
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.1200000000000045,
+          "ads_ref": 0.10660354793071747,
+          "ads_hold": 0.10821174085140228,
+          "ads_ref_ratio": 6.878535806601979,
+          "ads_hold_ratio": 6.982303577971499,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.1600000000000108,
+          "ads_ref": 0.09126801043748856,
+          "ads_hold": 0.09311949461698532,
+          "ads_ref_ratio": 5.889018611271684,
+          "ads_hold_ratio": 6.008484618465952,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.1000000000000085,
+          "ads_ref": 0.10155706107616425,
+          "ads_hold": 0.10308938473463058,
+          "ads_ref_ratio": 6.55291399381625,
+          "ads_hold_ratio": 6.651786342407445,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.3000000000000114,
+          "ads_ref": 0.0947326198220253,
+          "ads_hold": 0.09642767161130905,
+          "ads_ref_ratio": 6.1125706427942506,
+          "ads_hold_ratio": 6.221942935301914,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.0200000000000102,
+          "ads_ref": 0.09096989780664444,
+          "ads_hold": 0.0925247073173523,
+          "ads_ref_ratio": 5.869783056306907,
+          "ads_hold_ratio": 5.970106292253988,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 9.840000000000003,
+          "ads_ref": 0.3170701265335083,
+          "ads_hold": 0.32240554690361023,
+          "ads_ref_ratio": 20.458777037908654,
+          "ads_hold_ratio": 20.803042128249466,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 10.040000000000006,
+          "ads_ref": 0.3267223834991455,
+          "ads_hold": 0.33151280879974365,
+          "ads_ref_ratio": 21.081583655900474,
+          "ads_hold_ratio": 21.390683236530112,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 9.620000000000005,
+          "ads_ref": 0.31365057826042175,
+          "ads_hold": 0.3190515339374542,
+          "ads_ref_ratio": 20.238132550033665,
+          "ads_hold_ratio": 20.58662627032225,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 9.740000000000009,
+          "ads_ref": 0.3135541081428528,
+          "ads_hold": 0.3187985122203827,
+          "ads_ref_ratio": 20.23190786829609,
+          "ads_hold_ratio": 20.570300181983654,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 9.180000000000007,
+          "ads_ref": 0.31477057933807373,
+          "ads_hold": 0.3200567066669464,
+          "ads_ref_ratio": 20.310400008909134,
+          "ads_hold_ratio": 20.651484492640755,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.5": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 73.0,
+          "ads_ref": 0.9607529640197754,
+          "ads_hold": 0.9763593673706055,
+          "ads_ref_ratio": 61.99206117045912,
+          "ads_hold_ratio": 62.999055837566495,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 73.46000000000001,
+          "ads_ref": 0.9529375433921814,
+          "ads_hold": 0.9683333039283752,
+          "ads_ref_ratio": 61.48777541567824,
+          "ads_hold_ratio": 62.48117847002034,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 73.66000000000001,
+          "ads_ref": 0.968161940574646,
+          "ads_hold": 0.9822137951850891,
+          "ads_ref_ratio": 62.470121343053684,
+          "ads_hold_ratio": 63.37680960027675,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 73.5,
+          "ads_ref": 0.9290869832038879,
+          "ads_hold": 0.9429669380187988,
+          "ads_ref_ratio": 59.94883102360872,
+          "ads_hold_ratio": 60.84442754025028,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 72.72,
+          "ads_ref": 0.9397911429405212,
+          "ads_hold": 0.9532743096351624,
+          "ads_ref_ratio": 60.63951109436839,
+          "ads_hold_ratio": 61.50950507389098,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      }
+    },
+    "456": {
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.7600000000000051,
+          "ads_ref": 0.05146920308470726,
+          "ads_hold": 0.05250366032123566,
+          "ads_ref_ratio": 3.321022266402585,
+          "ads_hold_ratio": 3.387770055570761,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.6800000000000068,
+          "ads_ref": 0.052148181945085526,
+          "ads_hold": 0.05325757712125778,
+          "ads_ref_ratio": 3.364833007167733,
+          "ads_hold_ratio": 3.4364161260328934,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.8599999999999994,
+          "ads_ref": 0.05294768512248993,
+          "ads_hold": 0.054138533771038055,
+          "ads_ref_ratio": 3.4164205137753214,
+          "ads_hold_ratio": 3.4932593735345243,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.6200000000000045,
+          "ads_ref": 0.047343023121356964,
+          "ads_hold": 0.048469290137290955,
+          "ads_ref_ratio": 3.054782753991287,
+          "ads_hold_ratio": 3.1274545191180123,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.5799999999999983,
+          "ads_ref": 0.05129179731011391,
+          "ads_hold": 0.05246811732649803,
+          "ads_ref_ratio": 3.309575255524191,
+          "ads_hold_ratio": 3.3854766632144813,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 11.14,
+          "ads_ref": 0.17965272068977356,
+          "ads_hold": 0.1823076754808426,
+          "ads_ref_ratio": 11.591993850159605,
+          "ads_hold_ratio": 11.763303360487972,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 9.960000000000008,
+          "ads_ref": 0.17240852117538452,
+          "ads_hold": 0.17495369911193848,
+          "ads_ref_ratio": 11.124565826260454,
+          "ads_hold_ratio": 11.288792044905051,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 10.340000000000003,
+          "ads_ref": 0.1867651641368866,
+          "ads_hold": 0.18882933259010315,
+          "ads_ref_ratio": 12.050920385655349,
+          "ads_hold_ratio": 12.18410972964919,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 10.799999999999997,
+          "ads_ref": 0.17424112558364868,
+          "ads_hold": 0.17655660212039948,
+          "ads_ref_ratio": 11.242813626509788,
+          "ads_hold_ratio": 11.392218487572556,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 10.439999999999998,
+          "ads_ref": 0.1738402396440506,
+          "ads_hold": 0.17638052999973297,
+          "ads_ref_ratio": 11.21694667983292,
+          "ads_hold_ratio": 11.380857529986642,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.5": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 72.88,
+          "ads_ref": 0.531143844127655,
+          "ads_hold": 0.5377331376075745,
+          "ads_ref_ratio": 34.27176694590625,
+          "ads_hold_ratio": 34.69693751500674,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 74.32000000000001,
+          "ads_ref": 0.5385531187057495,
+          "ads_hold": 0.5438663363456726,
+          "ads_ref_ratio": 34.749846348286844,
+          "ads_hold_ratio": 35.0926788195685,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 73.22,
+          "ads_ref": 0.5236159563064575,
+          "ads_hold": 0.5291622281074524,
+          "ads_ref_ratio": 33.78603408868612,
+          "ads_hold_ratio": 34.14390425264243,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 74.02,
+          "ads_ref": 0.532978892326355,
+          "ads_hold": 0.5389178395271301,
+          "ads_ref_ratio": 34.390172430401016,
+          "ads_hold_ratio": 34.773379760429094,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 70.76,
+          "ads_ref": 0.527522623538971,
+          "ads_hold": 0.5348127484321594,
+          "ads_ref_ratio": 34.03810966182546,
+          "ads_hold_ratio": 34.508500995751675,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      }
+    }
+  },
+  "rope": {
+    "42": {
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": -0.01999999999999602,
+          "ads_ref": 0.023098403587937355,
+          "ads_hold": 0.023265300318598747,
+          "ads_ref_ratio": 1.7061902487765812,
+          "ads_hold_ratio": 1.7185182684738327,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.0,
+          "ads_ref": 0.02320258878171444,
+          "ads_hold": 0.023285869508981705,
+          "ads_ref_ratio": 1.7138860083996483,
+          "ads_hold_ratio": 1.720037635469176,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.21999999999999886,
+          "ads_ref": 0.02297651581466198,
+          "ads_hold": 0.023122215643525124,
+          "ads_ref_ratio": 1.6971868676807491,
+          "ads_hold_ratio": 1.7079491537542564,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.12000000000000455,
+          "ads_ref": 0.022959034889936447,
+          "ads_hold": 0.02310762368142605,
+          "ads_ref_ratio": 1.6958956189936807,
+          "ads_hold_ratio": 1.7068713016269794,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": -0.03999999999999204,
+          "ads_ref": 0.022973353043198586,
+          "ads_hold": 0.023116575554013252,
+          "ads_ref_ratio": 1.696953245915097,
+          "ads_hold_ratio": 1.707532542030821,
+          "evades_ref": true,
+          "evades_hold": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.980000000000004,
+          "ads_ref": 0.08571235090494156,
+          "ads_hold": 0.08623714745044708,
+          "ads_ref_ratio": 6.331241756902169,
+          "ads_hold_ratio": 6.370006459628238,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.1800000000000068,
+          "ads_ref": 0.08559215068817139,
+          "ads_hold": 0.08604476600885391,
+          "ads_ref_ratio": 6.322363029115925,
+          "ads_hold_ratio": 6.355795982335199,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.2000000000000028,
+          "ads_ref": 0.08594312518835068,
+          "ads_hold": 0.08650662004947662,
+          "ads_ref_ratio": 6.348288165781554,
+          "ads_hold_ratio": 6.3899113642692145,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.2600000000000051,
+          "ads_ref": 0.08532070368528366,
+          "ads_hold": 0.08572172373533249,
+          "ads_ref_ratio": 6.302312282854459,
+          "ads_hold_ratio": 6.33193409184019,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.0400000000000063,
+          "ads_ref": 0.08355522900819778,
+          "ads_hold": 0.08408325165510178,
+          "ads_ref_ratio": 6.171903457541571,
+          "ads_hold_ratio": 6.210906459972062,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.5": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 11.719999999999999,
+          "ads_ref": 0.4677664637565613,
+          "ads_hold": 0.47030436992645264,
+          "ads_ref_ratio": 34.55210989485606,
+          "ads_hold_ratio": 34.739575264178804,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 11.740000000000009,
+          "ads_ref": 0.46494051814079285,
+          "ads_hold": 0.4676879644393921,
+          "ads_ref_ratio": 34.343368159314,
+          "ads_hold_ratio": 34.54631145216369,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 12.280000000000001,
+          "ads_ref": 0.47154501080513,
+          "ads_hold": 0.47399598360061646,
+          "ads_ref_ratio": 34.83121663503693,
+          "ads_hold_ratio": 35.01226057029225,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 11.820000000000007,
+          "ads_ref": 0.4729934334754944,
+          "ads_hold": 0.475168913602829,
+          "ads_ref_ratio": 34.93820604782792,
+          "ads_hold_ratio": 35.098900399086205,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 11.420000000000002,
+          "ads_ref": 0.47125449776649475,
+          "ads_hold": 0.474185585975647,
+          "ads_ref_ratio": 34.80975755403271,
+          "ads_hold_ratio": 35.02626576862513,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      }
+    },
+    "123": {
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.539999999999992,
+          "ads_ref": 0.026019226759672165,
+          "ads_hold": 0.026611076667904854,
+          "ads_ref_ratio": 1.921940224528894,
+          "ads_hold_ratio": 1.9656579013077895,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.539999999999992,
+          "ads_ref": 0.02566356584429741,
+          "ads_hold": 0.02615942433476448,
+          "ads_ref_ratio": 1.8956689203942538,
+          "ads_hold_ratio": 1.932296080275113,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.4000000000000057,
+          "ads_ref": 0.02632264792919159,
+          "ads_hold": 0.026854509487748146,
+          "ads_ref_ratio": 1.9443527795236808,
+          "ads_hold_ratio": 1.9836393475955199,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.4000000000000057,
+          "ads_ref": 0.026268349960446358,
+          "ads_hold": 0.026831259950995445,
+          "ads_ref_ratio": 1.9403419973737892,
+          "ads_hold_ratio": 1.9819219937210404,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.45999999999999375,
+          "ads_ref": 0.025514187291264534,
+          "ads_hold": 0.026094067841768265,
+          "ads_ref_ratio": 1.8846349011127592,
+          "ads_hold_ratio": 1.9274684474640469,
+          "evades_ref": true,
+          "evades_hold": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.5,
+          "ads_ref": 0.09290053695440292,
+          "ads_hold": 0.09377974271774292,
+          "ads_ref_ratio": 6.862205418407662,
+          "ads_hold_ratio": 6.927148967184438,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.2000000000000028,
+          "ads_ref": 0.09224624931812286,
+          "ads_hold": 0.09307429194450378,
+          "ads_ref_ratio": 6.8138757067604425,
+          "ads_hold_ratio": 6.875040031356463,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.4599999999999937,
+          "ads_ref": 0.09351669251918793,
+          "ads_hold": 0.0942598432302475,
+          "ads_ref_ratio": 6.907718460569355,
+          "ads_hold_ratio": 6.962612145830071,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.3400000000000034,
+          "ads_ref": 0.09202229976654053,
+          "ads_hold": 0.09297414869070053,
+          "ads_ref_ratio": 6.797333414576786,
+          "ads_hold_ratio": 6.867642834296095,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.2000000000000028,
+          "ads_ref": 0.09336473792791367,
+          "ads_hold": 0.09419593214988708,
+          "ads_ref_ratio": 6.896494159249052,
+          "ads_hold_ratio": 6.9578912800921175,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.5": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 12.079999999999998,
+          "ads_ref": 0.48446789383888245,
+          "ads_hold": 0.4868581295013428,
+          "ads_ref_ratio": 35.7857803101553,
+          "ads_hold_ratio": 35.96233782695692,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 11.739999999999995,
+          "ads_ref": 0.5021653175354004,
+          "ads_hold": 0.5051388144493103,
+          "ads_ref_ratio": 37.0930209436697,
+          "ads_hold_ratio": 37.312661726201085,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 11.260000000000005,
+          "ads_ref": 0.4906671345233917,
+          "ads_hold": 0.49325108528137207,
+          "ads_ref_ratio": 36.243694380513496,
+          "ads_hold_ratio": 36.434560886495206,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 11.560000000000002,
+          "ads_ref": 0.48860517144203186,
+          "ads_hold": 0.4904203712940216,
+          "ads_ref_ratio": 36.09138509691475,
+          "ads_hold_ratio": 36.22546692968102,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 11.920000000000002,
+          "ads_ref": 0.48974794149398804,
+          "ads_hold": 0.49271756410598755,
+          "ads_ref_ratio": 36.17579712616251,
+          "ads_hold_ratio": 36.39515172891029,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      }
+    },
+    "456": {
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.01999999999999602,
+          "ads_ref": 0.037989046424627304,
+          "ads_hold": 0.03850235044956207,
+          "ads_ref_ratio": 2.8061047735727067,
+          "ads_hold_ratio": 2.8440205679983803,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.03999999999999204,
+          "ads_ref": 0.037590689957141876,
+          "ads_hold": 0.03804663568735123,
+          "ads_ref_ratio": 2.776679713188202,
+          "ads_hold_ratio": 2.8103586709522252,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.09999999999999432,
+          "ads_ref": 0.03943602740764618,
+          "ads_hold": 0.03997386246919632,
+          "ads_ref_ratio": 2.9129876944634496,
+          "ads_hold_ratio": 2.952715502230486,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.29999999999999716,
+          "ads_ref": 0.03883091360330582,
+          "ads_hold": 0.03933247551321983,
+          "ads_ref_ratio": 2.868290264685021,
+          "ads_hold_ratio": 2.9053387142280864,
+          "evades_ref": true,
+          "evades_hold": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.1799999999999926,
+          "ads_ref": 0.03796274960041046,
+          "ads_hold": 0.03841853514313698,
+          "ads_ref_ratio": 2.80416232829151,
+          "ads_hold_ratio": 2.837829453622173,
+          "evades_ref": true,
+          "evades_hold": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.9199999999999875,
+          "ads_ref": 0.13941960036754608,
+          "ads_hold": 0.14141908288002014,
+          "ads_ref_ratio": 10.298389744980506,
+          "ads_hold_ratio": 10.446083829222939,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.759999999999991,
+          "ads_ref": 0.13939781486988068,
+          "ads_hold": 0.14094100892543793,
+          "ads_ref_ratio": 10.296780534043483,
+          "ads_hold_ratio": 10.410770344617958,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.7199999999999989,
+          "ads_ref": 0.14462484419345856,
+          "ads_hold": 0.146385058760643,
+          "ads_ref_ratio": 10.68288108978125,
+          "ads_hold_ratio": 10.812901371003324,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.6400000000000006,
+          "ads_ref": 0.14146940410137177,
+          "ads_hold": 0.1435391753911972,
+          "ads_ref_ratio": 10.449800864335336,
+          "ads_hold_ratio": 10.60268691026719,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.6199999999999903,
+          "ads_ref": 0.14334487915039062,
+          "ads_hold": 0.1450948715209961,
+          "ads_ref_ratio": 10.588334994119561,
+          "ads_hold_ratio": 10.717600200989517,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      },
+      "0.5": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 11.459999999999994,
+          "ads_ref": 0.7618259191513062,
+          "ads_hold": 0.7735319137573242,
+          "ads_ref_ratio": 56.273151067462415,
+          "ads_hold_ratio": 57.13782787393443,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 12.039999999999992,
+          "ads_ref": 0.7440095543861389,
+          "ads_hold": 0.7546840906143188,
+          "ads_ref_ratio": 54.957124714591444,
+          "ads_hold_ratio": 55.74561165713686,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 11.799999999999997,
+          "ads_ref": 0.7515133023262024,
+          "ads_hold": 0.762021005153656,
+          "ads_ref_ratio": 55.5113977194713,
+          "ads_hold_ratio": 56.287561320258234,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 12.36,
+          "ads_ref": 0.7455645799636841,
+          "ads_hold": 0.755251944065094,
+          "ads_ref_ratio": 55.071988474197376,
+          "ads_hold_ratio": 55.787556807881074,
+          "evades_ref": false,
+          "evades_hold": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 12.919999999999987,
+          "ads_ref": 0.7442017197608948,
+          "ads_hold": 0.754509687423706,
+          "ads_ref_ratio": 54.97131923185809,
+          "ads_hold_ratio": 55.73272916410888,
+          "evades_ref": false,
+          "evades_hold": false
+        }
+      }
+    }
+  }
+}
