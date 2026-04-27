@@ -212,7 +212,7 @@ Tested on:
 
 If you use this code or data, please cite both the paper and the dataset:
 
-**Paper** (placeholder until accepted):
+**Paper** (upon acceptance):
 
 ```bibtex
 @article{bandjur2026ads,
@@ -245,8 +245,30 @@ If you use this code or data, please cite both the paper and the dataset:
 
 This work builds on, and extends, the prior PE-specific vulnerability analysis:
 
-> Bandjur, D. & Bandjur, M. (2026). *Adversarial Vulnerability of Positional Encoding in Vision Transformers:
-> A Targeted Attack Analysis.* 10.5281/zenodo.19154465.
+```bibtex
+@article{bandjur2026ads,
+  author  = {Bandjur, Djoko and Bandjur, Milos},
+  title   = {Adversarial Vulnerability of Positional Encoding in Vision Transformers: A Targeted Attack Analysis},
+  journal = {IEEE Transactions on Information Forensics and Security},
+  year    = {2026},
+  note    = {Under review}
+}
+
+```
+
+**Dataset** (10.5281/zenodo.19154465):
+
+```bibtex
+@dataset{bandjur2026ads_data,
+  author    = {Bandjur, Djoko and Bandjur, Milos},
+  title     = {ViT-Positional-Adversarial: experimental data for a targeted attack analysis},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.19154465},
+  url       = {https://doi.org/10.5281/zenodo.19154465}
+}
+
+```
 
 The prior work established the *existence* of asymmetric PE vulnerability as a
 performance phenomenon. The present work develops the *forensic framework*
@@ -259,12 +281,8 @@ evaluation, operation-space taxonomy) around it.
 
 For questions about the paper, code, or data:
 
-- Corresponding author: `<email placeholder>`
+- Corresponding author: `<djoko.bandjur@pr.ac.rs>`
 - Faculty of Technical Sciences, University of Pristina — Kosovska Mitrovica
-
-For reproduction issues specifically (e.g., script errors, dependency conflicts):
-please open a GitHub issue with the full output of `python reproduce.py
---no-figures` so we can diagnose.
 
 ---
 
@@ -273,10 +291,6 @@ please open a GitHub issue with the full output of `python reproduce.py
 - **Code** (`*.py`): MIT License — see [LICENSE](LICENSE).
 - **Data** (`data/*.json`): Creative Commons Attribution 4.0 (CC-BY 4.0) — see
   [DATA_LICENSE](DATA_LICENSE).
-
-You may use, modify, and redistribute the code and data freely, including for
-commercial purposes, provided you cite the paper and (for data) the Zenodo
-dataset record.
 
 ---
 
