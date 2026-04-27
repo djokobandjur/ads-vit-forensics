@@ -19,7 +19,7 @@ requiring GPU access or model retraining.
 ## What this repository provides
 
 - **`reproduce.py`** — single-script reproduction of every table value, statistical
-  test, and verification claim in the paper (~30 seconds on a laptop).
+  test, and verification claim in the paper.
 - **`generate_ads_figures.py`** — regeneration of all 4 paper figures from the
   same archived JSON data.
 - **`data/`** — pre-computed experimental data: per-seed attention distributions,
@@ -62,8 +62,6 @@ ads-vit-forensics/
 
 ## Quick start
 
-### Option 1: Use the archived data (recommended)
-
 ```bash
 # Clone repo
 git clone https://github.com/<USER>/ads-vit-forensics.git
@@ -78,7 +76,7 @@ pip install -r requirements.txt
 # Reproduce all numbers from paper
 python reproduce.py
 
-# Regenerate all 5 figures
+# Regenerate all 4 figures
 python generate_ads_figures.py
 ```
 
@@ -86,22 +84,8 @@ Output appears in `output/`:
 
 - `output/tables/table_VI_fingerprint.txt` — Table VI (fingerprint ratios)
 - `output/tables/stats_ANOVA.txt` — Section 6.3 statistics
-- `output/figures/ads_fig{1..5}_*.png` — paper figures
+- `output/figures/ads_fig{1..4}_*.png` — paper figures
 - `output/reproduce_log.txt` — full timestamped log with verification assertions
-
-### Option 2: Reproduce specific section only
-
-```bash
-python reproduce.py --section 6.2   # specificity analysis only
-python reproduce.py --section 6.3   # fingerprint + ANOVA only
-python reproduce.py --section 7.1   # residual-stream probing only
-```
-
-### Option 3: No-figure mode (faster)
-
-```bash
-python reproduce.py --no-figures
-```
 
 ---
 
@@ -261,7 +245,8 @@ If you use this code or data, please cite both the paper and the dataset:
 
 This work builds on, and extends, the prior PE-specific vulnerability analysis:
 
-> Bandjur, D. & Bandjur, M. (2025). *Adversarial Vulnerability of Positional Encoding in Vision Transformers: A Targeted Attack Analysis.* 10.5281/zenodo.19154465.
+> Bandjur, D. & Bandjur, M. (2026). *Adversarial Vulnerability of Positional Encoding in Vision Transformers:
+> A Targeted Attack Analysis.* 10.5281/zenodo.19154465.
 
 The prior work established the *existence* of asymmetric PE vulnerability as a
 performance phenomenon. The present work develops the *forensic framework*
