@@ -27,7 +27,9 @@ requiring GPU access or model retraining.
   residual-stream probing results, interpolated thresholds per PE type/seed, etc.
 - **`paper/refs_ads.bib`** — verified bibliography file (23 entries, all cited in
   the manuscript).
-
+- reproduce.py includes built-in verification against published paper values,
+  printing PASS/FAIL for each numerical claim with tolerances (e.g., Δ < 0.05 for confidence-interval widths).
+  
 The repository is organized to make reviewer-side verification straightforward:
 clone, install dependencies, place the data, run one script.
 
@@ -65,23 +67,22 @@ ads-vit-forensics/
 
 ---
 
-### Quick start
+## Quick start
 
 ```bash
 git clone https://github.com/djokobandjur/ads-vit-forensics.git
 cd ads-vit-forensics
 pip install -r requirements.txt
 
-### Reproduce all numerical claims
+# Reproduce all numerical claims
 python reproduce.py
 
-### Generate all 4 figures
+# Generate all 4 figures
 python generate_ads_figures.py
 ```
-
 ---
 
-### Data provenance
+## Data provenance
 
 The JSON files in `data/` were produced by training 24 ViT-Base models
 (4 PE strategies × 3 random seeds × 2 datasets) on ImageNet-100 and CIFAR-100,
@@ -91,7 +92,7 @@ perturbations. Training and instrumentation code is **not** in this repository
 training details are documented in the paper's experimental section, and the
 training code is available on request from the corresponding author.
 
-### Dependencies
+## Dependencies
 
 Listed in `requirements.txt`:
 
@@ -110,7 +111,7 @@ Tested on:
 
 ---
 
-### Citation
+## Citation
 
 If you use this code or data, please cite both the paper and the dataset:
 
@@ -143,12 +144,12 @@ If you use this code or data, please cite both the paper and the dataset:
 
 ---
 
-### Related work
+## Related work
 
 This work builds on, and extends, the prior PE-specific vulnerability analysis:
 
 ```bibtex
-@article{bandjur2026ads,
+@article{bandjur2026adversarial,
   author  = {Bandjur, Djoko and Bandjur, Milos},
   title   = {Adversarial Vulnerability of Positional Encoding in Vision Transformers: A Targeted Attack Analysis},
   journal = {IEEE Transactions on Information Forensics and Security},
@@ -161,7 +162,7 @@ This work builds on, and extends, the prior PE-specific vulnerability analysis:
 **Dataset** (10.5281/zenodo.19154465):
 
 ```bibtex
-@dataset{bandjur2026ads_data,
+@dataset{bandjur2026adversarial_data,
   author    = {Bandjur, Djoko and Bandjur, Milos},
   title     = {ViT-Positional-Adversarial: experimental data for a targeted attack analysis},
   year      = {2026},
@@ -179,7 +180,7 @@ evaluation, operation-space taxonomy) around it.
 
 ---
 
-### Contact
+## Contact
 
 For questions about the paper, code, or data:
 
@@ -188,18 +189,10 @@ For questions about the paper, code, or data:
 
 ---
 
-### License
+## License
 
 - **Code** (`*.py`): MIT License — see [LICENSE](LICENSE).
-- **Data** (`data/*.json`): Creative Commons Attribution 4.0 (CC-BY 4.0) — see
-  [DATA_LICENSE](DATA_LICENSE).
-
----
-
-### Acknowledgments
-
-We thank the anonymous reviewers (when available) for their feedback on this work. 
-
+- **Data** (`data/*.json`): Creative Commons Attribution 4.0 (CC-BY 4.0) — see [DATA_LICENSE](DATA_LICENSE).
 ---
 
 Last updated: April 2026.
