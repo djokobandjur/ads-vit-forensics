@@ -33,7 +33,7 @@ clone, install dependencies, place the data, run one script.
   
 
 > [!IMPORTANT]
-> **Note on reproducibility verification**
+> **Note on reproducibility verification**\
 > **`reproduce.py`** includes built-in verification against published paper values,
   printing PASS/FAIL for each numerical claim with tolerances (e.g., Δ < 0.05 for confidence-interval widths).
   
