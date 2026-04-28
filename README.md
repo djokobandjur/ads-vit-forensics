@@ -12,7 +12,10 @@ Forensics and Security*.
 
 The repository contains everything needed to reproduce all numerical claims,
 tables, and figures in the paper from the archived experimental data, without
-requiring GPU access or model retraining.
+requiring GPU access or model retraining. 
+
+The repository is organized to make reviewer-side verification straightforward:
+clone, install dependencies, place the data, run one script.
 
 ---
 
@@ -27,12 +30,13 @@ requiring GPU access or model retraining.
   residual-stream probing results, interpolated thresholds per PE type/seed, etc.
 - **`paper/refs_ads.bib`** — verified bibliography file (23 entries, all cited in
   the manuscript).
-- reproduce.py includes built-in verification against published paper values,
+  
+
+> [!IMPORTANT]
+> **Note on reproducibility verification**
+> **`reproduce.py`** includes built-in verification against published paper values,
   printing PASS/FAIL for each numerical claim with tolerances (e.g., Δ < 0.05 for confidence-interval widths).
   
-The repository is organized to make reviewer-side verification straightforward:
-clone, install dependencies, place the data, run one script.
-
 ---
 
 ## Repository layout
