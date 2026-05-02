@@ -184,6 +184,12 @@ evaluation, operation-space taxonomy) around it.
 
 ---
 
+### 📥 Download Pre-trained Weights
+1. **[ImageNet-100 Models](https://drive.google.com/drive/folders/1WRhjaR3WZHIi2fTi9xcrIBJkBXZddMM9?usp=sharing)**
+2. **[CIFAR-100 Models](https://drive.google.com/drive/folders/1HBiOjNfuRsh2H0ZGRP4rIdBeydedCBJL?usp=sharing)**
+
+---
+
 ## Contact
 
 For questions about the paper, code, or data:
