@@ -7,8 +7,8 @@
 
 Code, result files, and reproducibility scripts for the paper
 *"Attention Divergence Score: A Forensic Metric for Characterizing
-Parameter-Level Attacks in Vision Transformers"* (T-IFS-26854-2026,
-resubmission).
+Parameter-Level Attacks in Vision Transformers"* (under resubmission to
+IEEE TIFS).
 
 ---
 
@@ -59,7 +59,7 @@ Central findings:
 
 This work uses the same 24 trained ViT-Base checkpoints as the companion
 work [vit-positional-adversarial](https://github.com/djokobandjur/vit-positional-adversarial)
-(T-IFS-26532-2026, resubmitted in parallel; Zenodo Concept DOI:
+(resubmitted in parallel; Zenodo Concept DOI:
 [`10.5281/zenodo.19154465`](https://doi.org/10.5281/zenodo.19154465)).
 The companion work establishes the PE attack surface as a *performance
 problem*; the present work reframes it as a *forensic problem*.
@@ -170,7 +170,7 @@ The folder structure expected by the scripts is:
 
 ## Reproducing results
 
-### Verification only (no GPU, ~30 seconds)
+### Verification only (no GPU needed)
 
 To verify every numerical claim, table value, and statistical test in the
 paper directly from the archived JSON files:
@@ -184,7 +184,42 @@ This runs on CPU, requires no model checkpoints, and prints PASS/FAIL with
 explicit tolerances for each claim. Output tables are written to
 `output/tables/`.
 
-### Full pipeline (GPU, ~6–8h on A100)
+### Selective execution (single PE and/or seed, GPU needed)
+
+To run any experiment script for a specific PE type and/or seed instead
+of the full paper configuration, use the optional `--pe_types` and
+`--seeds` CLI arguments:
+
+```bash
+python ads_experiment.py \
+    --models_dir "/path/to/Trained models_ImageNet100" \
+    --val_dir    "/path/to/imagenet100/val" \
+    --output_path "output/partial.json" \
+    --pe_types learned --seeds 42
+```
+
+Argument reference:
+
+```
+--pe_types  Optional. PE types to evaluate. If omitted, uses the
+            hardcoded PE_TYPES list defined in the script (paper
+            configuration). Values: learned, sinusoidal, rope, alibi
+            (space-separated for multiple).
+
+--seeds     Optional. Random seeds to evaluate. If omitted, uses the
+            hardcoded SEEDS list defined in the script (paper
+            configuration). Values: 42, 123, 456 (space-separated for
+            multiple).
+```
+
+The resulting JSON contains only the requested (PE, seed) cells but
+shares the same structure as the full output. `generate_ads_figures.py`
+handles partial outputs gracefully (omits error bands when n<3 seeds).
+`reproduce.py` is paper-numbers verification and requires the full
+3-seed JSONs shipped under `data/`; it aborts with a clear message if
+pointed at a partial output directory.
+
+### Full pipeline (GPU needed)
 
 The fastest path is the [Colab Quickstart notebook](colab_quickstart.ipynb)
 ([open in Colab](https://colab.research.google.com/github/djokobandjur/ads-vit-forensics/blob/main/colab_quickstart.ipynb)).
@@ -197,7 +232,12 @@ present on Drive.
 ### Manual CLI workflow
 
 Each script supports a consistent `--models_dir / --val_dir / --output_path`
-interface. The command sequence below assumes Colab-style paths.
+interface. The command sequence below assumes Colab-style paths and runs
+the full paper configuration (4 PE × 3 seeds = 12 cells per script).
+
+> **Selective execution.** All experiment scripts also accept optional
+> `--pe_types` and `--seeds` arguments to restrict the run to a subset
+> (see *Selective execution* section above for argument reference).
 
 **1. Main ADS PE-only attack**
 
@@ -330,9 +370,9 @@ A few practical notes:
 ## Paper and citation
 
 The paper is currently under resubmission to IEEE Transactions on
-Information Forensics and Security (T-IFS-26854-2026), in parallel with
-the companion work (T-IFS-26532-2026). Citation details will be added
-once the resubmission status is finalized.
+Information Forensics and Security, in parallel with the companion
+work. Citation details will be added once the resubmission status
+is finalized.
 
 For citing this repository, use the Zenodo deposit:
 
