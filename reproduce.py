@@ -61,7 +61,7 @@ DEPENDENCIES
 
 Authors: Djoko Bandjur, Milos Bandjur
 Contact: djoko.bandjur@pr.ac.rs
-Last updated: April 2026
+Last updated: May 2026
 License: MIT (code) / CC-BY 4.0 (data)
 """
 
@@ -1212,6 +1212,49 @@ def main():
     log.log(f"Output dir:   {OUTPUT_DIR}")
 
     data = load_all_data(log)
+
+    # ----- Smoke-mode guard -------------------------------------------------
+    # reproduce.py reproduces *paper* numbers (Table VI CIs, ANOVA F-stats,
+    # 1-NN LOO accuracies, ICC, etc.) all of which assume n=3 seeds per PE.
+    # If the user mistakenly points --data-dir at a smoke-test output dir
+    # that contains only a partial seed set, those statistics are undefined
+    # (or worse, silently misleading). Detect and abort with a clear message.
+    expected = set(SEEDS)
+    incomplete = []
+    for key in ('imn_main', 'cif_main', 'imn_spec', 'cif_spec',
+                'imn_probe', 'cif_probe'):
+        d = data.get(key)
+        if not d:
+            continue
+        for pe, pe_dict in d.items():
+            present = set(pe_dict.keys())
+            if present != expected:
+                incomplete.append((key, pe, sorted(present)))
+    if incomplete:
+        log.log('')
+        log.log("=" * 78)
+        log.log("ABORT: reproduce.py expects all 3 seeds (42, 123, 456) per PE type.")
+        log.log("=" * 78)
+        log.log("This script reproduces *paper* numbers (CIs, ANOVA, ICC, 1-NN LOO)")
+        log.log("which are only defined for n=3. It does NOT run on smoke-test")
+        log.log("output. Point --data-dir at the shipped JSONs in the cloned")
+        log.log("repo's `data/` folder, e.g.:")
+        log.log("")
+        log.log("    python reproduce.py --data-dir <repo>/data")
+        log.log("")
+        log.log("Incomplete cells found:")
+        for key, pe, present in incomplete[:8]:
+            log.log(f"  {key} / {pe:11s} → seeds present: {present}")
+        if len(incomplete) > 8:
+            log.log(f"  ... and {len(incomplete) - 8} more")
+        log.log('')
+        log.log("To inspect smoke-test results, run individual experiment scripts")
+        log.log("(ads_experiment.py etc.) with their JSON outputs; those handle")
+        log.log("partial seed sets defensively.")
+        log.log('')
+        log.close()
+        sys.exit(2)
+    # ------------------------------------------------------------------------
 
     # Pre-init for verify
     fp_results = None

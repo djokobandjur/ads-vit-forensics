@@ -12,6 +12,7 @@ Outputs:
     - Statistical test: are thresholds significantly different across PE types?
 """
 
+import argparse
 import os, sys, json, copy
 import torch
 import torch.nn as nn
@@ -26,18 +27,88 @@ from full_scale_experiment import VisionTransformer
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(f"Device: {device}")
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="ADS experiment script. See module docstring for details.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        '--models_dir',
+        type=str,
+        required=True,
+        help='Directory containing trained model checkpoints, organized as '
+             '<models_dir>/<pe_type>_seed<seed>/best_model.pth',
+    )
+    parser.add_argument(
+        '--val_dir',
+        type=str,
+        required=True, help='Path to ImageNet-100 val directory in ImageFolder format',
+    )
+    parser.add_argument(
+        '--output_path',
+        type=str,
+        required=True,
+        help='Output path for the result JSON',
+    )
+    parser.add_argument(
+        '--ref_indices_path',
+        type=str,
+        default=None,
+        help='Path to ads_ref_indices.json. If not specified, defaults to '
+             'a path alongside --output_path. If the file does not exist, '
+             'it will be generated using a fixed seed.',
+    )
+    parser.add_argument(
+        '--pe_types',
+        type=str,
+        nargs='+',
+        default=None,
+        choices=['learned', 'sinusoidal', 'rope', 'alibi'],
+        help='Optional. PE types to evaluate. If omitted, uses the '
+             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+    )
+    parser.add_argument(
+        '--seeds',
+        type=int,
+        nargs='+',
+        default=None,
+        help='Optional. Random seeds to evaluate. If omitted, uses the '
+             'hardcoded SEEDS list defined in the script (paper configuration).',
+    )
+    return parser.parse_args()
+
+
 # ============================================================
 # CONFIG
 # ============================================================
-RESULTS_DIR = '/content/drive/MyDrive/pe_experiment/results'
-DATA_DIR    = '/content/imagenet100'
-SAVE_PATH   = '/content/drive/MyDrive/pe_experiment/results/ADS/ads_threshold_fine.json'
-REF_INDICES_PATH = '/content/drive/MyDrive/pe_experiment/results/ADS/ads_ref_indices.json'
+# Parse CLI arguments first; CONFIG constants are derived from them.
+args = parse_args()
 
-os.makedirs(os.path.dirname(SAVE_PATH), exist_ok=True)
+RESULTS_DIR      = args.models_dir
+DATA_DIR         = args.val_dir
+SAVE_PATH        = args.output_path
+
+# REF_INDICES_PATH: if user provided, use it; else default alongside output
+if args.ref_indices_path:
+    REF_INDICES_PATH = args.ref_indices_path
+else:
+    REF_INDICES_PATH = os.path.join(
+        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+    )
+
+os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES = ['learned', 'sinusoidal', 'rope', 'alibi']
 SEEDS    = [42, 123, 456]
+
+
+# Apply CLI overrides for PE_TYPES and SEEDS if user provided them
+if args.pe_types is not None:
+    PE_TYPES = args.pe_types
+    print(f"[CLI override] PE_TYPES = {PE_TYPES}")
+if args.seeds is not None:
+    SEEDS = args.seeds
+    print(f"[CLI override] SEEDS = {SEEDS}")
 
 # Fine grid in critical range + coarse grid beyond
 EPSILONS_FINE = [0.0, 0.001, 0.0015, 0.002, 0.003, 0.005, 0.007, 0.01,
@@ -57,7 +128,7 @@ val_transform = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-val_dataset = datasets.ImageFolder(os.path.join(DATA_DIR, 'val'), val_transform)
+val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
 if os.path.exists(REF_INDICES_PATH):
     with open(REF_INDICES_PATH) as f:
@@ -303,7 +374,7 @@ def analyze_thresholds(results):
     print("STATISTICAL ANALYSIS: Are thresholds significantly different?")
     print("=" * 70)
 
-    seeds = ['42', '123', '456']
+    seeds = [str(s) for s in SEEDS]
     thresholds_by_pe = {}
 
     for pe_type in PE_TYPES:
@@ -358,7 +429,6 @@ if __name__ == '__main__':
     print(f"PE types: {PE_TYPES}")
     print(f"Seeds: {SEEDS}")
     print(f"Fine-grid epsilons: {EPSILONS_FINE}")
-    print(f"Estimated time: ~1.5h on A100")
     print()
 
     results = run_fine_grid_experiment()

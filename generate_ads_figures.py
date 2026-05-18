@@ -8,7 +8,7 @@ This script is synchronized with reproduce.py:
 Paths are configurable via CLI:
     python generate_ads_figures.py --data-dir data --output-dir output
 
-Generated figures (matching paper v19 numbering):
+Generated figures:
     Fig 1: ads_fig1_l4_vs_epsilon.png         — ADS(L4) vs ε, both datasets
     Fig 2: ads_fig2_per_layer_heatmap.png     — Per-layer ADS heatmap
     Fig 3: ads_fig3_layer_profile.png         — Layer-wise ratio profile
@@ -18,7 +18,6 @@ Generated figures (matching paper v19 numbering):
 Dependencies (also in requirements.txt):
     numpy, matplotlib
 
-Authors: Djoko Bandjur, Milos Bandjur
 """
 import argparse
 import json
@@ -79,7 +78,6 @@ print(f"Loaded data from {DATA_DIR.resolve()}/")
 print(f"Saving figures to {FIG_DIR.resolve()}/")
 print()
 
-seeds = ['42', '123', '456']
 pe_types = ['learned', 'sinusoidal', 'rope', 'alibi']
 PE_LABELS = {'learned': 'Learned PE', 'sinusoidal': 'Sinusoidal PE',
              'rope': 'RoPE', 'alibi': 'ALiBi'}
@@ -87,14 +85,76 @@ PE_COLORS = {'learned': '#7B68EE', 'sinusoidal': '#00CED1',
              'rope': '#FF6347', 'alibi': '#32CD32'}
 PE_MARKERS = {'learned': 'o', 'sinusoidal': 's', 'rope': '^', 'alibi': 'D'}
 
-epsilons = imagenet['learned']['42']['epsilons']
+# Expected paper-config seeds; actual usage is derived from JSON
+EXPECTED_SEEDS = ['42', '123', '456']
+
+
+def get_seeds_for(dataset, pe):
+    """Return the list of seed keys present in the JSON for given PE.
+
+    Falls back gracefully for smoke tests (e.g. only seed '42' present).
+    Sorted numerically for stable ordering.
+    """
+    if pe not in dataset:
+        raise KeyError(
+            f"PE type '{pe}' not found in JSON. Available: {list(dataset.keys())}")
+    seeds = sorted(dataset[pe].keys(), key=lambda s: int(s))
+    return seeds
+
+
+def get_common_seeds(*datasets_and_pes):
+    """Intersect seeds across (dataset, pe) pairs so per-figure plots stay
+    consistent. Each arg is a (dataset, pe) tuple."""
+    sets = [set(get_seeds_for(ds, pe)) for ds, pe in datasets_and_pes]
+    common = sorted(set.intersection(*sets), key=lambda s: int(s))
+    return common
+
+
+# Diagnostic banner — useful for smoke tests so the user knows what's happening
+def _print_seed_banner():
+    seed_inventory = {}
+    for ds_name, data in [("ImageNet-100", imagenet), ("CIFAR-100", cifar)]:
+        for pe in pe_types:
+            if pe in data:
+                seed_inventory[(ds_name, pe)] = get_seeds_for(data, pe)
+    all_unique = {tuple(v) for v in seed_inventory.values()}
+    if len(all_unique) == 1:
+        seeds_str = ", ".join(next(iter(all_unique)))
+        print(f"Seeds detected (all PE×datasets): {seeds_str}")
+    else:
+        print("Seeds detected (varies by PE×dataset):")
+        for (ds, pe), s in seed_inventory.items():
+            print(f"  {ds:14s} {pe:11s} → {', '.join(s)}")
+    n_min = min(len(v) for v in seed_inventory.values())
+    if n_min < len(EXPECTED_SEEDS):
+        print(f"⚠  Fewer than {len(EXPECTED_SEEDS)} seeds present "
+              f"(min: {n_min}). Figures will reflect available seeds; "
+              f"std bands and slopes are NOT publication statistics with n<3.")
+    print()
+
+
+_print_seed_banner()
+
+# Derive epsilon grid from any available (dataset, pe, seed)
+_first_ds = imagenet if 'learned' in imagenet else cifar
+_first_pe = next(iter(_first_ds.keys()))
+_first_seed = next(iter(_first_ds[_first_pe].keys()))
+epsilons = _first_ds[_first_pe][_first_seed]['epsilons']
 
 
 def get_mean_std(data, pe, metric):
-    """Mean and std of a per-seed metric across the epsilon trajectory."""
-    vals = np.array([[data[pe][s][metric][i] for s in seeds]
+    """Mean and std of a per-seed metric across the epsilon trajectory.
+
+    Uses seeds actually present in JSON, not a hardcoded list. With n<2,
+    std is 0 (point estimate); banner above already warned the user.
+    """
+    seeds_here = get_seeds_for(data, pe)
+    vals = np.array([[data[pe][s][metric][i] for s in seeds_here]
                      for i in range(len(epsilons))])
-    return vals.mean(1), vals.std(1, ddof=1)
+    if vals.shape[1] >= 2:
+        return vals.mean(1), vals.std(1, ddof=1)
+    else:
+        return vals.mean(1), np.zeros(vals.shape[0])
 
 
 # ============================================================
@@ -142,8 +202,9 @@ for col, pe in enumerate(pe_types):
                                             ("CIFAR-100", cifar)]):
         ax = fig.add_subplot(gs[row, col])
 
+        seeds_here = get_seeds_for(data, pe)
         matrix = np.array([
-            np.mean([data[pe][s]['ads_per_layer'][i] for s in seeds], axis=0)
+            np.mean([data[pe][s]['ads_per_layer'][i] for s in seeds_here], axis=0)
             for i in range(len(epsilons))
         ])  # (n_eps, 12)
 
@@ -186,9 +247,11 @@ for col, pe in enumerate(pe_types):
                                             ("CIFAR-100", cifar)]):
         ax = axes[row, col]
 
+        seeds_here = get_seeds_for(data, pe)
+
         # Per-seed 12-d ratio profile averaged over ε > 0
         per_seed_profiles = []
-        for s in seeds:
+        for s in seeds_here:
             ads_per_layer = np.array(data[pe][s]['ads_per_layer'])  # (n_eps, 12)
             ads_mean_layers = ads_per_layer.mean(axis=1)            # (n_eps,)
             profile = []
@@ -199,10 +262,13 @@ for col, pe in enumerate(pe_types):
                         ratios.append(ads_per_layer[ei, layer] / ads_mean_layers[ei])
                 profile.append(np.mean(ratios) if ratios else 0)
             per_seed_profiles.append(profile)
-        per_seed_profiles = np.array(per_seed_profiles)  # (3, 12)
+        per_seed_profiles = np.array(per_seed_profiles)  # (n_seeds, 12)
 
         mean_profile = per_seed_profiles.mean(axis=0)
-        std_profile = per_seed_profiles.std(axis=0, ddof=1)
+        if per_seed_profiles.shape[0] >= 2:
+            std_profile = per_seed_profiles.std(axis=0, ddof=1)
+        else:
+            std_profile = np.zeros(12)
 
         color = PE_COLORS[pe]
 
@@ -249,7 +315,7 @@ print("✓ Fig 3 saved: ads_fig3_layer_profile.png")
 
 
 # ============================================================
-# FIG 4: ADS-vs-accuracy trajectories by operation space (formerly Fig 5)
+# FIG 4: ADS-vs-accuracy trajectories by operation space 
 # ============================================================
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 fig.suptitle('ADS vs. Accuracy Loss Trajectories by PE Operation Space',

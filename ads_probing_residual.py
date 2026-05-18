@@ -35,6 +35,7 @@ same fold, preventing data leakage from correlated activations.
 Output: ads_probing_residual.json
 """
 
+import argparse
 import os, sys, json
 import torch
 import torch.nn as nn
@@ -51,18 +52,88 @@ from full_scale_experiment import VisionTransformer
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(f"Device: {device}")
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="ADS experiment script. See module docstring for details.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        '--models_dir',
+        type=str,
+        required=True,
+        help='Directory containing trained model checkpoints, organized as '
+             '<models_dir>/<pe_type>_seed<seed>/best_model.pth',
+    )
+    parser.add_argument(
+        '--val_dir',
+        type=str,
+        required=True, help='Path to ImageNet-100 val directory in ImageFolder format',
+    )
+    parser.add_argument(
+        '--output_path',
+        type=str,
+        required=True,
+        help='Output path for the result JSON',
+    )
+    parser.add_argument(
+        '--ref_indices_path',
+        type=str,
+        default=None,
+        help='Path to ads_ref_indices.json. If not specified, defaults to '
+             'a path alongside --output_path. If the file does not exist, '
+             'it will be generated using a fixed seed.',
+    )
+    parser.add_argument(
+        '--pe_types',
+        type=str,
+        nargs='+',
+        default=None,
+        choices=['learned', 'sinusoidal', 'rope', 'alibi'],
+        help='Optional. PE types to evaluate. If omitted, uses the '
+             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+    )
+    parser.add_argument(
+        '--seeds',
+        type=int,
+        nargs='+',
+        default=None,
+        help='Optional. Random seeds to evaluate. If omitted, uses the '
+             'hardcoded SEEDS list defined in the script (paper configuration).',
+    )
+    return parser.parse_args()
+
+
 # ============================================================
 # CONFIG
 # ============================================================
-RESULTS_DIR      = '/content/drive/MyDrive/pe_experiment/results'
-DATA_DIR         = '/content/imagenet100'
-SAVE_PATH        = '/content/drive/MyDrive/pe_experiment/results/ADS/ads_probing_residual.json'
-REF_INDICES_PATH = '/content/drive/MyDrive/pe_experiment/results/ADS/ads_ref_indices.json'
+# Parse CLI arguments first; CONFIG constants are derived from them.
+args = parse_args()
 
-os.makedirs(os.path.dirname(SAVE_PATH), exist_ok=True)
+RESULTS_DIR      = args.models_dir
+DATA_DIR         = args.val_dir
+SAVE_PATH        = args.output_path
+
+# REF_INDICES_PATH: if user provided, use it; else default alongside output
+if args.ref_indices_path:
+    REF_INDICES_PATH = args.ref_indices_path
+else:
+    REF_INDICES_PATH = os.path.join(
+        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+    )
+
+os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES   = ['learned', 'sinusoidal', 'rope', 'alibi']
 SEEDS      = [42, 123, 456]
+
+# Apply CLI overrides for PE_TYPES and SEEDS if user provided them
+if args.pe_types is not None:
+    PE_TYPES = args.pe_types
+    print(f"[CLI override] PE_TYPES = {PE_TYPES}")
+if args.seeds is not None:
+    SEEDS = args.seeds
+    print(f"[CLI override] SEEDS = {SEEDS}")
+
 N_LAYERS   = 12
 IMG_SIZE   = 224
 PATCH_SIZE = 16
@@ -91,7 +162,7 @@ val_transform = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-val_dataset = datasets.ImageFolder(os.path.join(DATA_DIR, 'val'), val_transform)
+val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
 with open(REF_INDICES_PATH) as f:
     ref_indices = json.load(f)
@@ -290,50 +361,73 @@ def run():
 # ANALYSIS
 # ============================================================
 def analyze(results):
-    seeds_str = ['42', '123', '456']
+    seeds_str = [str(s) for s in SEEDS]
     print("\n" + "=" * 65)
     print("RESIDUAL STREAM PROBING — SUMMARY")
     print("=" * 65)
 
     for pe_type in PE_TYPES:
-        print(f"\n{pe_type.upper()} — R²(mean) by layer (mean ± std, n=3 seeds):")
+        if pe_type not in results:
+            continue
+        available = [s for s in seeds_str if s in results[pe_type]]
+        if not available:
+            print(f"\n{pe_type.upper()}: no results")
+            continue
+
+        n = len(available)
+        ddof = 1 if n > 1 else 0
+        print(f"\n{pe_type.upper()} — R²(mean) by layer (mean ± std, n={n} seeds: {available}):")
         print(f"  {'Layer':>7}  {'R²':>8}  {'±std':>8}  {'':>5}")
 
         layer_means = {}
         for l in range(1, N_LAYERS + 1):
             vals = [results[pe_type][s]['layers'][str(l)]['r2_mean']
-                    for s in seeds_str]
+                    for s in available]
             m   = np.mean(vals)
-            std = np.std(vals, ddof=1)
+            std = np.std(vals, ddof=ddof)
             layer_means[l] = m
 
         peak_l = max(layer_means, key=layer_means.get)
 
         for l in range(1, N_LAYERS + 1):
             vals = [results[pe_type][s]['layers'][str(l)]['r2_mean']
-                    for s in seeds_str]
+                    for s in available]
             m   = np.mean(vals)
-            std = np.std(vals, ddof=1)
+            std = np.std(vals, ddof=ddof)
             flags = []
             if l == peak_l: flags.append("← PEAK")
             if l == 4:      flags.append("[L4]")
             print(f"  Layer {l:>2}:  {m:>8.4f}  {std:>8.4f}  {'  '.join(flags)}")
 
         # Per-seed peaks
-        peaks = [results[pe_type][s]['peak_layer'] for s in seeds_str]
-        l4_r2 = [results[pe_type][s]['layers']['4']['r2_mean'] for s in seeds_str]
+        peaks = [results[pe_type][s]['peak_layer'] for s in available]
+        l4_r2 = [results[pe_type][s]['layers']['4']['r2_mean'] for s in available]
         print(f"  Peak per seed: {peaks}")
-        print(f"  Layer 4 R²: {np.mean(l4_r2):.4f} ± {np.std(l4_r2, ddof=1):.4f}")
-        print(f"  Layer 4 is peak in {sum(p == 4 for p in peaks)}/3 seeds")
+        l4_std = np.std(l4_r2, ddof=ddof) if n > 1 else 0.0
+        print(f"  Layer 4 R²: {np.mean(l4_r2):.4f} ± {l4_std:.4f}")
+        print(f"  Layer 4 is peak in {sum(p == 4 for p in peaks)}/{n} seeds")
 
     # Cross-PE summary
     print(f"\n{'─'*65}")
     print("CROSS-PE PEAK LAYER SUMMARY:")
-    print(f"{'PE':12} {'S42':>5} {'S123':>5} {'S456':>5} {'Mean':>7}")
+    header_cols = "  ".join(f"S{s[:3]:>3}" for s in seeds_str)
+    print(f"{'PE':12} {header_cols} {'Mean':>7}")
     for pe_type in PE_TYPES:
-        peaks = [results[pe_type][s]['peak_layer'] for s in seeds_str]
-        print(f"{pe_type:12} {peaks[0]:>5} {peaks[1]:>5} {peaks[2]:>5} "
-              f"{np.mean(peaks):>7.1f}")
+        if pe_type not in results:
+            continue
+        # Map: each seed → peak (or "–" if missing)
+        peaks_full = []
+        peaks_values = []
+        for s in seeds_str:
+            if s in results[pe_type]:
+                p = results[pe_type][s]['peak_layer']
+                peaks_full.append(f"{p:>5}")
+                peaks_values.append(p)
+            else:
+                peaks_full.append(f"{'–':>5}")
+        peaks_str = " ".join(peaks_full)
+        mean_str = f"{np.mean(peaks_values):>7.1f}" if peaks_values else f"{'–':>7}"
+        print(f"{pe_type:12} {peaks_str} {mean_str}")
 
 
 if __name__ == '__main__':
@@ -343,7 +437,6 @@ if __name__ == '__main__':
     print(f"CV: image-level GroupKFold, {N_FOLDS} folds")
     print(f"Samples: {len(ref_indices)} images × {N_PATCHES} patches = "
           f"{len(ref_indices) * N_PATCHES}")
-    print(f"Estimated time: ~45-60 min on A100")
     print()
 
     results = run()

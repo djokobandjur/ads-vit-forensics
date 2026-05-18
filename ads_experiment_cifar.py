@@ -12,7 +12,7 @@ of PE tampering, especially for cliff-type PE methods (Learned PE).
 
 Usage in Colab:
     1. Mount Drive
-    2. Extract ImageNet-100 to /content/imagenet100_resized/
+    2. Extract ImageNet-100 to /content/imagenet100/
     3. Copy full_scale_experiment.py to /content/
     4. Copy this script to /content/
     5. Run: !python /content/ads_experiment.py
@@ -23,6 +23,7 @@ Output:
     - results/ADS/figures/
 """
 
+import argparse
 import os, sys, json, copy
 import torch
 import torch.nn as nn
@@ -36,19 +37,75 @@ from full_scale_experiment import VisionTransformer
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(f"Device: {device}")
 
-# ============================================================
-# CONFIG — update paths as needed
-# ============================================================
-RESULTS_DIR = '/content/drive/MyDrive/pe_experiment/results_cifar100'
-DATA_DIR    = '/content/cifar100'
-SAVE_PATH   = '/content/drive/MyDrive/pe_experiment/results_cifar100/ads/ads_results_cifar100.json'
-FIG_DIR     = '/content/drive/MyDrive/pe_experiment/results_cifar100/ads/figures'
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="ADS main experiment (CIFAR-100). See module docstring for details.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        '--models_dir',
+        type=str,
+        required=True,
+        help='Directory containing trained model checkpoints, organized as '
+             '<models_dir>/<pe_type>_seed<seed>/best_model.pth',
+    )
+    parser.add_argument(
+        '--val_dir',
+        type=str,
+        default='/tmp/cifar100',
+        help='Optional. Path to torchvision CIFAR-100 cache directory (default: /tmp/cifar100). '
+             'CIFAR-100 is auto-downloaded by torchvision if not present.',
+    )
+    parser.add_argument(
+        '--output_path',
+        type=str,
+        required=True,
+        help='Output path for the result JSON',
+    )
+    parser.add_argument(
+        '--pe_types',
+        type=str,
+        nargs='+',
+        default=None,
+        choices=['learned', 'sinusoidal', 'rope', 'alibi'],
+        help='Optional. PE types to evaluate. If omitted, uses the '
+             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+    )
+    parser.add_argument(
+        '--seeds',
+        type=int,
+        nargs='+',
+        default=None,
+        help='Optional. Random seeds to evaluate. If omitted, uses the '
+             'hardcoded SEEDS list defined in the script (paper configuration).',
+    )
+    return parser.parse_args()
 
-os.makedirs(os.path.dirname(SAVE_PATH), exist_ok=True)
+
+# ============================================================
+# CONFIG
+# ============================================================
+args = parse_args()
+
+RESULTS_DIR = args.models_dir
+DATA_DIR    = args.val_dir
+SAVE_PATH   = args.output_path
+FIG_DIR     = os.path.join(os.path.dirname(SAVE_PATH), 'figures')
+
+os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
 
 PE_TYPES = ['learned', 'sinusoidal', 'rope', 'alibi']
 SEEDS    = [42, 123, 456]
+
+# Apply CLI overrides for PE_TYPES and SEEDS if user provided them
+if args.pe_types is not None:
+    PE_TYPES = args.pe_types
+    print(f"[CLI override] PE_TYPES = {PE_TYPES}")
+if args.seeds is not None:
+    SEEDS = args.seeds
+    print(f"[CLI override] SEEDS = {SEEDS}")
+
 EPSILONS = [0.0, 0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1.0]
 
 # PGD config — same as main adversarial experiment
@@ -419,17 +476,22 @@ def plot_ads_results(results):
         'learned': '#7B68EE', 'sinusoidal': '#00CED1',
         'rope': '#FF6347', 'alibi': '#32CD32'
     }
-    seeds_str = ['42', '123', '456']
+    seeds_str = [str(s) for s in SEEDS]
 
     # Plot 1: ADS(L4) vs Epsilon
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     fig.suptitle('Attention Divergence Score (L4) vs ε', fontsize=15, fontweight='bold')
     for idx, pe in enumerate(PE_TYPES):
         ax = axes[idx // 2, idx % 2]
-        epsilons = results[pe]['42']['epsilons']
-        ads_vals = np.array([results[pe][s]['ads_layer4'] for s in seeds_str])
+        if pe not in results:
+            continue
+        available_seeds = [s for s in seeds_str if s in results[pe]]
+        if not available_seeds:
+            continue
+        epsilons = results[pe][available_seeds[0]]['epsilons']
+        ads_vals = np.array([results[pe][s]['ads_layer4'] for s in available_seeds])
         mean_ads = ads_vals.mean(0)
-        std_ads  = ads_vals.std(0, ddof=1)
+        std_ads  = ads_vals.std(0, ddof=1) if len(available_seeds) > 1 else np.zeros_like(mean_ads)
         ax.plot(epsilons, mean_ads, 'o-', color=PE_COLORS[pe], linewidth=2, markersize=7)
         ax.fill_between(epsilons, mean_ads - std_ads, mean_ads + std_ads,
                         alpha=0.2, color=PE_COLORS[pe])
@@ -493,21 +555,28 @@ def plot_ads_results(results):
 # ANALYSIS
 # ============================================================
 def analyze_results(results):
-    seeds_str = ['42', '123', '456']
+    seeds_str = [str(s) for s in SEEDS]
     print("\n" + "=" * 70)
     print("KEY FINDINGS: ADS EARLY WARNING ANALYSIS")
     print("=" * 70)
 
     for pe in PE_TYPES:
-        epsilons  = results[pe]['42']['epsilons']
-        mean_acc  = np.mean([results[pe][s]['accuracies'] for s in seeds_str], axis=0)
-        mean_ads  = np.mean([results[pe][s]['ads_layer4'] for s in seeds_str], axis=0)
+        if pe not in results:
+            continue
+        available_seeds = [s for s in seeds_str if s in results[pe]]
+        if not available_seeds:
+            print(f"\n{pe.upper()}: no results")
+            continue
+
+        epsilons  = results[pe][available_seeds[0]]['epsilons']
+        mean_acc  = np.mean([results[pe][s]['accuracies'] for s in available_seeds], axis=0)
+        mean_ads  = np.mean([results[pe][s]['ads_layer4'] for s in available_seeds], axis=0)
         clean_acc = mean_acc[0]
 
         collapse_idx = next((i for i, acc in enumerate(mean_acc)
                              if acc < 0.5 * clean_acc), None)
 
-        print(f"\n{pe.upper()}:")
+        print(f"\n{pe.upper()} (n={len(available_seeds)} seeds: {available_seeds}):")
         if collapse_idx is None:
             print(f"  No collapse — max ADS(L4) at ε=1.0: {mean_ads[-1]:.4f}")
         else:
