@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] — 2026-05-18
 
-First stable release prepared for IEEE TIFS resubmission of *"Attention
-Divergence Score: A Forensic Metric for Characterizing Parameter-Level
-Attacks in Vision Transformers"*.
+Code, data artifacts, and reproducibility scripts for the paper
+*"Attention Divergence Score: A Forensic Metric for Characterizing
+Parameter-Level Attacks in Vision Transformers"*, prepared for IEEE
+TIFS resubmission..
 
 ### Added
 
