@@ -1,19 +1,34 @@
 """
-Detection Method Comparison Experiment
-========================================
-Compares ADS against three baseline detection methods:
-  1. Weight hash (cryptographic integrity) - simulated
-  2. Mahalanobis distance on attention outputs (OOD detection)
-  3. KL divergence of logit distributions
+Detection Method Comparison Experiment — ImageNet-100, n=6
+===========================================================
+Compares ADS against baseline detection signals for PE-only parameter
+attacks on ViT-Base checkpoints.
 
-For each method, we measure:
-  - Detection rate at each epsilon (TPR against benign FPR baseline)
-  - AUC across epsilon values
-  - Computational cost (forward passes required)
+Methods compared:
+  1. ADS(L4): KL divergence between clean and perturbed Layer-4
+     attention distributions on a fixed 256-image reference set.
+  2. Attention-feature distance: L2 distance of Layer-4 attention
+     features from the clean reference mean. This is the implemented
+     lightweight Mahalanobis-style baseline; the full covariance inverse
+     routine is kept as a utility but is not used in the main loop because
+     it is unstable/slow for the high-dimensional attention feature space.
+  3. LogitKL: KL divergence between mean softmax output distributions.
 
-This addresses the reviewer requirement for baseline comparison.
+Protocol:
+  - Dataset: ImageNet-100 validation set in ImageFolder format.
+  - Default PE types: Learned and RoPE, matching the ADS evasion/detection
+    experiments where these two families define the operating regime.
+  - Default seeds: 42, 123, 456, 789, 1011, 1213 (n=6 TFS protocol).
+  - Attack: PE-only PGD, T=20 steps, alpha=0.1*epsilon.
+  - Bootstrap clean noise floor: 20 random 128/128 splits of the fixed
+    256-image reference set.
 
-Output: ads_comparison.json
+The script supports partial execution via --pe_types and --seeds. The output
+JSON contains per-seed scores, bootstrap clean scores, AUC-style separability
+against clean bootstrap scores, and timing metadata.
+
+Output:
+    ads_comparison.json
 """
 
 import argparse
@@ -33,7 +48,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="ADS detection-method comparison (ImageNet-100, n=6). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -58,8 +73,8 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
-             'a path alongside --output_path. If the file does not exist, '
+        help='Path to ads_ref_indices_imagenet100.json. If not specified, defaults to '
+             'a dataset-specific path alongside --output_path. If the file does not exist, '
              'it will be generated using a fixed seed.',
     )
     parser.add_argument(
@@ -97,13 +112,13 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES        = ['learned', 'rope']
-SEEDS           = [42, 123, 456]
+SEEDS           = [42, 123, 456, 789, 1011, 1213]
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
 if args.pe_types is not None:
@@ -131,8 +146,19 @@ val_transform = transforms.Compose([
 
 val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
-with open(REF_INDICES_PATH) as f:
-    ref_indices = json.load(f)
+# Load or create a fixed 256-image ImageNet-100 reference set.
+# Use a dataset-specific filename so ImageNet and CIFAR reference indices
+# cannot be accidentally mixed when outputs share the same parent folder.
+if os.path.exists(REF_INDICES_PATH):
+    with open(REF_INDICES_PATH) as f:
+        ref_indices = json.load(f)
+    print(f"Loaded reference indices from {REF_INDICES_PATH}")
+else:
+    torch.manual_seed(42)
+    ref_indices = torch.randperm(len(val_dataset))[:256].tolist()
+    with open(REF_INDICES_PATH, 'w') as f:
+        json.dump(ref_indices, f)
+    print(f"Generated and saved {len(ref_indices)} reference indices to {REF_INDICES_PATH}")
 
 ref_loader = DataLoader(
     Subset(val_dataset, ref_indices),
@@ -242,9 +268,10 @@ def compute_ads(clean_attn, perturbed_attn):
     return float((P * torch.log(P / Q)).sum(-1).mean().item())
 
 # ============================================================
-# METHOD 2: MAHALANOBIS ON ATTENTION OUTPUTS
-# Uses mean attention vector per layer as feature
-# Mahalanobis distance from clean distribution
+# METHOD 2: ATTENTION-FEATURE DISTANCE
+# Uses mean attention vector per layer as feature.
+# The main loop uses an L2 distance from the clean feature mean as a
+# lightweight Mahalanobis-style baseline; full covariance helper remains below.
 # ============================================================
 @torch.no_grad()
 def get_attention_features(model, loader):
@@ -467,13 +494,21 @@ def analyze(results):
     print("=" * 75)
 
     for pe_type in PE_TYPES:
-        print(f"\n{pe_type.upper()}:")
+        if pe_type not in results:
+            continue
+        available = [s for s in seeds if s in results[pe_type]]
+        if not available:
+            print(f"\n{pe_type.upper()}: no results")
+            continue
+
+        n = len(available)
+        print(f"\n{pe_type.upper()} (n={n} seeds: {available}):")
         print(f"  {'ε':>6}  {'ADS AUC':>10}  {'Mah AUC':>10}  {'Logit AUC':>10}")
         print(f"  {'-'*45}")
 
         for eps in ATTACK_EPSILONS:
             aucs = {'ads': [], 'mahalanobis': [], 'logit_kl': []}
-            for s in seeds:
+            for s in available:
                 for method in aucs:
                     aucs[method].append(
                         results[pe_type][s]['attack'][str(eps)][method]['auc']
@@ -483,17 +518,17 @@ def analyze(results):
                   f"{np.mean(aucs['logit_kl']):>10.3f}")
 
         # Timing
-        t_ads = np.mean([results[pe_type][s]['timing']['ads_calibration_s'] for s in seeds])
-        t_mah = np.mean([results[pe_type][s]['timing']['mahalanobis_calibration_s'] for s in seeds])
-        t_log = np.mean([results[pe_type][s]['timing']['logit_calibration_s'] for s in seeds])
+        t_ads = np.mean([results[pe_type][s]['timing']['ads_calibration_s'] for s in available])
+        t_mah = np.mean([results[pe_type][s]['timing']['mahalanobis_calibration_s'] for s in available])
+        t_log = np.mean([results[pe_type][s]['timing']['logit_calibration_s'] for s in available])
         print(f"\n  Calibration time (256 images): "
-              f"ADS={t_ads:.2f}s, Mahalanobis={t_mah:.2f}s, LogitKL={t_log:.2f}s")
+              f"ADS={t_ads:.2f}s, Mahalanobis-style={t_mah:.2f}s, LogitKL={t_log:.2f}s")
 
 
 if __name__ == '__main__':
-    print("Detection Method Comparison Experiment")
+    print("Detection Method Comparison Experiment — ImageNet-100, n=6")
     print(f"PE types: {PE_TYPES}, Seeds: {SEEDS}")
-    print(f"Methods: ADS(L4), Mahalanobis(attention), LogitKL")
+    print(f"Methods: ADS(L4), attention-feature distance, LogitKL")
     print()
 
     results = run()
