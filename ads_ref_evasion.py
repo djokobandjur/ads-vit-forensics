@@ -1,25 +1,54 @@
 """
-Reference Set Evasion Experiment
-==================================
-Tests whether an attacker who knows the reference set indices can craft
-a PE perturbation that:
-  - Preserves attention on the 256 reference images (evades ADS)
-  - Degrades accuracy on the full validation set
+Reference Set Evasion Experiment — ImageNet-100, n=6 TFS protocol
+==================================================================
+Tests whether an attacker who knows the ADS reference set can craft a PE
+perturbation that:
+    - preserves attention on the 256 reference images, thereby evading ADS
+      on the monitored reference set;
+    - still degrades accuracy on the full validation set;
+    - and whether that evasion transfers to an unseen 256-image holdout set.
+
+Default paper configuration:
+    - Dataset: ImageNet-100 validation set
+    - PE types: learned, rope
+    - Seeds: 42, 123, 456, 789, 1011, 1213
+    - Checkpoint: <models_dir>/<pe_type>_seed<seed>/best_model.pth
+    - Reference set: 256 fixed ImageNet-100 validation images
+    - Holdout set: 256 non-reference ImageNet-100 validation images
 
 Attack loss:
-    L_evasion = -L_CE(logits_val, y) + lambda * ADS(delta, ref_images)
+    L_evasion = -L_CE(logits_ref, y_ref) + lambda * ADS(delta, ref_images)
 
-where ref_images are the known reference set.
+where ref_images are the known monitored reference images.
 
 We compare:
-  1. Standard PGD (unknown ref set) -> high ADS on ref, high acc drop
-  2. Evasion PGD (known ref set) -> low ADS on ref, but does it still drop acc?
+    1. Standard PGD (lambda = 0)
+    2. Evasion PGD (lambda > 0), which explicitly minimizes ADS on the
+       known reference set while trying to damage classification accuracy.
 
-Key question: Does evasion of a known reference set generalize to unseen images?
-If the attacker evades ADS on ref but not on held-out images -> ADS is still useful
-If evasion generalizes -> reference set secrecy is required
+Key question:
+    If the attacker evades ADS on the known reference set, does the evasion
+    generalize to unseen holdout images?
 
-Output: ads_ref_evasion.json
+Note:
+    This script is ImageNet-100 only. It defaults to learned and RoPE because
+    the detection-threshold and noise-floor constants below are defined for
+    those PE types.
+
+Calibration constants:
+    The ADS(L4) noise floors and detection thresholds are taken from the
+    final ImageNet-100 n=6 ROC calibration file ads_roc_v2.json.
+    Noise floors are the mean clean ADS(L4) baselines across the six TFS
+    seeds. Detection thresholds are conservative PE-specific multipliers set
+    just above the largest benign-shift/baseline ratio observed across all
+    seeds and benign transforms; the worst benign transform is Gaussian blur
+    with sigma=3.
+
+    learned: noise floor = 0.017010231611008446, threshold = 3.0x baseline
+    RoPE:    noise floor = 0.013948560304318862, threshold = 6.2x baseline
+
+Output:
+    ads_ref_evasion.json
 """
 
 import argparse
@@ -38,7 +67,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="ADS reference-set evasion experiment (ImageNet-100, n=6 default). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -63,7 +92,7 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
+        help='Path to ads_ref_indices_imagenet100.json. If not specified, defaults to '
              'a path alongside --output_path. If the file does not exist, '
              'it will be generated using a fixed seed.',
     )
@@ -74,7 +103,7 @@ def parse_args():
         default=None,
         choices=['learned', 'sinusoidal', 'rope', 'alibi'],
         help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+             'hardcoded PE_TYPES list defined in the script (n=6 paper configuration).',
     )
     parser.add_argument(
         '--seeds',
@@ -82,7 +111,7 @@ def parse_args():
         nargs='+',
         default=None,
         help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+             'hardcoded SEEDS list defined in the script (n=6 paper configuration).',
     )
     return parser.parse_args()
 
@@ -102,13 +131,13 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES  = ['learned', 'rope']
-SEEDS     = [42, 123, 456]
+SEEDS     = [42, 123, 456, 789, 1011, 1213]
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
 if args.pe_types is not None:
@@ -123,6 +152,28 @@ LAMBDAS   = [0.0, 1.0, 5.0, 10.0, 50.0]  # evasion regularization
 
 PGD_STEPS       = 20
 PGD_ALPHA_RATIO = 0.1
+N_REF_IMAGES    = 256
+
+# Final ImageNet-100 n=6 ROC calibration from ads_roc_v2.json.
+# Noise floors are mean clean ADS(L4) baselines across the six TFS seeds.
+# Thresholds are conservative PE-specific multipliers set just above the
+# maximum benign-shift/baseline ratio across all seeds and benign transforms
+# (worst-case benign transform: Gaussian blur with sigma=3).
+DETECTION_THRESHOLD = {
+    'learned': 3.0,  # max benign/baseline ≈ 2.9493x, rounded up
+    'rope':    6.2,  # max benign/baseline ≈ 6.1669x, rounded up
+}
+NOISE_FLOOR = {
+    'learned': 0.017010231611008446,
+    'rope':    0.013948560304318862,
+}
+
+unsupported_pe = [pe for pe in PE_TYPES if pe not in DETECTION_THRESHOLD or pe not in NOISE_FLOOR]
+if unsupported_pe:
+    raise ValueError(
+        f"Reference-evasion thresholds/noise floors are defined only for "
+        f"{sorted(DETECTION_THRESHOLD)}; unsupported PE types: {unsupported_pe}"
+    )
 
 # ============================================================
 # DATA
@@ -136,8 +187,22 @@ val_transform = transforms.Compose([
 
 val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
-with open(REF_INDICES_PATH) as f:
-    ref_indices = json.load(f)
+if os.path.exists(REF_INDICES_PATH):
+    with open(REF_INDICES_PATH) as f:
+        ref_indices = json.load(f)
+    print(f"Loaded {len(ref_indices)} reference indices from {REF_INDICES_PATH}")
+else:
+    torch.manual_seed(42)
+    ref_indices = torch.randperm(len(val_dataset))[:N_REF_IMAGES].tolist()
+    with open(REF_INDICES_PATH, 'w') as f:
+        json.dump(ref_indices, f)
+    print(f"Generated and saved {N_REF_IMAGES} reference indices to {REF_INDICES_PATH}")
+
+if max(ref_indices) >= len(val_dataset):
+    raise ValueError(
+        f"Reference index file {REF_INDICES_PATH} is incompatible with this dataset: "
+        f"max index {max(ref_indices)} >= dataset size {len(val_dataset)}"
+    )
 
 # Reference loader (known to attacker)
 ref_loader = DataLoader(
@@ -320,7 +385,7 @@ def run():
     results = {}
     
     # Clean noise floors
-    noise_floor = {'learned': 0.015498, 'rope': 0.013538}
+    noise_floor = NOISE_FLOOR
 
     for pe_type in PE_TYPES:
         results[pe_type] = {}
@@ -361,7 +426,7 @@ def run():
                     acc_drop = clean_acc - acc
 
                     # Detection threshold (from benign analysis)
-                    det_thresh = {'learned': 2.65, 'rope': 5.01}[pe_type]
+                    det_thresh = DETECTION_THRESHOLD[pe_type]
                     evades_ref  = (ads_ref  / nf) < det_thresh
                     evades_hold = (ads_hold / nf) < det_thresh
 
@@ -404,15 +469,31 @@ def analyze(results):
     print("Key question: If attacker evades ref set ADS, does it generalize?")
 
     for pe_type in PE_TYPES:
-        print(f"\n{pe_type.upper()}:")
+        if pe_type not in results:
+            continue
+        available_seeds = [s for s in seeds if s in results[pe_type]]
+        if not available_seeds:
+            print(f"\n{pe_type.upper()}: no available seeds")
+            continue
+
+        print(f"\n{pe_type.upper()} (n={len(available_seeds)} seeds):")
         for eps in EPSILONS:
+            eps_key = str(eps)
             print(f"\n  ε={eps}:")
             for lam in LAMBDAS:
-                drops = [results[pe_type][s][str(eps)][str(lam)]['acc_drop'] for s in seeds]
-                ev_ref  = [results[pe_type][s][str(eps)][str(lam)]['evades_ref'] for s in seeds]
-                ev_hold = [results[pe_type][s][str(eps)][str(lam)]['evades_hold'] for s in seeds]
-                r_ref  = [results[pe_type][s][str(eps)][str(lam)]['ads_ref_ratio'] for s in seeds]
-                r_hold = [results[pe_type][s][str(eps)][str(lam)]['ads_hold_ratio'] for s in seeds]
+                lam_key = str(lam)
+                drops, ev_ref, ev_hold, r_ref, r_hold = [], [], [], [], []
+                for s in available_seeds:
+                    if eps_key not in results[pe_type][s] or lam_key not in results[pe_type][s][eps_key]:
+                        continue
+                    r = results[pe_type][s][eps_key][lam_key]
+                    drops.append(r['acc_drop'])
+                    ev_ref.append(r['evades_ref'])
+                    ev_hold.append(r['evades_hold'])
+                    r_ref.append(r['ads_ref_ratio'])
+                    r_hold.append(r['ads_hold_ratio'])
+                if not drops:
+                    continue
 
                 evades = all(ev_ref)
                 generalizes = all(ev_hold)
@@ -426,6 +507,8 @@ if __name__ == '__main__':
     print(f"PE types: {PE_TYPES}, Seeds: {SEEDS}")
     print(f"Epsilons: {EPSILONS}, Lambdas: {LAMBDAS}")
     print(f"Reference: 256 known images, Holdout: 256 unseen images")
+    print(f"Noise floors: {NOISE_FLOOR}")
+    print(f"Detection thresholds: {DETECTION_THRESHOLD}")
     print()
 
     results = run()

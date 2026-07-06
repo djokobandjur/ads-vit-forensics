@@ -1,15 +1,27 @@
 """
-ADS Fine-Grid Threshold Experiment
-====================================
-Tests the "universality" claim of eps=0.005 with finer epsilon resolution
-and log-log interpolation of the true crossing threshold.
+ADS Fine-Grid Threshold Experiment — ImageNet-100, n=6 TFS protocol
+===================================================================
+Tests the 10x-baseline ADS threshold crossing with finer epsilon resolution
+and log-log interpolation of the crossing point.
 
-Addresses reviewer concern: coarse grid may mask PE-type differences in
-the actual ADS > 10x baseline crossing point.
+Default paper configuration:
+    - Dataset: ImageNet-100 validation set
+    - PE types: learned, sinusoidal, rope, alibi
+    - Seeds: 42, 123, 456, 789, 1011, 1213
+    - Checkpoint: <models_dir>/<pe_type>_seed<seed>/best_model.pth
+    - Reference set: 256 fixed ImageNet-100 validation images
+
+Purpose:
+    The coarse ADS grid can hide PE-specific differences in the actual
+    epsilon value where ADS(L4) exceeds 10x its low-budget baseline.
+    This script evaluates a denser grid and computes an interpolated
+    crossing threshold per PE type and seed.
 
 Outputs:
-    - ads_threshold_fine.json: interpolated thresholds per PE type/seed
-    - Statistical test: are thresholds significantly different across PE types?
+    - ads_threshold_fine.json: ADS(L4) grid and interpolated thresholds
+      per PE type/seed
+    - Console summary: mean ± std over the available seeds and a
+      non-parametric cross-PE threshold comparison
 """
 
 import argparse
@@ -29,7 +41,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="ADS fine-grid threshold experiment (ImageNet-100, n=6 default). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -54,7 +66,7 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
+        help='Path to ads_ref_indices_imagenet100.json. If not specified, defaults to '
              'a path alongside --output_path. If the file does not exist, '
              'it will be generated using a fixed seed.',
     )
@@ -65,7 +77,7 @@ def parse_args():
         default=None,
         choices=['learned', 'sinusoidal', 'rope', 'alibi'],
         help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+             'hardcoded PE_TYPES list defined in the script (n=6 paper configuration).',
     )
     parser.add_argument(
         '--seeds',
@@ -73,7 +85,7 @@ def parse_args():
         nargs='+',
         default=None,
         help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+             'hardcoded SEEDS list defined in the script (n=6 paper configuration).',
     )
     return parser.parse_args()
 
@@ -93,13 +105,13 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES = ['learned', 'sinusoidal', 'rope', 'alibi']
-SEEDS    = [42, 123, 456]
+SEEDS    = [42, 123, 456, 789, 1011, 1213]
 
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
@@ -139,7 +151,13 @@ else:
     ref_indices = torch.randperm(len(val_dataset))[:N_REF_IMAGES].tolist()
     with open(REF_INDICES_PATH, 'w') as f:
         json.dump(ref_indices, f)
-    print(f"Generated {N_REF_IMAGES} reference indices")
+    print(f"Generated and saved {N_REF_IMAGES} reference indices to {REF_INDICES_PATH}")
+
+if max(ref_indices) >= len(val_dataset):
+    raise ValueError(
+        f"Reference index file {REF_INDICES_PATH} is incompatible with this dataset: "
+        f"max index {max(ref_indices)} >= dataset size {len(val_dataset)}"
+    )
 
 ref_dataset = Subset(val_dataset, ref_indices)
 ref_loader  = DataLoader(ref_dataset, batch_size=32, shuffle=False,
@@ -378,8 +396,11 @@ def analyze_thresholds(results):
     thresholds_by_pe = {}
 
     for pe_type in PE_TYPES:
+        if pe_type not in results:
+            continue
+        available_seeds = [s for s in seeds if s in results[pe_type]]
         thresholds = []
-        for s in seeds:
+        for s in available_seeds:
             t = results[pe_type][s]['interpolated_threshold']
             if t is not None:
                 thresholds.append(t)
@@ -387,13 +408,13 @@ def analyze_thresholds(results):
 
         mean_t = np.mean(thresholds) if thresholds else None
         std_t  = np.std(thresholds, ddof=1) if len(thresholds) > 1 else None
-        print(f"\n{pe_type.upper()}:")
+        print(f"\n{pe_type.upper()} (n={len(thresholds)} thresholds from {len(available_seeds)} available seeds):")
         print(f"  Thresholds per seed: {[f'{t:.5f}' for t in thresholds]}")
         if mean_t:
             print(f"  Mean ± Std: {mean_t:.5f} ± {std_t:.5f}" if std_t else
                   f"  Mean: {mean_t:.5f}")
 
-    # Kruskal-Wallis test (non-parametric, appropriate for n=3)
+    # Kruskal-Wallis test (non-parametric, appropriate for small-n seed samples)
     groups = [thresholds_by_pe[pe] for pe in PE_TYPES if len(thresholds_by_pe[pe]) >= 2]
     if len(groups) >= 2:
         try:

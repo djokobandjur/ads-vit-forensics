@@ -1,24 +1,41 @@
-"""
-ADS Specificity Experiment
-==========================
-Tests whether ADS is specific to PE perturbations or reacts equally to
-ANY parameter perturbation (which would undermine the "PE integrity" claim).
+"""ADS Specificity Experiment — CIFAR-100
+======================================
+Main TFS specificity analysis for the Attention Divergence Score (ADS).
 
-Three control conditions compared against PE perturbation:
-  (a) QKV-only: perturb only Q/K/V projection weights in all attention blocks
-  (b) MLP-only: perturb only MLP (FFN) block weights
-  (c) All-weights: uniform small perturbation of ALL model parameters (same L-inf budget)
+This script compares ADS responses under four parameter-level attack
+surfaces in ViT-Base models trained on CIFAR-100:
 
-If ADS(PE) >> ADS(QKV) ≈ ADS(MLP) ≈ ADS(all): ADS is PE-specific -> strong result
-If ADS(PE) ≈ ADS(QKV) ≈ ADS(MLP) ≈ ADS(all): ADS detects any perturbation -> weaker claim
+  (a) PE-only: perturb positional-encoding parameters/buffers
+  (b) QKV-only: perturb Q/K/V projection weights in all attention blocks
+  (c) MLP-only: perturb MLP/FFN block weights
+  (d) All-weights: perturb all trainable model parameters with the same
+      L-infinity budget
+
+The default paper configuration is the n=6 TFS protocol:
+  4 PE types × 6 seeds × 4 attack surfaces × 8 epsilon values.
+
+Default PE types:
+  learned, sinusoidal, rope, alibi
+
+Default seeds:
+  42, 123, 456, 789, 1011, 1213
+
+The script loads <models_dir>/<pe_type>_seed<seed>/best_model.pth for
+each model. CIFAR-100 is loaded through torchvision and cached in --val_dir.
+It uses a fixed 256-image ADS reference subset. By default, the reference
+indices are stored next to the output JSON as ads_ref_indices_cifar100.json.
+Use --ref_indices_path to share the same reference set with the main
+CIFAR-100 ADS experiment.
 
 Usage in Colab:
-    1. Mount Drive
-    2. Copy full_scale_experiment.py to /content/
-    3. Run: !python /content/ads_specificity.py
+    python /content/ads_specificity_cifar_n6.py \
+        --models_dir "/content/drive/MyDrive/pe_experiment/results_cifar100" \
+        --val_dir "/tmp/cifar100" \
+        --output_path "/content/drive/MyDrive/ads_tfs_n6/data_n6/ads_specificity_cifar.json"
 
 Output:
-    - results/ADS/ads_specificity_cifar.json
+    - ads_specificity_cifar.json
+    - ads_ref_indices_cifar100.json, if not already present
 """
 
 import argparse
@@ -37,7 +54,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="ADS specificity experiment (CIFAR-100, n=6 default). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -62,9 +79,9 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
-             'a path alongside --output_path. If the file does not exist, '
-             'it will be generated using a fixed seed.',
+        help='Optional path to the fixed ADS reference-index JSON. If omitted, '
+             'the script uses a dataset-specific file next to --output_path. '
+             'If the file does not exist, it is generated with a fixed seed.',
     )
     parser.add_argument(
         '--pe_types',
@@ -72,16 +89,16 @@ def parse_args():
         nargs='+',
         default=None,
         choices=['learned', 'sinusoidal', 'rope', 'alibi'],
-        help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+        help='Optional. PE types to evaluate. If omitted, uses the n=6 paper '
+             'configuration PE_TYPES list defined in the script.',
     )
     parser.add_argument(
         '--seeds',
         type=int,
         nargs='+',
         default=None,
-        help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+        help='Optional. Random seeds to evaluate. If omitted, uses the n=6 paper '
+             'configuration: 42 123 456 789 1011 1213.',
     )
     return parser.parse_args()
 
@@ -101,15 +118,14 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_cifar100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
-# Use only Learned PE (most informative, fastest to perturb)
-# and one additional PE type for cross-check
-PE_TYPES = ['learned', 'rope', 'sinusoidal', 'alibi']
-SEEDS    = [42, 123, 456]
+# n=6 TFS paper configuration
+PE_TYPES = ['learned', 'sinusoidal', 'rope', 'alibi']
+SEEDS    = [42, 123, 456, 789, 1011, 1213]
 
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
@@ -437,13 +453,22 @@ def run_specificity_experiment():
 # ANALYSIS
 # ============================================================
 def analyze_specificity(results):
-    seeds = [str(s) for s in SEEDS]
+    seeds_requested = [str(s) for s in SEEDS]
     print("\n" + "=" * 80)
     print("SPECIFICITY ANALYSIS: ADS(PE) vs ADS(non-PE)")
     print("=" * 80)
 
     for pe_type in PE_TYPES:
-        print(f"\n{pe_type.upper()}:")
+        if pe_type not in results:
+            print(f"\n{pe_type.upper()}: no results")
+            continue
+
+        available_seeds = [s for s in seeds_requested if s in results[pe_type]]
+        if not available_seeds:
+            print(f"\n{pe_type.upper()}: no available seeds")
+            continue
+
+        print(f"\n{pe_type.upper()} (n={len(available_seeds)} seeds: {available_seeds}):")
         print(f"  {'ε':>6}  {'PE_only':>10}  {'QKV_only':>10}  {'MLP_only':>10}  {'All_weights':>12}  {'Ratio PE/QKV':>13}")
         print(f"  {'-'*65}")
 
@@ -451,8 +476,12 @@ def analyze_specificity(results):
         for i, eps in enumerate(epsilons):
             row = {}
             for pt in PERTURBATION_TYPES:
-                vals = [results[pe_type][s][pt]['ads_layer4'][i] for s in seeds]
-                row[pt] = np.mean(vals)
+                vals = [
+                    results[pe_type][s][pt]['ads_layer4'][i]
+                    for s in available_seeds
+                    if pt in results[pe_type][s]
+                ]
+                row[pt] = float(np.mean(vals)) if vals else float('nan')
 
             ratio = row['pe_only'] / max(row['qkv_only'], 1e-8)
             print(f"  {eps:>6.3f}  {row['pe_only']:>10.4f}  {row['qkv_only']:>10.4f}  "
@@ -461,10 +490,10 @@ def analyze_specificity(results):
         print(f"\n  VERDICT for {pe_type}:")
         # At eps=0.1 (typical operating point)
         idx = epsilons.index(0.1)
-        pe_ads  = np.mean([results[pe_type][s]['pe_only']['ads_layer4'][idx] for s in seeds])
-        qkv_ads = np.mean([results[pe_type][s]['qkv_only']['ads_layer4'][idx] for s in seeds])
-        mlp_ads = np.mean([results[pe_type][s]['mlp_only']['ads_layer4'][idx] for s in seeds])
-        all_ads = np.mean([results[pe_type][s]['all_weights']['ads_layer4'][idx] for s in seeds])
+        pe_ads  = np.mean([results[pe_type][s]['pe_only']['ads_layer4'][idx] for s in available_seeds])
+        qkv_ads = np.mean([results[pe_type][s]['qkv_only']['ads_layer4'][idx] for s in available_seeds])
+        mlp_ads = np.mean([results[pe_type][s]['mlp_only']['ads_layer4'][idx] for s in available_seeds])
+        all_ads = np.mean([results[pe_type][s]['all_weights']['ads_layer4'][idx] for s in available_seeds])
 
         print(f"    At ε=0.1: PE={pe_ads:.4f}, QKV={qkv_ads:.4f}, MLP={mlp_ads:.4f}, ALL={all_ads:.4f}")
         if pe_ads > 3 * max(qkv_ads, mlp_ads):
@@ -479,7 +508,7 @@ def analyze_specificity(results):
 # ENTRY POINT
 # ============================================================
 if __name__ == '__main__':
-    print("ADS Specificity Experiment")
+    print("ADS Specificity Experiment — CIFAR-100")
     print(f"PE types: {PE_TYPES}")
     print(f"Seeds: {SEEDS}")
     print(f"Perturbation types: {PERTURBATION_TYPES}")

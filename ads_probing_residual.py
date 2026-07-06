@@ -1,38 +1,43 @@
 """
-Layer-wise Positional Probing — Residual Stream
-=================================================
-For each Transformer layer, trains a linear probe to predict
-patch position (row, col) from patch token residual stream activations.
+Layer-wise Positional Probing — Residual Stream (ImageNet-100, n=6)
+====================================================================
+For each Transformer layer, trains a linear probe to predict patch
+position (row, col) from patch-token residual stream activations.
 
-This is the methodologically correct approach for positional probing:
-- Residual stream at layer l encodes the accumulated representation
-  after l Transformer blocks, including both positional and semantic info
-- Feature dimension: 768 (full embedding) per patch token
-- Much richer signal than CLS→patch attention (12 dims)
+This script is configured for the n=6 TFS protocol by default:
+4 PE types × 6 seeds = 24 ImageNet-100 ViT-Base checkpoints.
+Use --pe_types and/or --seeds to run a subset for testing.
+
+Methodological rationale:
+- The residual stream at layer l encodes the accumulated representation
+  after l Transformer blocks, including positional and semantic information.
+- Feature dimension: 768 per patch token.
+- This provides a richer positional signal than CLS-to-patch attention.
 
 Mechanistic connection to ADS:
   PE perturbation
-    → disrupts residual stream positional encoding
-    → disrupts Q/K projections (which read from residual stream)
+    → disrupts residual-stream positional encoding
+    → disrupts Q/K projections, which read from the residual stream
     → disrupts attention distributions
-    → high ADS
-
-If Layer 4 residual stream has peak positional decodability,
-the causal chain is empirically grounded.
+    → increases ADS.
 
 Protocol:
-  - Register forward hooks on each Transformer block output
-  - Extract patch token activations (tokens 1..196, skip CLS)
-  - Feature: residual stream vector at layer l, shape (768,)
-  - Target: patch row ∈ [0,13] and col ∈ [0,13]
-  - Classifier: Ridge regression, image-level GroupKFold CV (5 folds)
-  - Metric: R²(row), R²(col), R²(mean)
-  - n = 256 images × 196 patches = 50,176 samples per layer
+  - Register forward hooks on each Transformer block output.
+  - Extract patch-token activations, skipping CLS.
+  - ImageNet-100 geometry: 224×224 images, 16×16 patches,
+    14×14 grid = 196 patch tokens.
+  - Feature: residual-stream vector at layer l, shape (768,).
+  - Target: patch row ∈ [0,13] and col ∈ [0,13].
+  - Probe: Ridge regression with image-level GroupKFold CV (5 folds).
+  - Metric: R²(row), R²(col), R²(mean).
+  - Reference set: 256 images × 196 patches = 50,176 samples per layer.
 
-Image-level CV: all 196 patches from the same image go into the
-same fold, preventing data leakage from correlated activations.
+Image-level CV keeps all patches from the same image in the same fold,
+preventing leakage from correlated patch activations.
 
-Output: ads_probing_residual.json
+Output:
+  - ads_probing_residual.json
+  - ads_ref_indices_imagenet100.json if no reference index file is supplied
 """
 
 import argparse
@@ -54,7 +59,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="Residual-stream positional probing (ImageNet-100, n=6). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -79,9 +84,9 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
-             'a path alongside --output_path. If the file does not exist, '
-             'it will be generated using a fixed seed.',
+        help='Optional path to the fixed ADS reference-index JSON. If omitted, '
+             'the script uses a dataset-specific file alongside --output_path '
+             'and creates it with a fixed seed if it does not exist.',
     )
     parser.add_argument(
         '--pe_types',
@@ -98,7 +103,7 @@ def parse_args():
         nargs='+',
         default=None,
         help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+             'hardcoded SEEDS list defined in the script (n=6 TFS configuration).',
     )
     return parser.parse_args()
 
@@ -118,13 +123,13 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES   = ['learned', 'sinusoidal', 'rope', 'alibi']
-SEEDS      = [42, 123, 456]
+SEEDS      = [42, 123, 456, 789, 1011, 1213]
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
 if args.pe_types is not None:
@@ -164,8 +169,16 @@ val_transform = transforms.Compose([
 
 val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
-with open(REF_INDICES_PATH) as f:
-    ref_indices = json.load(f)
+if os.path.exists(REF_INDICES_PATH):
+    with open(REF_INDICES_PATH) as f:
+        ref_indices = json.load(f)
+    print(f"Loaded {len(ref_indices)} reference indices from {REF_INDICES_PATH}")
+else:
+    torch.manual_seed(42)
+    ref_indices = torch.randperm(len(val_dataset))[:256].tolist()
+    with open(REF_INDICES_PATH, 'w') as f:
+        json.dump(ref_indices, f)
+    print(f"Generated and saved {len(ref_indices)} reference indices to {REF_INDICES_PATH}")
 
 ref_loader = DataLoader(
     Subset(val_dataset, ref_indices),

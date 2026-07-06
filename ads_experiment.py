@@ -1,26 +1,47 @@
-"""
-Attention Divergence Score (ADS) Experiment — ImageNet-100
-===========================================================
-Measures KL divergence between clean and perturbed attention distributions
-across all 12 layers for each PE type and perturbation budget.
+"""Attention Divergence Score (ADS) Main Experiment — ImageNet-100
+================================================================
+Measures KL divergence between clean and PE-perturbed attention
+distributions across all 12 transformer layers for each positional
+encoding (PE) type and perturbation budget.
 
-Uses PGD attack (T=20 steps) to ensure all PE types — including
-Sinusoidal (buffer) and RoPE (buffer) — are effectively perturbed.
+Default n=6 TFS/ADS protocol:
+    4 PE types × 6 seeds × 11 epsilon values
+    PE types: learned, sinusoidal, rope, alibi
+    Seeds: 42, 123, 456, 789, 1011, 1213
+    Checkpoint used: <models_dir>/<pe_type>_seed<seed>/best_model.pth
 
-Hypothesis: ADS rises BEFORE accuracy collapses — provides early warning
-of PE tampering, especially for cliff-type PE methods (Learned PE).
+The script uses a PE-only PGD attack (T=20 steps, alpha=0.1*epsilon) so
+that parameters and buffers are perturbed consistently across PE
+implementations, including Sinusoidal buffers, RoPE cached buffers, and
+ALiBi slopes.
+
+Reference-set convention:
+    ADS is computed on a fixed 256-image ImageNet-100 reference subset.
+    The dataset-specific file ads_ref_indices_imagenet100.json is written
+    next to the output JSON and reused on later runs.
 
 Usage in Colab:
-    1. Mount Drive
-    2. Extract ImageNet-100 to /content/imagenet100/
-    3. Copy full_scale_experiment.py to /content/
-    4. Copy this script to /content/
-    5. Run: !python /content/ads_experiment.py
+    1. Mount Drive.
+    2. Ensure ImageNet-100 validation data is available in ImageFolder
+       layout, e.g. /content/imagenet100_resized/val.
+    3. Copy full_scale_experiment.py to /content/ or otherwise make
+       VisionTransformer importable.
+    4. Run, for example:
 
-Output:
-    - results/ADS/ads_results.json
-    - results/ADS/ads_ref_indices.json  (upload to GitHub for reproducibility)
-    - results/ADS/figures/
+       !python /content/ads_experiment_n6.py \
+           --models_dir "/content/drive/MyDrive/pe_experiment/results" \
+           --val_dir "/content/imagenet100_resized/val" \
+           --output_path "/content/drive/MyDrive/ads_tfs_n6/data/ads_results.json"
+
+    Optional partial run:
+       add --pe_types learned rope --seeds 42 1011
+
+Outputs:
+    - ads_results.json
+    - ads_ref_indices_imagenet100.json
+    - figures/ads_vs_epsilon.png
+    - figures/ads_early_warning_dual.png
+    - figures/ads_per_layer_heatmap.png
 """
 
 import argparse
@@ -67,16 +88,16 @@ def parse_args():
         nargs='+',
         default=None,
         choices=['learned', 'sinusoidal', 'rope', 'alibi'],
-        help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+        help='Optional. PE types to evaluate. If omitted, uses the default n=6 paper '
+             'configuration: learned sinusoidal rope alibi.',
     )
     parser.add_argument(
         '--seeds',
         type=int,
         nargs='+',
         default=None,
-        help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+        help='Optional. Random seeds to evaluate. If omitted, uses the default n=6 paper '
+             'configuration: 42 123 456 789 1011 1213.',
     )
     return parser.parse_args()
 
@@ -95,7 +116,7 @@ os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
 
 PE_TYPES = ['learned', 'sinusoidal', 'rope', 'alibi']
-SEEDS    = [42, 123, 456]
+SEEDS    = [42, 123, 456, 789, 1011, 1213]
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
 if args.pe_types is not None:
@@ -127,7 +148,7 @@ val_transform = transforms.Compose([
 val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
 # Fixed reference subset — saved for reproducibility
-REF_INDICES_PATH = os.path.join(os.path.dirname(SAVE_PATH), 'ads_ref_indices.json')
+REF_INDICES_PATH = os.path.join(os.path.dirname(SAVE_PATH), 'ads_ref_indices_imagenet100.json')
 
 if os.path.exists(REF_INDICES_PATH):
     with open(REF_INDICES_PATH) as f:
@@ -139,7 +160,7 @@ else:
     with open(REF_INDICES_PATH, 'w') as f:
         json.dump(ref_indices, f)
     print(f"Generated and saved {N_REF_IMAGES} reference indices to {REF_INDICES_PATH}")
-    print("Upload ads_ref_indices.json to GitHub for reproducibility!")
+    print("Upload ads_ref_indices_imagenet100.json with the n=6 result JSON for reproducibility!")
 
 ref_dataset = Subset(val_dataset, ref_indices)
 ref_loader  = DataLoader(ref_dataset, batch_size=32, shuffle=False,
@@ -150,6 +171,7 @@ val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False,
 
 print(f"Reference images: {len(ref_dataset)}")
 print(f"Validation images: {len(val_dataset)}")
+print(f"Protocol cells: {len(PE_TYPES)} PE types × {len(SEEDS)} seeds × {len(EPSILONS)} epsilons = {len(PE_TYPES) * len(SEEDS) * len(EPSILONS)} evaluations")
 
 # ============================================================
 # MODEL LOADING
@@ -479,7 +501,7 @@ def plot_ads_results(results):
     seeds_str = [str(s) for s in SEEDS]
 
     def get_available_seeds(pe):
-        """Return list of seed strings that have results for given pe type."""
+        """Return list of seed strings that have results for given PE type."""
         if pe not in results:
             return []
         return [s for s in seeds_str if s in results[pe]]

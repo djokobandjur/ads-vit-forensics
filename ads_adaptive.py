@@ -1,30 +1,51 @@
 """
-Adaptive Attacker Experiment
-==============================
-Tests whether an adversary who knows ADS is being monitored can
-craft perturbations that degrade accuracy while keeping ADS below threshold.
+Adaptive Attacker Experiment — ImageNet-100, n=6 TFS protocol
+===============================================================
+Tests whether an adversary who knows that ADS is being monitored can
+craft PE perturbations that degrade accuracy while keeping ADS below a
+detection threshold.
+
+Default paper configuration:
+    - Dataset: ImageNet-100 validation set
+    - PE types: learned, rope
+    - Seeds: 42, 123, 456, 789, 1011, 1213
+    - Checkpoint: <models_dir>/<pe_type>_seed<seed>/best_model.pth
+    - Reference set: 256 fixed ImageNet-100 validation images
 
 Attack loss:
     L_adaptive = -L_CE(logits, y) + lambda * ADS(delta)
 
 where lambda controls the trade-off between accuracy damage and ADS evasion.
 
-We sweep lambda in {0, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0}:
-  - lambda=0: standard PGD (no ADS regularization)
-  - lambda->inf: pure ADS minimization (no accuracy damage)
+Lambda sweep:
+    {0, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0}
 
-For each lambda, we measure:
-  - Accuracy drop (how much damage was done)
-  - ADS(L4) (how visible the attack is)
+For each epsilon/lambda/seed, the script reports:
+    - attacked accuracy and clean-accuracy drop
+    - ADS(L4)
+    - ADS ratio relative to the benign/noise-floor baseline
+    - whether the attack remains below the PE-specific detection threshold
 
-Key question: Is there a lambda where accuracy drop is significant
-but ADS remains below the detection threshold (e.g., 2.65x baseline
-for Learned PE, 5.01x for RoPE)?
+Note:
+    This script is ImageNet-100 only. It defaults to learned and RoPE because
+    the detection-threshold and noise-floor constants below are defined for
+    those PE types. Add thresholds/noise floors before extending to other PE
+    families.
 
-If YES: ADS is bypassable -> honest finding, define applicability
-If NO: ADS is robust to adaptive attacks -> strong result
+Calibration constants:
+    The ADS(L4) noise floors and detection thresholds are taken from the
+    final ImageNet-100 n=6 ROC calibration file ads_roc_v2.json.
+    Noise floors are the mean clean ADS(L4) baselines across the six TFS
+    seeds. Detection thresholds are conservative PE-specific multipliers set
+    just above the largest benign-shift/baseline ratio observed across all
+    seeds and benign transforms; the worst benign transform is Gaussian blur
+    with sigma=3.
 
-Output: ads_adaptive.json
+    learned: noise floor = 0.017010231611008446, threshold = 3.0x baseline
+    RoPE:    noise floor = 0.013948560304318862, threshold = 6.2x baseline
+
+Output:
+    ads_adaptive.json
 """
 
 import argparse
@@ -43,7 +64,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="Adaptive ADS attacker experiment (ImageNet-100, n=6 default). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -68,7 +89,7 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
+        help='Path to ads_ref_indices_imagenet100.json. If not specified, defaults to '
              'a path alongside --output_path. If the file does not exist, '
              'it will be generated using a fixed seed.',
     )
@@ -79,7 +100,7 @@ def parse_args():
         default=None,
         choices=['learned', 'sinusoidal', 'rope', 'alibi'],
         help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+             'hardcoded PE_TYPES list defined in the script (n=6 paper configuration).',
     )
     parser.add_argument(
         '--seeds',
@@ -87,7 +108,7 @@ def parse_args():
         nargs='+',
         default=None,
         help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+             'hardcoded SEEDS list defined in the script (n=6 paper configuration).',
     )
     return parser.parse_args()
 
@@ -107,7 +128,7 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
@@ -115,7 +136,7 @@ os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 # Focus on Learned PE (most vulnerable, most interesting stealth scenario)
 # and RoPE (robust baseline)
 PE_TYPES = ['learned', 'rope']
-SEEDS    = [42, 123, 456]
+SEEDS    = [42, 123, 456, 789, 1011, 1213]
 
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
@@ -134,12 +155,30 @@ LAMBDAS  = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0]
 
 PGD_STEPS       = 20
 PGD_ALPHA_RATIO = 0.1
+N_REF_IMAGES    = 256
 
-# Detection thresholds from ROC analysis (worst-case benign = blur sigma=3)
+# Final ImageNet-100 n=6 ROC calibration from ads_roc_v2.json.
+# Noise floors are mean clean ADS(L4) baselines across the six TFS seeds.
+# Thresholds are conservative PE-specific multipliers set just above the
+# maximum benign-shift/baseline ratio across all seeds and benign transforms
+# (worst-case benign transform: Gaussian blur with sigma=3).
 DETECTION_THRESHOLD = {
-    'learned': 2.65,  # x baseline
-    'rope':    5.01,  # x baseline
+    'learned': 3.0,  # max benign/baseline ≈ 2.9493x, rounded up
+    'rope':    6.2,  # max benign/baseline ≈ 6.1669x, rounded up
 }
+
+# Clean ADS(L4) noise floors used for ADS-ratio reporting.
+NOISE_FLOOR = {
+    'learned': 0.017010231611008446,
+    'rope':    0.013948560304318862,
+}
+
+unsupported_pe = [pe for pe in PE_TYPES if pe not in DETECTION_THRESHOLD or pe not in NOISE_FLOOR]
+if unsupported_pe:
+    raise ValueError(
+        f"Adaptive attacker thresholds/noise floors are defined only for "
+        f"{sorted(DETECTION_THRESHOLD)}; unsupported PE types: {unsupported_pe}"
+    )
 
 # ============================================================
 # DATA
@@ -153,8 +192,22 @@ val_transform = transforms.Compose([
 
 val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
 
-with open(REF_INDICES_PATH) as f:
-    ref_indices = json.load(f)
+if os.path.exists(REF_INDICES_PATH):
+    with open(REF_INDICES_PATH) as f:
+        ref_indices = json.load(f)
+    print(f"Loaded {len(ref_indices)} reference indices from {REF_INDICES_PATH}")
+else:
+    torch.manual_seed(42)
+    ref_indices = torch.randperm(len(val_dataset))[:N_REF_IMAGES].tolist()
+    with open(REF_INDICES_PATH, 'w') as f:
+        json.dump(ref_indices, f)
+    print(f"Generated and saved {N_REF_IMAGES} reference indices to {REF_INDICES_PATH}")
+
+if max(ref_indices) >= len(val_dataset):
+    raise ValueError(
+        f"Reference index file {REF_INDICES_PATH} is incompatible with this dataset: "
+        f"max index {max(ref_indices)} >= dataset size {len(val_dataset)}"
+    )
 
 ref_loader = DataLoader(
     Subset(val_dataset, ref_indices),
@@ -376,9 +429,9 @@ def run():
             clean_acc = measure_accuracy(model, val_loader)
             print(f"    Clean accuracy: {clean_acc:.2f}%")
 
-            # Get clean noise floor (from roc_v2 results - use fixed value)
-            # Learned: 0.015498, RoPE: 0.013538
-            noise_floor = {'learned': 0.015498, 'rope': 0.013538}[pe_type]
+            # Get clean noise floor from final ImageNet-100 n=6 ROC calibration.
+            # Learned: 0.017010231611008446, RoPE: 0.013948560304318862
+            noise_floor = NOISE_FLOOR[pe_type]
 
             for eps in EPSILONS:
                 results[pe_type][str(seed)][str(eps)] = {}
@@ -434,47 +487,69 @@ def analyze(results):
     print("=" * 75)
 
     for pe_type in PE_TYPES:
+        if pe_type not in results:
+            continue
+        available_seeds = [s for s in seeds if s in results[pe_type]]
+        if not available_seeds:
+            print(f"\n{pe_type.upper()}: no available seeds")
+            continue
+
         tau = det_thresholds[pe_type]
-        print(f"\n{pe_type.upper()} (detection threshold: {tau}x baseline):")
+        print(f"\n{pe_type.upper()} (n={len(available_seeds)} seeds, detection threshold: {tau}x baseline):")
 
         for eps in EPSILONS:
+            eps_key = str(eps)
             print(f"\n  ε={eps}:")
             print(f"  {'λ':>6}  {'Acc drop':>10}  {'ADS ratio':>10}  {'Evades?':>10}  {'Trade-off':>20}")
             print(f"  {'-'*65}")
 
             for lam in LAMBDAS:
+                lam_key = str(lam)
                 drops, ratios, evades = [], [], []
-                for s in seeds:
-                    r = results[pe_type][s][str(eps)][str(lam)]
+                for s in available_seeds:
+                    if eps_key not in results[pe_type][s] or lam_key not in results[pe_type][s][eps_key]:
+                        continue
+                    r = results[pe_type][s][eps_key][lam_key]
                     drops.append(r['acc_drop'])
                     ratios.append(r['ads_ratio'])
                     evades.append(r['evades_detection'])
+
+                if not drops:
+                    continue
 
                 mean_drop = np.mean(drops)
                 mean_ratio = np.mean(ratios)
                 evades_all = all(evades)
 
-                # Trade-off quality: high drop + low ratio = good for attacker
                 tradeoff = f"{mean_drop:.1f}pp @ {mean_ratio:.1f}x"
                 verdict = "BYPASSES ✅" if evades_all else "detected"
 
                 print(f"  {lam:>6.1f}  {mean_drop:>10.2f}  {mean_ratio:>10.2f}  "
                       f"{verdict:>10}  {tradeoff:>20}")
 
-        # Key finding
         print(f"\n  KEY FINDING for {pe_type}:")
         for eps in EPSILONS:
-            # Find best lambda for attacker: max drop while evading
-            best_drop_evading = 0
+            eps_key = str(eps)
+            best_drop_evading = 0.0
             best_lam = None
             for lam in LAMBDAS:
-                drops = [results[pe_type][s][str(eps)][str(lam)]['acc_drop'] for s in seeds]
-                evades = [results[pe_type][s][str(eps)][str(lam)]['evades_detection'] for s in seeds]
-                if all(evades) and np.mean(drops) > best_drop_evading:
-                    best_drop_evading = np.mean(drops)
+                lam_key = str(lam)
+                drops, evades = [], []
+                for s in available_seeds:
+                    if eps_key not in results[pe_type][s] or lam_key not in results[pe_type][s][eps_key]:
+                        continue
+                    drops.append(results[pe_type][s][eps_key][lam_key]['acc_drop'])
+                    evades.append(results[pe_type][s][eps_key][lam_key]['evades_detection'])
+                if drops and all(evades) and np.mean(drops) > best_drop_evading:
+                    best_drop_evading = float(np.mean(drops))
                     best_lam = lam
 
-            std_drop = np.mean([results[pe_type][s][str(eps)]['0.0']['acc_drop'] for s in seeds])
+            std_drops = [
+                results[pe_type][s][eps_key]['0.0']['acc_drop']
+                for s in available_seeds
+                if eps_key in results[pe_type][s] and '0.0' in results[pe_type][s][eps_key]
+            ]
+            std_drop = float(np.mean(std_drops)) if std_drops else float('nan')
             if best_lam is not None:
                 print(f"    ε={eps}: Adaptive attacker (λ={best_lam}) evades with "
                       f"{best_drop_evading:.1f}pp drop "
@@ -492,6 +567,7 @@ if __name__ == '__main__':
     print(f"PE types: {PE_TYPES}, Seeds: {SEEDS}")
     print(f"Epsilons: {EPSILONS}, Lambdas: {LAMBDAS}")
     print(f"PGD steps: {PGD_STEPS}")
+    print(f"Noise floors: {NOISE_FLOOR}")
     print(f"Detection thresholds: {DETECTION_THRESHOLD}")
     print()
 
