@@ -163,10 +163,7 @@ ads-vit-forensics/
 The primary evaluation uses ViT-Base checkpoints for four PE types
 (Learned, Sinusoidal, RoPE, ALiBi), six seeds, and two datasets
 (ImageNet-100 and CIFAR-100). The checkpoints are hosted on Google Drive
-and documented through the companion repository:
-
-- **ImageNet-100 models:** [drive.google.com/.../1WRhjaR3WZHIi2fTi9xcrIBJkBXZddMM9](https://drive.google.com/drive/folders/1WRhjaR3WZHIi2fTi9xcrIBJkBXZddMM9)
-- **CIFAR-100 models:** [drive.google.com/.../1HBiOjNfuRsh2H0ZGRP4rIdBeydedCBJL](https://drive.google.com/drive/folders/1HBiOjNfuRsh2H0ZGRP4rIdBeydedCBJL)
+and documented through the companion repository: [drive.google.com/.../1WRhjaR3WZHIi2fTi9xcrIBJkBXZddMM9](https://drive.google.com/drive/folders/1UojvGk3oeoQui7jy8DSFM_0U6Xkwx-IB?usp=sharing)
 
 For the model architecture, training procedure, and clean-accuracy
 benchmarks, see the companion repository
