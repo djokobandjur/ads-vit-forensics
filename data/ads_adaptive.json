@@ -4,198 +4,198 @@
       "0.05": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": -0.060000000000002274,
-          "accuracy": 79.5,
-          "ads_l4": 0.02295076847076416,
-          "ads_ratio": 1.4808858220908607,
+          "acc_drop": 0.2600000000000051,
+          "accuracy": 79.42,
+          "ads_l4": 0.023559020832180977,
+          "ads_ratio": 1.3849911847722507,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.12000000000000455,
-          "accuracy": 79.32,
-          "ads_l4": 0.02422148361802101,
-          "ads_ratio": 1.5628780241335019,
+          "acc_drop": 0.480000000000004,
+          "accuracy": 79.2,
+          "ads_l4": 0.023755332455039024,
+          "ads_ratio": 1.3965319813555848,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.20000000000000284,
-          "accuracy": 79.24,
-          "ads_l4": 0.023633653298020363,
-          "ads_ratio": 1.524948593239151,
+          "acc_drop": 0.3200000000000074,
+          "accuracy": 79.36,
+          "ads_l4": 0.023561997339129448,
+          "ads_ratio": 1.3851661681009046,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 0.21999999999999886,
-          "accuracy": 79.22,
-          "ads_l4": 0.025099830701947212,
-          "ads_ratio": 1.6195528908212165,
+          "acc_drop": 0.4000000000000057,
+          "accuracy": 79.28,
+          "ads_l4": 0.022127125412225723,
+          "ads_ratio": 1.3008127060366301,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 0.09999999999999432,
-          "accuracy": 79.34,
-          "ads_l4": 0.022788619622588158,
-          "ads_ratio": 1.4704232560709871,
+          "acc_drop": 0.46000000000000796,
+          "accuracy": 79.22,
+          "ads_l4": 0.023446349427103996,
+          "ads_ratio": 1.3783674416243876,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 0.060000000000002274,
-          "accuracy": 79.38,
-          "ads_l4": 0.023168083280324936,
-          "ads_ratio": 1.4949079416908593,
+          "acc_drop": 0.5800000000000125,
+          "accuracy": 79.1,
+          "ads_l4": 0.02110527642071247,
+          "ads_ratio": 1.2407400970986104,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.23999999999999488,
-          "accuracy": 79.2,
-          "ads_l4": 0.022769838571548462,
-          "ads_ratio": 1.4692114189926742,
+          "acc_drop": 0.4000000000000057,
+          "accuracy": 79.28,
+          "ads_l4": 0.022800128906965256,
+          "ads_ratio": 1.3403773345572663,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.20000000000000284,
-          "accuracy": 79.24,
-          "ads_l4": 0.024554291740059853,
-          "ads_ratio": 1.584352286750539,
+          "acc_drop": 0.36000000000001364,
+          "accuracy": 79.32,
+          "ads_l4": 0.02204904891550541,
+          "ads_ratio": 1.296222733453906,
           "evades_detection": true
         }
       },
       "0.1": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 1.0999999999999943,
-          "accuracy": 78.34,
-          "ads_l4": 0.08559846878051758,
-          "ads_ratio": 5.523194527069143,
+          "acc_drop": 1.8000000000000114,
+          "accuracy": 77.88,
+          "ads_l4": 0.08884086459875107,
+          "ads_ratio": 5.2227898261688726,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 1.3400000000000034,
-          "accuracy": 78.1,
-          "ads_l4": 0.09020666778087616,
-          "ads_ratio": 5.820536055031369,
+          "acc_drop": 1.5400000000000063,
+          "accuracy": 78.14,
+          "ads_l4": 0.0870862603187561,
+          "ads_ratio": 5.119639891463725,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 1.2800000000000011,
-          "accuracy": 78.16,
-          "ads_l4": 0.09106795489788055,
-          "ads_ratio": 5.876110136655088,
+          "acc_drop": 1.460000000000008,
+          "accuracy": 78.22,
+          "ads_l4": 0.08773980289697647,
+          "ads_ratio": 5.158060448759219,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 1.3799999999999955,
-          "accuracy": 78.06,
-          "ads_l4": 0.09095966815948486,
-          "ads_ratio": 5.869122993901462,
+          "acc_drop": 1.6800000000000068,
+          "accuracy": 78.0,
+          "ads_l4": 0.08665063232183456,
+          "ads_ratio": 5.0940301286525225,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 1.1599999999999966,
-          "accuracy": 78.28,
-          "ads_l4": 0.08979366719722748,
-          "ads_ratio": 5.793887417552424,
+          "acc_drop": 1.440000000000012,
+          "accuracy": 78.24,
+          "ads_l4": 0.08300943672657013,
+          "ads_ratio": 4.879970985982886,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 1.1599999999999966,
-          "accuracy": 78.28,
-          "ads_l4": 0.09021488577127457,
-          "ads_ratio": 5.821066316381118,
+          "acc_drop": 1.6800000000000068,
+          "accuracy": 78.0,
+          "ads_l4": 0.08472005277872086,
+          "ads_ratio": 4.980534934274082,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 1.1799999999999926,
-          "accuracy": 78.26,
-          "ads_l4": 0.09057442843914032,
-          "ads_ratio": 5.844265610991116,
+          "acc_drop": 1.7600000000000051,
+          "accuracy": 77.92,
+          "ads_l4": 0.08081202208995819,
+          "ads_ratio": 4.750789050847455,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 1.259999999999991,
-          "accuracy": 78.18,
-          "ads_l4": 0.08661135286092758,
-          "ads_ratio": 5.588550320101148,
+          "acc_drop": 1.5400000000000063,
+          "accuracy": 78.14,
+          "ads_l4": 0.08440892398357391,
+          "ads_ratio": 4.962244248864155,
           "evades_detection": false
         }
       },
       "0.2": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 8.560000000000002,
-          "accuracy": 70.88,
-          "ads_l4": 0.2785434424877167,
-          "ads_ratio": 17.972863755821184,
+          "acc_drop": 8.360000000000014,
+          "accuracy": 71.32,
+          "ads_l4": 0.2632509171962738,
+          "ads_ratio": 15.476033672928164,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 8.819999999999993,
-          "accuracy": 70.62,
-          "ads_l4": 0.2769698202610016,
-          "ads_ratio": 17.87132663963102,
+          "acc_drop": 8.940000000000012,
+          "accuracy": 70.74,
+          "ads_l4": 0.26650404930114746,
+          "ads_ratio": 15.667279281998434,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 8.879999999999995,
-          "accuracy": 70.56,
-          "ads_l4": 0.271363228559494,
-          "ads_ratio": 17.509564366982453,
+          "acc_drop": 8.820000000000007,
+          "accuracy": 70.86,
+          "ads_l4": 0.2565732002258301,
+          "ads_ratio": 15.083463064652488,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 9.579999999999998,
-          "accuracy": 69.86,
-          "ads_l4": 0.27319931983947754,
-          "ads_ratio": 17.62803715572832,
+          "acc_drop": 8.760000000000005,
+          "accuracy": 70.92,
+          "ads_l4": 0.2558969557285309,
+          "ads_ratio": 15.043707903596271,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 8.920000000000002,
-          "accuracy": 70.52,
-          "ads_l4": 0.26993247866630554,
-          "ads_ratio": 17.41724601021458,
+          "acc_drop": 8.780000000000001,
+          "accuracy": 70.9,
+          "ads_l4": 0.26441076397895813,
+          "ads_ratio": 15.544218916328008,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 8.819999999999993,
-          "accuracy": 70.62,
-          "ads_l4": 0.26523151993751526,
-          "ads_ratio": 17.113919211350836,
+          "acc_drop": 9.460000000000008,
+          "accuracy": 70.22,
+          "ads_l4": 0.26808321475982666,
+          "ads_ratio": 15.76011549344997,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 8.819999999999993,
-          "accuracy": 70.62,
-          "ads_l4": 0.26910486817359924,
-          "ads_ratio": 17.363844894412132,
+          "acc_drop": 9.400000000000006,
+          "accuracy": 70.28,
+          "ads_l4": 0.27949219942092896,
+          "ads_ratio": 16.430828563207278,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 9.480000000000004,
-          "accuracy": 69.96,
-          "ads_l4": 0.276272714138031,
-          "ads_ratio": 17.82634624713066,
+          "acc_drop": 9.400000000000006,
+          "accuracy": 70.28,
+          "ads_l4": 0.27258798480033875,
+          "ads_ratio": 16.024942577732393,
           "evades_detection": false
         }
       }
@@ -205,197 +205,197 @@
         "0.0": {
           "lambda": 0.0,
           "acc_drop": 0.04000000000000625,
-          "accuracy": 79.58,
-          "ads_l4": 0.025672100484371185,
-          "ads_ratio": 1.6564782865125298,
+          "accuracy": 79.86,
+          "ads_l4": 0.02230820432305336,
+          "ads_ratio": 1.3114579997027345,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": -0.0799999999999983,
-          "accuracy": 79.7,
-          "ads_l4": 0.025962376967072487,
-          "ads_ratio": 1.6752082182909076,
+          "acc_drop": 0.0800000000000125,
+          "accuracy": 79.82,
+          "ads_l4": 0.020569046959280968,
+          "ads_ratio": 1.2092161605823977,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": -0.0799999999999983,
-          "accuracy": 79.7,
-          "ads_l4": 0.027305753901600838,
-          "ads_ratio": 1.7618888825397367,
+          "acc_drop": 0.12000000000000455,
+          "accuracy": 79.78,
+          "ads_l4": 0.022855384275317192,
+          "ads_ratio": 1.3436256952860044,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": -0.14000000000000057,
-          "accuracy": 79.76,
-          "ads_l4": 0.02617027424275875,
-          "ads_ratio": 1.6886226766523906,
+          "acc_drop": -0.03999999999999204,
+          "accuracy": 79.94,
+          "ads_l4": 0.022449007257819176,
+          "ads_ratio": 1.3197355433591473,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": -0.11999999999999034,
-          "accuracy": 79.74,
-          "ads_l4": 0.026640329509973526,
-          "ads_ratio": 1.7189527364804185,
+          "acc_drop": -0.03999999999999204,
+          "accuracy": 79.94,
+          "ads_l4": 0.02058316394686699,
+          "ads_ratio": 1.2100460721267465,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": -0.19999999999998863,
-          "accuracy": 79.82,
-          "ads_l4": 0.025930130854249,
-          "ads_ratio": 1.6731275554425733,
+          "acc_drop": 0.12000000000000455,
+          "accuracy": 79.78,
+          "ads_l4": 0.022665083408355713,
+          "ads_ratio": 1.3324382599051525,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": -0.23999999999999488,
-          "accuracy": 79.86,
-          "ads_l4": 0.024383176118135452,
-          "ads_ratio": 1.5733111445435186,
+          "acc_drop": 0.2400000000000091,
+          "accuracy": 79.66,
+          "ads_l4": 0.02066986821591854,
+          "ads_ratio": 1.2151432554593615,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.020000000000010232,
-          "accuracy": 79.6,
-          "ads_l4": 0.026882382109761238,
-          "ads_ratio": 1.734571048506984,
+          "acc_drop": 0.1600000000000108,
+          "accuracy": 79.74,
+          "ads_l4": 0.022631600499153137,
+          "ads_ratio": 1.33046986170998,
           "evades_detection": true
         }
       },
       "0.1": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 1.2199999999999989,
-          "accuracy": 78.4,
-          "ads_l4": 0.09475209563970566,
-          "ads_ratio": 6.113827309311244,
+          "acc_drop": 1.8400000000000034,
+          "accuracy": 78.06,
+          "ads_l4": 0.08156920969486237,
+          "ads_ratio": 4.795302707229074,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 1.240000000000009,
-          "accuracy": 78.38,
-          "ads_l4": 0.10329359769821167,
-          "ads_ratio": 6.6649630725391455,
+          "acc_drop": 1.8400000000000034,
+          "accuracy": 78.06,
+          "ads_l4": 0.08526633679866791,
+          "ads_ratio": 5.012649959656423,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 1.3599999999999994,
-          "accuracy": 78.26,
-          "ads_l4": 0.0961897224187851,
-          "ads_ratio": 6.206589393391734,
+          "acc_drop": 1.8000000000000114,
+          "accuracy": 78.1,
+          "ads_l4": 0.08333403617143631,
+          "ads_ratio": 4.899053585931502,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 1.240000000000009,
-          "accuracy": 78.38,
-          "ads_l4": 0.09781309217214584,
-          "ads_ratio": 6.311336441614779,
+          "acc_drop": 1.8000000000000114,
+          "accuracy": 78.1,
+          "ads_l4": 0.08148837834596634,
+          "ads_ratio": 4.790550781991106,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 1.0400000000000063,
-          "accuracy": 78.58,
-          "ads_l4": 0.09744884818792343,
-          "ads_ratio": 6.287833797130173,
+          "acc_drop": 1.6200000000000045,
+          "accuracy": 78.28,
+          "ads_l4": 0.08323390036821365,
+          "ads_ratio": 4.893166787590799,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 1.1000000000000085,
-          "accuracy": 78.52,
-          "ads_l4": 0.09473595768213272,
-          "ads_ratio": 6.112786016397775,
+          "acc_drop": 1.8000000000000114,
+          "accuracy": 78.1,
+          "ads_l4": 0.08718304336071014,
+          "ads_ratio": 5.1253295871814135,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 1.0600000000000023,
-          "accuracy": 78.56,
-          "ads_l4": 0.09146848320960999,
-          "ads_ratio": 5.901954007588721,
+          "acc_drop": 1.5600000000000023,
+          "accuracy": 78.34,
+          "ads_l4": 0.08254223316907883,
+          "ads_ratio": 4.852504954468714,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 1.1800000000000068,
-          "accuracy": 78.44,
-          "ads_l4": 0.09640759974718094,
-          "ads_ratio": 6.2206478092128625,
+          "acc_drop": 1.6400000000000006,
+          "accuracy": 78.26,
+          "ads_l4": 0.08702192455530167,
+          "ads_ratio": 5.115857711130989,
           "evades_detection": false
         }
       },
       "0.2": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 10.0,
-          "accuracy": 69.62,
-          "ads_l4": 0.316629558801651,
-          "ads_ratio": 20.43034964522203,
+          "acc_drop": 9.86,
+          "accuracy": 70.04,
+          "ads_l4": 0.29023104906082153,
+          "ads_ratio": 17.062145636688086,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 9.680000000000007,
-          "accuracy": 69.94,
-          "ads_l4": 0.32138511538505554,
-          "ads_ratio": 20.737199340886278,
+          "acc_drop": 9.719999999999999,
+          "accuracy": 70.18,
+          "ads_l4": 0.29407188296318054,
+          "ads_ratio": 17.287941145543673,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 9.439999999999998,
-          "accuracy": 70.18,
-          "ads_l4": 0.313142329454422,
-          "ads_ratio": 20.205338072939863,
+          "acc_drop": 10.100000000000009,
+          "accuracy": 69.8,
+          "ads_l4": 0.2876279354095459,
+          "ads_ratio": 16.909113408156234,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 10.14,
-          "accuracy": 69.48,
-          "ads_l4": 0.3136819303035736,
-          "ads_ratio": 20.240155523523914,
+          "acc_drop": 9.88000000000001,
+          "accuracy": 70.02,
+          "ads_l4": 0.29325491189956665,
+          "ads_ratio": 17.23991293039079,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 9.980000000000004,
-          "accuracy": 69.64,
-          "ads_l4": 0.32243821024894714,
-          "ads_ratio": 20.80514971279824,
+          "acc_drop": 10.740000000000009,
+          "accuracy": 69.16,
+          "ads_l4": 0.2872729003429413,
+          "ads_ratio": 16.888241554396473,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 9.579999999999998,
-          "accuracy": 70.04,
-          "ads_l4": 0.3032808005809784,
-          "ads_ratio": 19.569028299198504,
+          "acc_drop": 10.38000000000001,
+          "accuracy": 69.52,
+          "ads_l4": 0.29639261960983276,
+          "ads_ratio": 17.42437295315941,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 9.800000000000011,
-          "accuracy": 69.82,
-          "ads_l4": 0.31012865900993347,
-          "ads_ratio": 20.01088263065773,
+          "acc_drop": 10.420000000000002,
+          "accuracy": 69.48,
+          "ads_l4": 0.2918109595775604,
+          "ads_ratio": 17.155025648722518,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 9.900000000000006,
-          "accuracy": 69.72,
-          "ads_l4": 0.328663170337677,
-          "ads_ratio": 21.20681186847832,
+          "acc_drop": 10.420000000000002,
+          "accuracy": 69.48,
+          "ads_l4": 0.28927376866340637,
+          "ads_ratio": 17.00586889576496,
           "evades_detection": false
         }
       }
@@ -404,66 +404,266 @@
       "0.05": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 0.23999999999999488,
-          "accuracy": 78.54,
-          "ads_l4": 0.013377497904002666,
-          "ads_ratio": 0.8631757584206134,
+          "acc_drop": 0.1799999999999926,
+          "accuracy": 78.56,
+          "ads_l4": 0.01402109581977129,
+          "ads_ratio": 0.8242742450783158,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.20000000000000284,
-          "accuracy": 78.58,
-          "ads_l4": 0.013572978787124157,
-          "ads_ratio": 0.8757890558216646,
+          "acc_drop": 0.23999999999999488,
+          "accuracy": 78.5,
+          "ads_l4": 0.013792376965284348,
+          "ads_ratio": 0.8108282873913597,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.12000000000000455,
-          "accuracy": 78.66,
-          "ads_l4": 0.013908996246755123,
-          "ads_ratio": 0.8974703991970011,
+          "acc_drop": 0.09999999999999432,
+          "accuracy": 78.64,
+          "ads_l4": 0.014091940596699715,
+          "ads_ratio": 0.828439078253343,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 0.0799999999999983,
-          "accuracy": 78.7,
-          "ads_l4": 0.013103165663778782,
-          "ads_ratio": 0.8454746201947853,
+          "acc_drop": 0.1799999999999926,
+          "accuracy": 78.56,
+          "ads_l4": 0.013506770133972168,
+          "ads_ratio": 0.7940379909484033,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
           "acc_drop": 0.14000000000000057,
-          "accuracy": 78.64,
-          "ads_l4": 0.01345317717641592,
-          "ads_ratio": 0.8680589222103446,
+          "accuracy": 78.6,
+          "ads_l4": 0.01418989896774292,
+          "ads_ratio": 0.8341978693905436,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 0.20000000000000284,
-          "accuracy": 78.58,
-          "ads_l4": 0.01382419839501381,
-          "ads_ratio": 0.8919988640478649,
+          "acc_drop": 0.1799999999999926,
+          "accuracy": 78.56,
+          "ads_l4": 0.013463545590639114,
+          "ads_ratio": 0.7914969001319161,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.04000000000000625,
-          "accuracy": 78.74,
-          "ads_l4": 0.014073237776756287,
-          "ads_ratio": 0.908067994370647,
+          "acc_drop": 0.1599999999999966,
+          "accuracy": 78.58,
+          "ads_l4": 0.013645052909851074,
+          "ads_ratio": 0.8021673791331835,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.23999999999999488,
-          "accuracy": 78.54,
-          "ads_l4": 0.014025450684130192,
-          "ads_ratio": 0.9049845582739833,
+          "acc_drop": 0.09999999999999432,
+          "accuracy": 78.64,
+          "ads_l4": 0.013362226076424122,
+          "ads_ratio": 0.7855405136151433,
+          "evades_detection": true
+        }
+      },
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.8199999999999932,
+          "accuracy": 76.92,
+          "ads_l4": 0.05153019353747368,
+          "ads_ratio": 3.029364603367604,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 1.9399999999999977,
+          "accuracy": 76.8,
+          "ads_l4": 0.050694048404693604,
+          "ads_ratio": 2.9802091802139916,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 1.759999999999991,
+          "accuracy": 76.98,
+          "ads_l4": 0.05242631211876869,
+          "ads_ratio": 3.082045754441119,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.7999999999999972,
+          "accuracy": 76.94,
+          "ads_l4": 0.053752776235342026,
+          "ads_ratio": 3.1600261221931305,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 1.8599999999999994,
+          "accuracy": 76.88,
+          "ads_l4": 0.05326578766107559,
+          "ads_ratio": 3.131396966200259,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.759999999999991,
+          "accuracy": 76.98,
+          "ads_l4": 0.05200618878006935,
+          "ads_ratio": 3.057347481759902,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.7800000000000011,
+          "accuracy": 76.96,
+          "ads_l4": 0.05025086551904678,
+          "ads_ratio": 2.954155279492263,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.7399999999999949,
+          "accuracy": 77.0,
+          "ads_l4": 0.04993295297026634,
+          "ads_ratio": 2.9354657897751038,
+          "evades_detection": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 9.319999999999993,
+          "accuracy": 69.42,
+          "ads_l4": 0.17141684889793396,
+          "ads_ratio": 10.0772789470426,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 9.739999999999995,
+          "accuracy": 69.0,
+          "ads_l4": 0.17016397416591644,
+          "ads_ratio": 10.003624762862845,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 10.11999999999999,
+          "accuracy": 68.62,
+          "ads_l4": 0.1732826679944992,
+          "ads_ratio": 10.186966994756059,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 9.759999999999991,
+          "accuracy": 68.98,
+          "ads_l4": 0.16990350186824799,
+          "ads_ratio": 9.988312079083755,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 9.899999999999991,
+          "accuracy": 68.84,
+          "ads_l4": 0.1724056899547577,
+          "ads_ratio": 10.135411080657041,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 9.899999999999991,
+          "accuracy": 68.84,
+          "ads_l4": 0.16983634233474731,
+          "ads_ratio": 9.984363894541858,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 9.97999999999999,
+          "accuracy": 68.76,
+          "ads_l4": 0.17225433886051178,
+          "ads_ratio": 10.126513430248334,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 9.780000000000001,
+          "accuracy": 68.96,
+          "ads_l4": 0.16099399328231812,
+          "ads_ratio": 9.464538576778006,
+          "evades_detection": false
+        }
+      }
+    },
+    "789": {
+      "0.05": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": -0.1600000000000108,
+          "accuracy": 79.04,
+          "ads_l4": 0.015742355957627296,
+          "ads_ratio": 0.9254639394468548,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.03999999999999204,
+          "accuracy": 78.84,
+          "ads_l4": 0.015882311388850212,
+          "ads_ratio": 0.9336916599402278,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": -0.04000000000000625,
+          "accuracy": 78.92,
+          "ads_l4": 0.016267485916614532,
+          "ads_ratio": 0.9563353567794319,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.0,
+          "accuracy": 78.88,
+          "ads_l4": 0.01556114386767149,
+          "ads_ratio": 0.9148108164265585,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": -0.14000000000000057,
+          "accuracy": 79.02,
+          "ads_l4": 0.015644915401935577,
+          "ads_ratio": 0.9197355897147642,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": -0.1600000000000108,
+          "accuracy": 79.04,
+          "ads_l4": 0.015968209132552147,
+          "ads_ratio": 0.9387414291418621,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": -0.0799999999999983,
+          "accuracy": 78.96,
+          "ads_l4": 0.015614300966262817,
+          "ads_ratio": 0.9179358237637264,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": -0.060000000000002274,
+          "accuracy": 78.94,
+          "ads_l4": 0.015684496611356735,
+          "ads_ratio": 0.9220624956809089,
           "evades_detection": true
         }
       },
@@ -471,131 +671,531 @@
         "0.0": {
           "lambda": 0.0,
           "acc_drop": 1.7199999999999989,
-          "accuracy": 77.06,
-          "ads_l4": 0.0510823130607605,
-          "ads_ratio": 3.2960583985521033,
+          "accuracy": 77.16,
+          "ads_l4": 0.06064775586128235,
+          "ads_ratio": 3.565369199443068,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 1.8200000000000074,
-          "accuracy": 76.96,
-          "ads_l4": 0.05175122991204262,
-          "ads_ratio": 3.3392198936664483,
+          "acc_drop": 1.6799999999999926,
+          "accuracy": 77.2,
+          "ads_l4": 0.05926628038287163,
+          "ads_ratio": 3.4841548156532154,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 1.7399999999999949,
-          "accuracy": 77.04,
-          "ads_l4": 0.05187550559639931,
-          "ads_ratio": 3.3472387144405285,
+          "acc_drop": 2.019999999999996,
+          "accuracy": 76.86,
+          "ads_l4": 0.061195433139801025,
+          "ads_ratio": 3.597566131915418,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 1.6599999999999966,
-          "accuracy": 77.12,
-          "ads_l4": 0.05247914418578148,
-          "ads_ratio": 3.386188165297553,
+          "acc_drop": 1.7800000000000011,
+          "accuracy": 77.1,
+          "ads_l4": 0.05924881249666214,
+          "ads_ratio": 3.4831279109873092,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 1.8599999999999994,
-          "accuracy": 76.92,
-          "ads_l4": 0.052287615835666656,
-          "ads_ratio": 3.373829902933711,
+          "acc_drop": 1.8399999999999892,
+          "accuracy": 77.04,
+          "ads_l4": 0.05777396261692047,
+          "ads_ratio": 3.3964242191465,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 2.0400000000000063,
-          "accuracy": 76.74,
-          "ads_l4": 0.049395911395549774,
-          "ads_ratio": 3.187244250583932,
+          "acc_drop": 1.9399999999999977,
+          "accuracy": 76.94,
+          "ads_l4": 0.062094688415527344,
+          "ads_ratio": 3.6504316834429087,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 1.6800000000000068,
-          "accuracy": 77.1,
-          "ads_l4": 0.05037439242005348,
-          "ads_ratio": 3.250380205191217,
+          "acc_drop": 1.6999999999999886,
+          "accuracy": 77.18,
+          "ads_l4": 0.05987824499607086,
+          "ads_ratio": 3.5201310814204136,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 1.9399999999999977,
-          "accuracy": 76.84,
-          "ads_l4": 0.0524776428937912,
-          "ads_ratio": 3.3860912952504325,
+          "acc_drop": 1.7800000000000011,
+          "accuracy": 77.1,
+          "ads_l4": 0.060379017144441605,
+          "ads_ratio": 3.5495705481967894,
           "evades_detection": false
         }
       },
       "0.2": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 9.480000000000004,
-          "accuracy": 69.3,
-          "ads_l4": 0.16624625027179718,
-          "ads_ratio": 10.726948656071569,
+          "acc_drop": 10.099999999999994,
+          "accuracy": 68.78,
+          "ads_l4": 0.1965896338224411,
+          "ads_ratio": 11.557140332834443,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 10.040000000000006,
-          "accuracy": 68.74,
-          "ads_l4": 0.1710599958896637,
-          "ads_ratio": 11.037552967457975,
+          "acc_drop": 11.219999999999999,
+          "accuracy": 67.66,
+          "ads_l4": 0.19564534723758698,
+          "ads_ratio": 11.501627474076951,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 10.86,
-          "accuracy": 67.92,
-          "ads_l4": 0.17701846361160278,
-          "ads_ratio": 11.422019848470951,
+          "acc_drop": 11.299999999999997,
+          "accuracy": 67.58,
+          "ads_l4": 0.1997242271900177,
+          "ads_ratio": 11.741417269166574,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 10.079999999999998,
-          "accuracy": 68.7,
-          "ads_l4": 0.1745825707912445,
-          "ads_ratio": 11.264845192363177,
+          "acc_drop": 11.519999999999996,
+          "accuracy": 67.36,
+          "ads_l4": 0.19615738093852997,
+          "ads_ratio": 11.531728986663742,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 10.760000000000005,
-          "accuracy": 68.02,
-          "ads_l4": 0.17920076847076416,
-          "ads_ratio": 11.562831879646675,
+          "acc_drop": 9.61999999999999,
+          "accuracy": 69.26,
+          "ads_l4": 0.1915423721075058,
+          "ads_ratio": 11.260421168136597,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 10.599999999999994,
-          "accuracy": 68.18,
-          "ads_l4": 0.17102906107902527,
-          "ads_ratio": 11.035556915668169,
+          "acc_drop": 9.920000000000002,
+          "accuracy": 68.96,
+          "ads_l4": 0.1961287558078766,
+          "ads_ratio": 11.530046168269026,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 10.579999999999998,
-          "accuracy": 68.2,
-          "ads_l4": 0.1717454493045807,
-          "ads_ratio": 11.081781475324602,
+          "acc_drop": 9.47999999999999,
+          "accuracy": 69.4,
+          "ads_l4": 0.19328942894935608,
+          "ads_ratio": 11.363127402937048,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 9.799999999999997,
-          "accuracy": 68.98,
-          "ads_l4": 0.17318524420261383,
-          "ads_ratio": 11.174683456098453,
+          "acc_drop": 10.899999999999991,
+          "accuracy": 67.98,
+          "ads_l4": 0.1904071569442749,
+          "ads_ratio": 11.193683972007168,
+          "evades_detection": false
+        }
+      }
+    },
+    "1011": {
+      "0.05": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.14000000000000057,
+          "accuracy": 79.6,
+          "ads_l4": 0.033623259514570236,
+          "ads_ratio": 1.9766491299748323,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.2599999999999909,
+          "accuracy": 79.48,
+          "ads_l4": 0.03724787011742592,
+          "ads_ratio": 2.189733271669291,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.29999999999999716,
+          "accuracy": 79.44,
+          "ads_l4": 0.03733154013752937,
+          "ads_ratio": 2.1946520771280777,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.19999999999998863,
+          "accuracy": 79.54,
+          "ads_l4": 0.03150206059217453,
+          "ads_ratio": 1.8519477754663531,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.5,
+          "accuracy": 79.24,
+          "ads_l4": 0.034584250301122665,
+          "ads_ratio": 2.0331439978007655,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.5,
+          "accuracy": 79.24,
+          "ads_l4": 0.03296058624982834,
+          "ads_ratio": 1.9376917965359957,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.5799999999999983,
+          "accuracy": 79.16,
+          "ads_l4": 0.033079128712415695,
+          "ads_ratio": 1.9446606882770487,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.3399999999999892,
+          "accuracy": 79.4,
+          "ads_l4": 0.034838467836380005,
+          "ads_ratio": 2.048088975686476,
+          "evades_detection": true
+        }
+      },
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 2.0999999999999943,
+          "accuracy": 77.64,
+          "ads_l4": 0.11873198300600052,
+          "ads_ratio": 6.98003329532334,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 1.7399999999999949,
+          "accuracy": 78.0,
+          "ads_l4": 0.12000691890716553,
+          "ads_ratio": 7.054984414762531,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 1.8999999999999915,
+          "accuracy": 77.84,
+          "ads_l4": 0.12372423708438873,
+          "ads_ratio": 7.273518662986258,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 2.0,
+          "accuracy": 77.74,
+          "ads_l4": 0.1268518716096878,
+          "ads_ratio": 7.4573865018741765,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 1.9399999999999977,
+          "accuracy": 77.8,
+          "ads_l4": 0.12851515412330627,
+          "ads_ratio": 7.555167799134235,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.8599999999999994,
+          "accuracy": 77.88,
+          "ads_l4": 0.11981604248285294,
+          "ads_ratio": 7.043763143431395,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.8999999999999915,
+          "accuracy": 77.84,
+          "ads_l4": 0.12602412700653076,
+          "ads_ratio": 7.4087249302926725,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.8599999999999994,
+          "accuracy": 77.88,
+          "ads_l4": 0.12611451745033264,
+          "ads_ratio": 7.414038817009146,
+          "evades_detection": false
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 8.83999999999999,
+          "accuracy": 70.9,
+          "ads_l4": 0.37931475043296814,
+          "ads_ratio": 22.299211386838994,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 9.0,
+          "accuracy": 70.74,
+          "ads_l4": 0.38316085934638977,
+          "ads_ratio": 22.525317003821456,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 8.759999999999991,
+          "accuracy": 70.98,
+          "ads_l4": 0.387349009513855,
+          "ads_ratio": 22.771530592398037,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 8.759999999999991,
+          "accuracy": 70.98,
+          "ads_l4": 0.37531188130378723,
+          "ads_ratio": 22.063890127216027,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 8.599999999999994,
+          "accuracy": 71.14,
+          "ads_l4": 0.37428197264671326,
+          "ads_ratio": 22.003343705472574,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 8.519999999999996,
+          "accuracy": 71.22,
+          "ads_l4": 0.37934577465057373,
+          "ads_ratio": 22.301035243110622,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 9.079999999999998,
+          "accuracy": 70.66,
+          "ads_l4": 0.3601022958755493,
+          "ads_ratio": 21.169746780079308,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 9.11999999999999,
+          "accuracy": 70.62,
+          "ads_l4": 0.38869500160217285,
+          "ads_ratio": 22.850658973427652,
+          "evades_detection": false
+        }
+      }
+    },
+    "1213": {
+      "0.05": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.7800000000000011,
+          "accuracy": 79.06,
+          "ads_l4": 0.01666346937417984,
+          "ads_ratio": 0.9796144905749435,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.8800000000000097,
+          "accuracy": 78.96,
+          "ads_l4": 0.015950191766023636,
+          "ads_ratio": 0.9376822215460731,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.7999999999999972,
+          "accuracy": 79.04,
+          "ads_l4": 0.01654840260744095,
+          "ads_ratio": 0.9728499285530823,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.7999999999999972,
+          "accuracy": 79.04,
+          "ads_l4": 0.016689477488398552,
+          "ads_ratio": 0.9811434594222508,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.7600000000000051,
+          "accuracy": 79.08,
+          "ads_l4": 0.016700968146324158,
+          "ads_ratio": 0.9818189739119046,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.7600000000000051,
+          "accuracy": 79.08,
+          "ads_l4": 0.017814988270401955,
+          "ads_ratio": 1.0473101529595104,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.7000000000000028,
+          "accuracy": 79.14,
+          "ads_l4": 0.017346112057566643,
+          "ads_ratio": 1.0197457891367467,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.7600000000000051,
+          "accuracy": 79.08,
+          "ads_l4": 0.017078325152397156,
+          "ads_ratio": 1.004003093135113,
+          "evades_detection": true
+        }
+      },
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 2.3599999999999994,
+          "accuracy": 77.48,
+          "ads_l4": 0.06245254725217819,
+          "ads_ratio": 3.67146954141183,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 2.3400000000000034,
+          "accuracy": 77.5,
+          "ads_l4": 0.05972902476787567,
+          "ads_ratio": 3.5113587006787768,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 2.4200000000000017,
+          "accuracy": 77.42,
+          "ads_l4": 0.06312432885169983,
+          "ads_ratio": 3.710962336976523,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 2.6400000000000006,
+          "accuracy": 77.2,
+          "ads_l4": 0.06510147452354431,
+          "ads_ratio": 3.8271950677857225,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 2.1200000000000045,
+          "accuracy": 77.72,
+          "ads_l4": 0.0625247061252594,
+          "ads_ratio": 3.675711627864933,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 2.3800000000000097,
+          "accuracy": 77.46,
+          "ads_l4": 0.06371920555830002,
+          "ads_ratio": 3.74593403637509,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 2.4200000000000017,
+          "accuracy": 77.42,
+          "ads_l4": 0.06447581946849823,
+          "ads_ratio": 3.7904139663078817,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 2.6200000000000045,
+          "accuracy": 77.22,
+          "ads_l4": 0.06607372313737869,
+          "ads_ratio": 3.884351762419156,
+          "evades_detection": false
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 10.0,
+          "accuracy": 69.84,
+          "ads_l4": 0.20158176124095917,
+          "ads_ratio": 11.850618254398269,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 9.480000000000004,
+          "accuracy": 70.36,
+          "ads_l4": 0.19712397456169128,
+          "ads_ratio": 11.588553234873023,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 10.400000000000006,
+          "accuracy": 69.44,
+          "ads_l4": 0.214397594332695,
+          "ads_ratio": 12.604037336795823,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 9.700000000000003,
+          "accuracy": 70.14,
+          "ads_l4": 0.20649048686027527,
+          "ads_ratio": 12.13919313871315,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 9.820000000000007,
+          "accuracy": 70.02,
+          "ads_l4": 0.20631641149520874,
+          "ads_ratio": 12.128959570526233,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 10.64,
+          "accuracy": 69.2,
+          "ads_l4": 0.2087673395872116,
+          "ads_ratio": 12.27304509199654,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 9.620000000000005,
+          "accuracy": 70.22,
+          "ads_l4": 0.20676545798778534,
+          "ads_ratio": 12.155358181835322,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 9.659999999999997,
+          "accuracy": 70.18,
+          "ads_l4": 0.21024352312088013,
+          "ads_ratio": 12.359827186880727,
           "evades_detection": false
         }
       }
@@ -606,199 +1206,199 @@
       "0.05": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 0.10000000000000853,
-          "accuracy": 84.8,
-          "ads_l4": 0.005954374093562365,
-          "ads_ratio": 0.4398267169125694,
+          "acc_drop": -0.060000000000002274,
+          "accuracy": 85.02,
+          "ads_l4": 0.006004947703331709,
+          "ads_ratio": 0.4305066309583513,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.020000000000010232,
-          "accuracy": 84.88,
-          "ads_l4": 0.005997929256409407,
-          "ads_ratio": 0.443043969301921,
+          "acc_drop": -0.12000000000000455,
+          "accuracy": 85.08,
+          "ads_l4": 0.006124828476458788,
+          "ads_ratio": 0.43910112175249877,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.0,
-          "accuracy": 84.9,
-          "ads_l4": 0.006002523470669985,
-          "ads_ratio": 0.4433833262424276,
+          "acc_drop": -0.020000000000010232,
+          "accuracy": 84.98,
+          "ads_l4": 0.006183093413710594,
+          "ads_ratio": 0.44327825085977773,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 0.12000000000000455,
-          "accuracy": 84.78,
-          "ads_l4": 0.006068735849112272,
-          "ads_ratio": 0.4482741800201117,
+          "acc_drop": -0.0800000000000125,
+          "accuracy": 85.04,
+          "ads_l4": 0.0060670217499136925,
+          "ads_ratio": 0.43495684268111695,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": -0.03999999999999204,
-          "accuracy": 84.94,
-          "ads_l4": 0.0061126756481826305,
-          "ads_ratio": 0.45151984400817186,
+          "acc_drop": -0.10000000000000853,
+          "accuracy": 85.06,
+          "ads_l4": 0.006420616991817951,
+          "ads_ratio": 0.46030678806542846,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 0.0800000000000125,
-          "accuracy": 84.82,
-          "ads_l4": 0.006115221884101629,
-          "ads_ratio": 0.45170792466402937,
+          "acc_drop": -0.04000000000000625,
+          "accuracy": 85.0,
+          "ads_l4": 0.006170873064547777,
+          "ads_ratio": 0.4424021497499712,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.0,
-          "accuracy": 84.9,
-          "ads_l4": 0.005877227988094091,
-          "ads_ratio": 0.43412823076481694,
+          "acc_drop": -0.0800000000000125,
+          "accuracy": 85.04,
+          "ads_l4": 0.00621529808267951,
+          "ads_ratio": 0.44558706755958755,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": -0.01999999999999602,
-          "accuracy": 84.92,
-          "ads_l4": 0.006160788703709841,
-          "ads_ratio": 0.4550737704025588,
+          "acc_drop": -0.0800000000000125,
+          "accuracy": 85.04,
+          "ads_l4": 0.00626287842169404,
+          "ads_ratio": 0.44899819659200807,
           "evades_detection": true
         }
       },
       "0.1": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 0.0800000000000125,
-          "accuracy": 84.82,
-          "ads_l4": 0.023289969190955162,
-          "ads_ratio": 1.720340463211343,
+          "acc_drop": 0.35999999999999943,
+          "accuracy": 84.6,
+          "ads_l4": 0.02316703274846077,
+          "ads_ratio": 1.660890603977789,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.12000000000000455,
-          "accuracy": 84.78,
-          "ads_l4": 0.02318205125629902,
-          "ads_ratio": 1.7123689803736903,
+          "acc_drop": 0.3199999999999932,
+          "accuracy": 84.64,
+          "ads_l4": 0.023328086361289024,
+          "ads_ratio": 1.6724368574487218,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.020000000000010232,
-          "accuracy": 84.88,
-          "ads_l4": 0.023375071585178375,
-          "ads_ratio": 1.7266266498137373,
+          "acc_drop": 0.09999999999999432,
+          "accuracy": 84.86,
+          "ads_l4": 0.023149199783802032,
+          "ads_ratio": 1.659612123312425,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": -0.05999999999998806,
-          "accuracy": 84.96,
-          "ads_l4": 0.022772081196308136,
-          "ads_ratio": 1.6820860685705523,
+          "acc_drop": 0.23999999999999488,
+          "accuracy": 84.72,
+          "ads_l4": 0.02340145967900753,
+          "ads_ratio": 1.6776971363676714,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 0.060000000000002274,
-          "accuracy": 84.84,
-          "ads_l4": 0.022686082869768143,
-          "ads_ratio": 1.6757337028932002,
+          "acc_drop": 0.14000000000000057,
+          "accuracy": 84.82,
+          "ads_l4": 0.02340026944875717,
+          "ads_ratio": 1.6776118063963774,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": -0.03999999999999204,
-          "accuracy": 84.94,
-          "ads_l4": 0.02341228723526001,
-          "ads_ratio": 1.7293756267735272,
+          "acc_drop": 0.21999999999999886,
+          "accuracy": 84.74,
+          "ads_l4": 0.02342570200562477,
+          "ads_ratio": 1.679435116925402,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.0800000000000125,
-          "accuracy": 84.82,
-          "ads_l4": 0.02283943071961403,
-          "ads_ratio": 1.6870609188664523,
+          "acc_drop": 0.2599999999999909,
+          "accuracy": 84.7,
+          "ads_l4": 0.023274090141057968,
+          "ads_ratio": 1.6685657611453752,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.14000000000000057,
-          "accuracy": 84.76,
-          "ads_l4": 0.023042697459459305,
-          "ads_ratio": 1.7020754512822651,
+          "acc_drop": 0.21999999999999886,
+          "accuracy": 84.74,
+          "ads_l4": 0.023647747933864594,
+          "ads_ratio": 1.6953540306624042,
           "evades_detection": true
         }
       },
       "0.2": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 1.0,
-          "accuracy": 83.9,
-          "ads_l4": 0.08659373223781586,
-          "ads_ratio": 6.396346006634352,
-          "evades_detection": false
+          "acc_drop": 1.1599999999999966,
+          "accuracy": 83.8,
+          "ads_l4": 0.08538970351219177,
+          "ads_ratio": 6.12175748960649,
+          "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.9400000000000119,
-          "accuracy": 83.96,
-          "ads_l4": 0.08699919283390045,
-          "ads_ratio": 6.42629582167975,
+          "acc_drop": 1.5,
+          "accuracy": 83.46,
+          "ads_l4": 0.08717073500156403,
+          "ads_ratio": 6.249443175477654,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 1.0400000000000063,
-          "accuracy": 83.86,
-          "ads_l4": 0.09010380506515503,
-          "ads_ratio": 6.655621588503105,
+          "acc_drop": 1.519999999999996,
+          "accuracy": 83.44,
+          "ads_l4": 0.08726844936609268,
+          "ads_ratio": 6.256448512401093,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 1.1400000000000006,
-          "accuracy": 83.76,
-          "ads_l4": 0.08551686257123947,
-          "ads_ratio": 6.31680178543651,
+          "acc_drop": 1.4599999999999937,
+          "accuracy": 83.5,
+          "ads_l4": 0.08788523823022842,
+          "ads_ratio": 6.300667331453319,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 0.9400000000000119,
-          "accuracy": 83.96,
-          "ads_l4": 0.08668739348649979,
-          "ads_ratio": 6.403264402902924,
+          "acc_drop": 1.3399999999999892,
+          "accuracy": 83.62,
+          "ads_l4": 0.08782237023115158,
+          "ads_ratio": 6.296160199698842,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 1.3400000000000034,
-          "accuracy": 83.56,
-          "ads_l4": 0.08498795330524445,
-          "ads_ratio": 6.277733291863233,
+          "acc_drop": 1.2199999999999989,
+          "accuracy": 83.74,
+          "ads_l4": 0.08688818663358688,
+          "ads_ratio": 6.229186721634912,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 1.1800000000000068,
-          "accuracy": 83.72,
-          "ads_l4": 0.08609170466661453,
-          "ads_ratio": 6.359263160482681,
+          "acc_drop": 1.5,
+          "accuracy": 83.46,
+          "ads_l4": 0.08730815351009369,
+          "ads_ratio": 6.259294981365256,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 1.1200000000000045,
-          "accuracy": 83.78,
-          "ads_l4": 0.08471068739891052,
-          "ads_ratio": 6.257252725580627,
-          "evades_detection": false
+          "acc_drop": 1.3399999999999892,
+          "accuracy": 83.62,
+          "ads_l4": 0.08594923466444016,
+          "ads_ratio": 6.161871389538882,
+          "evades_detection": true
         }
       }
     },
@@ -806,198 +1406,198 @@
       "0.05": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 0.0,
-          "accuracy": 84.22,
-          "ads_l4": 0.006915544159710407,
-          "ads_ratio": 0.5108246535463442,
+          "acc_drop": -0.11999999999999034,
+          "accuracy": 84.3,
+          "ads_l4": 0.006807948462665081,
+          "ads_ratio": 0.4880753507268525,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.14000000000000057,
-          "accuracy": 84.08,
-          "ads_l4": 0.006866616662591696,
-          "ads_ratio": 0.5072105674835053,
+          "acc_drop": -0.11999999999999034,
+          "accuracy": 84.3,
+          "ads_l4": 0.00674366345629096,
+          "ads_ratio": 0.4834666309040464,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.060000000000002274,
-          "accuracy": 84.16,
-          "ads_l4": 0.007118327543139458,
-          "ads_ratio": 0.5258034822824241,
+          "acc_drop": -0.0799999999999983,
+          "accuracy": 84.26,
+          "ads_l4": 0.006646469701081514,
+          "ads_ratio": 0.47649861749700306,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 0.0799999999999983,
-          "accuracy": 84.14,
-          "ads_l4": 0.007105750497430563,
-          "ads_ratio": 0.5248744642805853,
+          "acc_drop": -0.1799999999999926,
+          "accuracy": 84.36,
+          "ads_l4": 0.006635670084506273,
+          "ads_ratio": 0.4757243715289875,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 0.060000000000002274,
-          "accuracy": 84.16,
-          "ads_l4": 0.0071235825307667255,
-          "ads_ratio": 0.5261916480105426,
+          "acc_drop": -0.13999999999998636,
+          "accuracy": 84.32,
+          "ads_l4": 0.006618214771151543,
+          "ads_ratio": 0.4744729654358923,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 0.14000000000000057,
-          "accuracy": 84.08,
-          "ads_l4": 0.007029517088085413,
-          "ads_ratio": 0.5192433954857005,
+          "acc_drop": -0.11999999999999034,
+          "accuracy": 84.3,
+          "ads_l4": 0.006524370983242989,
+          "ads_ratio": 0.46774511784007283,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.0799999999999983,
-          "accuracy": 84.14,
-          "ads_l4": 0.006893535610288382,
-          "ads_ratio": 0.5091989666337998,
+          "acc_drop": -0.11999999999999034,
+          "accuracy": 84.3,
+          "ads_l4": 0.006480243057012558,
+          "ads_ratio": 0.46458149913909713,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.03999999999999204,
-          "accuracy": 84.18,
-          "ads_l4": 0.00693677831441164,
-          "ads_ratio": 0.5123931388987768,
+          "acc_drop": -0.1599999999999966,
+          "accuracy": 84.34,
+          "ads_l4": 0.006831084378063679,
+          "ads_ratio": 0.48973401046619736,
           "evades_detection": true
         }
       },
       "0.1": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 0.4200000000000017,
-          "accuracy": 83.8,
-          "ads_l4": 0.025744246318936348,
-          "ads_ratio": 1.9016284768013259,
+          "acc_drop": 0.2600000000000051,
+          "accuracy": 83.92,
+          "ads_l4": 0.025091873481869698,
+          "ads_ratio": 1.7988862602616096,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.4399999999999977,
-          "accuracy": 83.78,
-          "ads_l4": 0.025971725583076477,
-          "ads_ratio": 1.9184314952782153,
+          "acc_drop": 0.2600000000000051,
+          "accuracy": 83.92,
+          "ads_l4": 0.025297315791249275,
+          "ads_ratio": 1.8136148275758985,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.2600000000000051,
-          "accuracy": 83.96,
-          "ads_l4": 0.026256686076521873,
-          "ads_ratio": 1.9394804311214267,
+          "acc_drop": 0.4200000000000017,
+          "accuracy": 83.76,
+          "ads_l4": 0.025901926681399345,
+          "ads_ratio": 1.856960583478955,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 0.29999999999999716,
-          "accuracy": 83.92,
-          "ads_l4": 0.025187812745571136,
-          "ads_ratio": 1.8605268684865666,
+          "acc_drop": 0.46000000000000796,
+          "accuracy": 83.72,
+          "ads_l4": 0.025515202432870865,
+          "ads_ratio": 1.8292355537919314,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 0.539999999999992,
-          "accuracy": 83.68,
-          "ads_l4": 0.02646852843463421,
-          "ads_ratio": 1.9551284114813274,
+          "acc_drop": 0.20000000000000284,
+          "accuracy": 83.98,
+          "ads_l4": 0.026333440095186234,
+          "ads_ratio": 1.8878966374065622,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
           "acc_drop": 0.480000000000004,
-          "accuracy": 83.74,
-          "ads_l4": 0.025326894596219063,
-          "ads_ratio": 1.8708003099585657,
+          "accuracy": 83.7,
+          "ads_l4": 0.026204854249954224,
+          "ads_ratio": 1.878678062698734,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.35999999999999943,
-          "accuracy": 83.86,
-          "ads_l4": 0.025499820709228516,
-          "ads_ratio": 1.8835736969440475,
+          "acc_drop": 0.18000000000000682,
+          "accuracy": 84.0,
+          "ads_l4": 0.025600461289286613,
+          "ads_ratio": 1.8353479305932383,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.480000000000004,
-          "accuracy": 83.74,
-          "ads_l4": 0.02554212510585785,
-          "ads_ratio": 1.8866985600426835,
+          "acc_drop": 0.2400000000000091,
+          "accuracy": 83.94,
+          "ads_l4": 0.025252414867281914,
+          "ads_ratio": 1.8103957911314377,
           "evades_detection": true
         }
       },
       "0.2": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 1.6799999999999926,
-          "accuracy": 82.54,
-          "ads_l4": 0.09299997985363007,
-          "ads_ratio": 6.869550882968686,
+          "acc_drop": 1.3200000000000074,
+          "accuracy": 82.86,
+          "ads_l4": 0.08981441706418991,
+          "ads_ratio": 6.4389739947843125,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 1.2999999999999972,
-          "accuracy": 82.92,
-          "ads_l4": 0.09273052960634232,
-          "ads_ratio": 6.849647629364922,
+          "acc_drop": 1.1800000000000068,
+          "accuracy": 83.0,
+          "ads_l4": 0.09418930858373642,
+          "ads_ratio": 6.752618659473608,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 1.3199999999999932,
-          "accuracy": 82.9,
-          "ads_l4": 0.09255114942789078,
-          "ads_ratio": 6.836397505384162,
+          "acc_drop": 1.3600000000000136,
+          "accuracy": 82.82,
+          "ads_l4": 0.09142299741506577,
+          "ads_ratio": 6.554296315925785,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 1.1200000000000045,
-          "accuracy": 83.1,
-          "ads_l4": 0.09081980586051941,
-          "ads_ratio": 6.708509813895658,
+          "acc_drop": 1.5200000000000102,
+          "accuracy": 82.66,
+          "ads_l4": 0.09458128362894058,
+          "ads_ratio": 6.780720129206136,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 1.4000000000000057,
-          "accuracy": 82.82,
-          "ads_l4": 0.09523621201515198,
-          "ads_ratio": 7.034732753372136,
+          "acc_drop": 1.220000000000013,
+          "accuracy": 82.96,
+          "ads_l4": 0.08956804871559143,
+          "ads_ratio": 6.421311358410135,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 1.3199999999999932,
+          "acc_drop": 1.2800000000000011,
           "accuracy": 82.9,
-          "ads_l4": 0.094723641872406,
-          "ads_ratio": 6.996871168001626,
+          "ads_l4": 0.09148578345775604,
+          "ads_ratio": 6.558797572064086,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 1.1799999999999926,
-          "accuracy": 83.04,
-          "ads_l4": 0.09221918880939484,
-          "ads_ratio": 6.811876851041132,
+          "acc_drop": 1.3400000000000034,
+          "accuracy": 82.84,
+          "ads_l4": 0.09134017676115036,
+          "ads_ratio": 6.548358738705736,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 1.1799999999999926,
-          "accuracy": 83.04,
-          "ads_l4": 0.09063895046710968,
-          "ads_ratio": 6.695150721458833,
+          "acc_drop": 1.1600000000000108,
+          "accuracy": 83.02,
+          "ads_l4": 0.09245271235704422,
+          "ads_ratio": 6.628118625864082,
           "evades_detection": false
         }
       }
@@ -1006,198 +1606,798 @@
       "0.05": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": -0.060000000000002274,
-          "accuracy": 84.52,
-          "ads_l4": 0.01026774849742651,
-          "ads_ratio": 0.7584390971654978,
+          "acc_drop": -0.04000000000000625,
+          "accuracy": 84.4,
+          "ads_l4": 0.010039645247161388,
+          "ads_ratio": 0.7197621136607794,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": -0.22000000000001307,
-          "accuracy": 84.68,
-          "ads_l4": 0.01016511581838131,
-          "ads_ratio": 0.7508580158355229,
+          "acc_drop": 0.0,
+          "accuracy": 84.36,
+          "ads_l4": 0.010185051709413528,
+          "ads_ratio": 0.7301865918205159,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": -0.060000000000002274,
-          "accuracy": 84.52,
-          "ads_l4": 0.010548618622124195,
-          "ads_ratio": 0.7791858931987143,
+          "acc_drop": -0.18000000000000682,
+          "accuracy": 84.54,
+          "ads_l4": 0.010157001204788685,
+          "ads_ratio": 0.7281755954156641,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": -0.12000000000000455,
-          "accuracy": 84.58,
-          "ads_l4": 0.010225776582956314,
-          "ads_ratio": 0.7553387932454065,
+          "acc_drop": -0.09999999999999432,
+          "accuracy": 84.46,
+          "ads_l4": 0.010353876277804375,
+          "ads_ratio": 0.7422899605343877,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": -0.12000000000000455,
-          "accuracy": 84.58,
-          "ads_l4": 0.01018483191728592,
-          "ads_ratio": 0.7523143682439001,
+          "acc_drop": -0.01999999999999602,
+          "accuracy": 84.38,
+          "ads_l4": 0.010213500820100307,
+          "ads_ratio": 0.7322261650858636,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": -0.1600000000000108,
-          "accuracy": 84.62,
-          "ads_l4": 0.010159664787352085,
-          "ads_ratio": 0.7504553691351814,
+          "acc_drop": 0.0,
+          "accuracy": 84.36,
+          "ads_l4": 0.010223760269582272,
+          "ads_ratio": 0.7329616854018053,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": -0.14000000000000057,
-          "accuracy": 84.6,
-          "ads_l4": 0.010201867669820786,
-          "ads_ratio": 0.7535727337731413,
+          "acc_drop": -0.060000000000002274,
+          "accuracy": 84.42,
+          "ads_l4": 0.009985183365643024,
+          "ads_ratio": 0.7158576331746104,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": -0.12000000000000455,
-          "accuracy": 84.58,
-          "ads_l4": 0.010067624039947987,
-          "ads_ratio": 0.7436566730645581,
+          "acc_drop": -0.01999999999999602,
+          "accuracy": 84.38,
+          "ads_l4": 0.0102615375071764,
+          "ads_ratio": 0.73567001061745,
           "evades_detection": true
         }
       },
       "0.1": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 0.3199999999999932,
-          "accuracy": 84.14,
-          "ads_l4": 0.038901809602975845,
-          "ads_ratio": 2.873527079552064,
+          "acc_drop": 0.6200000000000045,
+          "accuracy": 83.74,
+          "ads_l4": 0.04037288576364517,
+          "ads_ratio": 2.8944123897248812,
           "evades_detection": true
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 0.2599999999999909,
-          "accuracy": 84.2,
-          "ads_l4": 0.03890944644808769,
-          "ads_ratio": 2.8740911839332024,
+          "acc_drop": 0.480000000000004,
+          "accuracy": 83.88,
+          "ads_l4": 0.03935045003890991,
+          "ads_ratio": 2.821111941332463,
           "evades_detection": true
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 0.2799999999999869,
-          "accuracy": 84.18,
-          "ads_l4": 0.03823648393154144,
-          "ads_ratio": 2.8243820306944487,
+          "acc_drop": 0.6200000000000045,
+          "accuracy": 83.74,
+          "ads_l4": 0.039302483201026917,
+          "ads_ratio": 2.8176731034283,
           "evades_detection": true
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 0.23999999999999488,
-          "accuracy": 84.22,
-          "ads_l4": 0.03823753073811531,
-          "ads_ratio": 2.8244593542705947,
+          "acc_drop": 0.5400000000000063,
+          "accuracy": 83.82,
+          "ads_l4": 0.03887617960572243,
+          "ads_ratio": 2.7871105517381087,
           "evades_detection": true
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 0.14000000000000057,
-          "accuracy": 84.32,
-          "ads_l4": 0.03763382136821747,
-          "ads_ratio": 2.779865664663722,
+          "acc_drop": 0.4000000000000057,
+          "accuracy": 83.96,
+          "ads_l4": 0.04000604897737503,
+          "ads_ratio": 2.8681131317178337,
           "evades_detection": true
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 0.11999999999999034,
-          "accuracy": 84.34,
-          "ads_l4": 0.03827819228172302,
-          "ads_ratio": 2.8274628661340686,
+          "acc_drop": 0.45999999999999375,
+          "accuracy": 83.9,
+          "ads_l4": 0.03944236785173416,
+          "ads_ratio": 2.827701711948129,
           "evades_detection": true
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 0.11999999999999034,
-          "accuracy": 84.34,
-          "ads_l4": 0.03763658553361893,
-          "ads_ratio": 2.780069842932407,
+          "acc_drop": 0.35999999999999943,
+          "accuracy": 84.0,
+          "ads_l4": 0.039664436131715775,
+          "ads_ratio": 2.8436222281259065,
           "evades_detection": true
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 0.23999999999999488,
-          "accuracy": 84.22,
-          "ads_l4": 0.03961523249745369,
-          "ads_ratio": 2.926224885319374,
+          "acc_drop": 0.35999999999999943,
+          "accuracy": 84.0,
+          "ads_l4": 0.03933890163898468,
+          "ads_ratio": 2.8202840135984686,
           "evades_detection": true
         }
       },
       "0.2": {
         "0.0": {
           "lambda": 0.0,
-          "acc_drop": 1.8399999999999892,
-          "accuracy": 82.62,
-          "ads_l4": 0.13905638456344604,
-          "ads_ratio": 10.271560390267842,
+          "acc_drop": 1.7000000000000028,
+          "accuracy": 82.66,
+          "ads_l4": 0.14222615957260132,
+          "ads_ratio": 10.196475942292349,
           "evades_detection": false
         },
         "0.1": {
           "lambda": 0.1,
-          "acc_drop": 1.8199999999999932,
-          "accuracy": 82.64,
-          "ads_l4": 0.142081618309021,
-          "ads_ratio": 10.495022773601788,
+          "acc_drop": 1.7600000000000051,
+          "accuracy": 82.6,
+          "ads_l4": 0.1460827738046646,
+          "ads_ratio": 10.472964278573848,
           "evades_detection": false
         },
         "0.5": {
           "lambda": 0.5,
-          "acc_drop": 1.7199999999999989,
-          "accuracy": 82.74,
-          "ads_l4": 0.14422279596328735,
-          "ads_ratio": 10.653183333083717,
+          "acc_drop": 1.6400000000000006,
+          "accuracy": 82.72,
+          "ads_l4": 0.14487379789352417,
+          "ads_ratio": 10.386290393616266,
           "evades_detection": false
         },
         "1.0": {
           "lambda": 1.0,
-          "acc_drop": 1.5999999999999943,
-          "accuracy": 82.86,
-          "ads_l4": 0.1430475264787674,
-          "ads_ratio": 10.566370695728128,
+          "acc_drop": 1.7000000000000028,
+          "accuracy": 82.66,
+          "ads_l4": 0.14521552622318268,
+          "ads_ratio": 10.410789576485532,
           "evades_detection": false
         },
         "2.0": {
           "lambda": 2.0,
-          "acc_drop": 1.7999999999999972,
-          "accuracy": 82.66,
-          "ads_l4": 0.14207424223423004,
-          "ads_ratio": 10.49447793132147,
+          "acc_drop": 2.019999999999996,
+          "accuracy": 82.34,
+          "ads_l4": 0.14216947555541992,
+          "ads_ratio": 10.192412152485751,
           "evades_detection": false
         },
         "5.0": {
           "lambda": 5.0,
-          "acc_drop": 1.7399999999999949,
-          "accuracy": 82.72,
-          "ads_l4": 0.1442776620388031,
-          "ads_ratio": 10.657236079096107,
+          "acc_drop": 1.7800000000000011,
+          "accuracy": 82.58,
+          "ads_l4": 0.1447647213935852,
+          "ads_ratio": 10.378470482631961,
           "evades_detection": false
         },
         "10.0": {
           "lambda": 10.0,
-          "acc_drop": 1.779999999999987,
-          "accuracy": 82.68,
-          "ads_l4": 0.14212234318256378,
-          "ads_ratio": 10.498030963404032,
+          "acc_drop": 1.7000000000000028,
+          "accuracy": 82.66,
+          "ads_l4": 0.14621856808662415,
+          "ads_ratio": 10.482699640431766,
           "evades_detection": false
         },
         "50.0": {
           "lambda": 50.0,
-          "acc_drop": 1.4799999999999898,
+          "acc_drop": 1.980000000000004,
+          "accuracy": 82.38,
+          "ads_l4": 0.1484115719795227,
+          "ads_ratio": 10.63992044638258,
+          "evades_detection": false
+        }
+      }
+    },
+    "789": {
+      "0.05": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": -0.05999999999998806,
+          "accuracy": 84.74,
+          "ads_l4": 0.005409423727542162,
+          "ads_ratio": 0.38781233399888976,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": -0.01999999999999602,
+          "accuracy": 84.7,
+          "ads_l4": 0.005443072412163019,
+          "ads_ratio": 0.39022467504963165,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.0800000000000125,
+          "accuracy": 84.6,
+          "ads_l4": 0.005516896955668926,
+          "ads_ratio": 0.3955173032417361,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": -0.05999999999998806,
+          "accuracy": 84.74,
+          "ads_l4": 0.005460895132273436,
+          "ads_ratio": 0.3915024212629737,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.04000000000000625,
+          "accuracy": 84.64,
+          "ads_l4": 0.00553875369951129,
+          "ads_ratio": 0.397084256630868,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": -0.05999999999998806,
+          "accuracy": 84.74,
+          "ads_l4": 0.005484444554895163,
+          "ads_ratio": 0.3931907261566648,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.0,
+          "accuracy": 84.68,
+          "ads_l4": 0.0053307292982935905,
+          "ads_ratio": 0.38217057402282933,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.020000000000010232,
+          "accuracy": 84.66,
+          "ads_l4": 0.005568312481045723,
+          "ads_ratio": 0.39920338440388137,
+          "evades_detection": true
+        }
+      },
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.12000000000000455,
+          "accuracy": 84.56,
+          "ads_l4": 0.021549716591835022,
+          "ads_ratio": 1.5449419955665697,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.2600000000000051,
+          "accuracy": 84.42,
+          "ads_l4": 0.021812232211232185,
+          "ads_ratio": 1.5637622618642952,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.2400000000000091,
+          "accuracy": 84.44,
+          "ads_l4": 0.021372748538851738,
+          "ads_ratio": 1.532254804263501,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.12000000000000455,
+          "accuracy": 84.56,
+          "ads_l4": 0.0216247346252203,
+          "ads_ratio": 1.5503201874192478,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.30000000000001137,
+          "accuracy": 84.38,
+          "ads_l4": 0.02151981182396412,
+          "ads_ratio": 1.5427980633457195,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.1600000000000108,
+          "accuracy": 84.52,
+          "ads_l4": 0.021881399676203728,
+          "ads_ratio": 1.5687210148439934,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.14000000000000057,
+          "accuracy": 84.54,
+          "ads_l4": 0.02151084691286087,
+          "ads_ratio": 1.5421553510580237,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.2400000000000091,
+          "accuracy": 84.44,
+          "ads_l4": 0.021852415055036545,
+          "ads_ratio": 1.5666430497684,
+          "evades_detection": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.8400000000000034,
+          "accuracy": 82.84,
+          "ads_l4": 0.08260858803987503,
+          "ads_ratio": 5.922373796118379,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 1.6800000000000068,
+          "accuracy": 83.0,
+          "ads_l4": 0.08164773136377335,
+          "ads_ratio": 5.853488072062386,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 1.7000000000000028,
           "accuracy": 82.98,
-          "ads_l4": 0.14137080311775208,
-          "ads_ratio": 10.442517588842671,
+          "ads_l4": 0.08467422425746918,
+          "ads_ratio": 6.070463360383629,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.6000000000000085,
+          "accuracy": 83.08,
+          "ads_l4": 0.08161847293376923,
+          "ads_ratio": 5.8513904770872935,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 1.3600000000000136,
+          "accuracy": 83.32,
+          "ads_l4": 0.08111336082220078,
+          "ads_ratio": 5.81517798629625,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.3400000000000034,
+          "accuracy": 83.34,
+          "ads_l4": 0.08397561311721802,
+          "ads_ratio": 6.020378539799325,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.460000000000008,
+          "accuracy": 83.22,
+          "ads_l4": 0.08150866627693176,
+          "ads_ratio": 5.8435182197043245,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.5800000000000125,
+          "accuracy": 83.1,
+          "ads_l4": 0.08343423902988434,
+          "ads_ratio": 5.981566355923541,
+          "evades_detection": true
+        }
+      }
+    },
+    "1011": {
+      "0.05": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.21999999999999886,
+          "accuracy": 84.14,
+          "ads_l4": 0.0069128843024373055,
+          "ads_ratio": 0.49559840955749995,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.2600000000000051,
+          "accuracy": 84.1,
+          "ads_l4": 0.0068731121718883514,
+          "ads_ratio": 0.4927470665026443,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.14000000000000057,
+          "accuracy": 84.22,
+          "ads_l4": 0.006863806862384081,
+          "ads_ratio": 0.4920799503773056,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.14000000000000057,
+          "accuracy": 84.22,
+          "ads_l4": 0.007068763021379709,
+          "ads_ratio": 0.506773664604728,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.1799999999999926,
+          "accuracy": 84.18,
+          "ads_l4": 0.0069349380210042,
+          "ads_ratio": 0.4971794844559657,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.20000000000000284,
+          "accuracy": 84.16,
+          "ads_l4": 0.006757567171007395,
+          "ads_ratio": 0.48446341583475566,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.14000000000000057,
+          "accuracy": 84.22,
+          "ads_l4": 0.0069245826452970505,
+          "ads_ratio": 0.49643708699836264,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.12000000000000455,
+          "accuracy": 84.24,
+          "ads_l4": 0.006639321334660053,
+          "ads_ratio": 0.47598613690649744,
+          "evades_detection": true
+        }
+      },
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.5999999999999943,
+          "accuracy": 83.76,
+          "ads_l4": 0.02649577520787716,
+          "ads_ratio": 1.8995347641486218,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.480000000000004,
+          "accuracy": 83.88,
+          "ads_l4": 0.02636871673166752,
+          "ads_ratio": 1.890425689560451,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.4000000000000057,
+          "accuracy": 83.96,
+          "ads_l4": 0.02603132836520672,
+          "ads_ratio": 1.866237647275088,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.45999999999999375,
+          "accuracy": 83.9,
+          "ads_l4": 0.02585419826209545,
+          "ads_ratio": 1.853538838276397,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.5,
+          "accuracy": 83.86,
+          "ads_l4": 0.02630551904439926,
+          "ads_ratio": 1.8858949218045349,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.4200000000000017,
+          "accuracy": 83.94,
+          "ads_l4": 0.025657568126916885,
+          "ads_ratio": 1.839442033237838,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.45999999999999375,
+          "accuracy": 83.9,
+          "ads_l4": 0.025641027837991714,
+          "ads_ratio": 1.8382562270639888,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.480000000000004,
+          "accuracy": 83.88,
+          "ads_l4": 0.025807296857237816,
+          "ads_ratio": 1.8501763833825315,
+          "evades_detection": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.4200000000000017,
+          "accuracy": 82.94,
+          "ads_l4": 0.09676297008991241,
+          "ads_ratio": 6.937129565977638,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 1.4599999999999937,
+          "accuracy": 82.9,
+          "ads_l4": 0.09914001822471619,
+          "ads_ratio": 7.10754486927369,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 1.3599999999999994,
+          "accuracy": 83.0,
+          "ads_l4": 0.09695392847061157,
+          "ads_ratio": 6.950819751669421,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.1400000000000006,
+          "accuracy": 83.22,
+          "ads_l4": 0.09663306921720505,
+          "ads_ratio": 6.927816714337519,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 1.4000000000000057,
+          "accuracy": 82.96,
+          "ads_l4": 0.09838183224201202,
+          "ads_ratio": 7.053189009875827,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.5400000000000063,
+          "accuracy": 82.82,
+          "ads_l4": 0.09877417981624603,
+          "ads_ratio": 7.081317186954614,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.5400000000000063,
+          "accuracy": 82.82,
+          "ads_l4": 0.09546195715665817,
+          "ads_ratio": 6.843857364053586,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.3400000000000034,
+          "accuracy": 83.02,
+          "ads_l4": 0.09669054299592972,
+          "ads_ratio": 6.931937123718183,
+          "evades_detection": false
+        }
+      }
+    },
+    "1213": {
+      "0.05": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.060000000000002274,
+          "accuracy": 84.74,
+          "ads_l4": 0.006217903457581997,
+          "ads_ratio": 0.44577385206247855,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.1599999999999966,
+          "accuracy": 84.64,
+          "ads_l4": 0.006262525916099548,
+          "ads_ratio": 0.44897292476561157,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": -0.01999999999999602,
+          "accuracy": 84.82,
+          "ads_l4": 0.006470383144915104,
+          "ads_ratio": 0.46387462245201705,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.0799999999999983,
+          "accuracy": 84.72,
+          "ads_l4": 0.006357998587191105,
+          "ads_ratio": 0.4558175502329435,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": -0.060000000000002274,
+          "accuracy": 84.86,
+          "ads_l4": 0.0063675823621451855,
+          "ads_ratio": 0.45650463009961,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.060000000000002274,
+          "accuracy": 84.74,
+          "ads_l4": 0.0061284014955163,
+          "ads_ratio": 0.4393572785872945,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.0,
+          "accuracy": 84.8,
+          "ads_l4": 0.006651108618825674,
+          "ads_ratio": 0.47683119072627916,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.01999999999999602,
+          "accuracy": 84.78,
+          "ads_l4": 0.006295676808804274,
+          "ads_ratio": 0.4513495781249164,
+          "evades_detection": true
+        }
+      },
+      "0.1": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 0.23999999999999488,
+          "accuracy": 84.56,
+          "ads_l4": 0.025250405073165894,
+          "ads_ratio": 1.8102517049983764,
+          "evades_detection": true
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 0.29999999999999716,
+          "accuracy": 84.5,
+          "ads_l4": 0.025098443031311035,
+          "ads_ratio": 1.7993572443128671,
+          "evades_detection": true
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 0.2599999999999909,
+          "accuracy": 84.54,
+          "ads_l4": 0.02498040348291397,
+          "ads_ratio": 1.7908947545775993,
+          "evades_detection": true
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 0.3999999999999915,
+          "accuracy": 84.4,
+          "ads_l4": 0.024744916707277298,
+          "ads_ratio": 1.7740122397876132,
+          "evades_detection": true
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 0.29999999999999716,
+          "accuracy": 84.5,
+          "ads_l4": 0.025053994730114937,
+          "ads_ratio": 1.7961706572941096,
+          "evades_detection": true
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 0.29999999999999716,
+          "accuracy": 84.5,
+          "ads_l4": 0.025134261697530746,
+          "ads_ratio": 1.801925155655561,
+          "evades_detection": true
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 0.23999999999999488,
+          "accuracy": 84.56,
+          "ads_l4": 0.025347376242280006,
+          "ads_ratio": 1.8172037607660307,
+          "evades_detection": true
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 0.28000000000000114,
+          "accuracy": 84.52,
+          "ads_l4": 0.0253037977963686,
+          "ads_ratio": 1.8140795354007853,
+          "evades_detection": true
+        }
+      },
+      "0.2": {
+        "0.0": {
+          "lambda": 0.0,
+          "acc_drop": 1.5999999999999943,
+          "accuracy": 83.2,
+          "ads_l4": 0.09600815176963806,
+          "ads_ratio": 6.883015140989946,
+          "evades_detection": false
+        },
+        "0.1": {
+          "lambda": 0.1,
+          "acc_drop": 1.7199999999999989,
+          "accuracy": 83.08,
+          "ads_l4": 0.09416775405406952,
+          "ads_ratio": 6.751073372419128,
+          "evades_detection": false
+        },
+        "0.5": {
+          "lambda": 0.5,
+          "acc_drop": 1.5799999999999983,
+          "accuracy": 83.22,
+          "ads_l4": 0.09479976445436478,
+          "ads_ratio": 6.796383453639451,
+          "evades_detection": false
+        },
+        "1.0": {
+          "lambda": 1.0,
+          "acc_drop": 1.9200000000000017,
+          "accuracy": 82.88,
+          "ads_l4": 0.09250030666589737,
+          "ads_ratio": 6.631530756421987,
+          "evades_detection": false
+        },
+        "2.0": {
+          "lambda": 2.0,
+          "acc_drop": 1.539999999999992,
+          "accuracy": 83.26,
+          "ads_l4": 0.0951823815703392,
+          "ads_ratio": 6.8238140348339815,
+          "evades_detection": false
+        },
+        "5.0": {
+          "lambda": 5.0,
+          "acc_drop": 1.7800000000000011,
+          "accuracy": 83.02,
+          "ads_l4": 0.09409778565168381,
+          "ads_ratio": 6.7460571986449755,
+          "evades_detection": false
+        },
+        "10.0": {
+          "lambda": 10.0,
+          "acc_drop": 1.5999999999999943,
+          "accuracy": 83.2,
+          "ads_l4": 0.0969790518283844,
+          "ads_ratio": 6.9526208951010515,
+          "evades_detection": false
+        },
+        "50.0": {
+          "lambda": 50.0,
+          "acc_drop": 1.5999999999999943,
+          "accuracy": 83.2,
+          "ads_l4": 0.09842459857463837,
+          "ads_ratio": 7.05625501322623,
           "evades_detection": false
         }
       }
