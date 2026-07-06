@@ -141,7 +141,7 @@ not part of the primary n=6 ImageNet-100/CIFAR-100 sweep.
 Model checkpoints are **not redistributed in this repository**. They are hosted
 separately on Google Drive and should be passed to scripts via `--models_dir`.
 
-- **Checkpoint root:** [Google Drive — `ads-vit-forensics` checkpoints](PASTE_GOOGLE_DRIVE_FOLDER_LINK_HERE)
+- **Checkpoint root:** [Google Drive — `ads-vit-forensics` checkpoints]([PASTE_GOOGLE_DRIVE_FOLDER_LINK_HERE](https://drive.google.com/drive/folders/1UojvGk3oeoQui7jy8DSFM_0U6Xkwx-IB?usp=drive_link))
 
 Each script expects the checkpoint folders directly inside the corresponding
 `--models_dir`, so use the dataset-specific subfolder rather than the parent
