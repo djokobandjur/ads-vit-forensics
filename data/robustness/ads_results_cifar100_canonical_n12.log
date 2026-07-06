@@ -1,0 +1,631 @@
+Device: cuda
+Loaded reference indices from /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_ref_indices_cifar100.json
+Reference images: 256
+Validation images: 10000
+Protocol cells: 3 PE types × 12 seeds × 11 epsilons = 396 evaluations
+Attention Divergence Score (ADS) Experiment — CIFAR-100
+Attack: PGD (T=20 steps)
+PE types: ['alibi', 'alibi_2d', 'alibi_2d_matched']
+Seeds: [1, 5, 7, 11, 13, 21, 42, 99, 123, 456, 2024, 31337]
+Epsilons: [0.0, 0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1.0]
+Reference images: 256
+Results: /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_results_cifar100_canonical_n12.json
+
+
+============================================================
+PE TYPE: ALIBI
+============================================================
+
+  Seed 1:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.03%
+    ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.7%, ADS(mean)=0.0011, ADS(mid)=0.0011, ADS(L4)=0.0012
+    ε=0.010: acc=67.7%, ADS(mean)=0.0041, ADS(mid)=0.0042, ADS(L4)=0.0047
+    ε=0.050: acc=65.1%, ADS(mean)=0.0944, ADS(mid)=0.0875, ADS(L4)=0.1143
+    ε=0.100: acc=51.7%, ADS(mean)=0.3638, ADS(mid)=0.3682, ADS(L4)=0.4911
+    ε=0.150: acc=31.6%, ADS(mean)=0.8796, ADS(mid)=0.9342, ADS(L4)=1.0434
+    ε=0.200: acc=24.7%, ADS(mean)=1.3488, ADS(mid)=1.4037, ADS(L4)=1.5805
+    ε=0.300: acc=13.7%, ADS(mean)=2.7599, ADS(mid)=2.8220, ADS(L4)=3.1314
+    ε=0.500: acc=7.3%, ADS(mean)=5.4972, ADS(mid)=5.2473, ADS(L4)=6.7069
+    ε=1.000: acc=2.0%, ADS(mean)=11.5156, ADS(mid)=11.2673, ADS(L4)=12.5546
+
+  Seed 5:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.72%
+    ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.5%, ADS(mean)=0.0010, ADS(mid)=0.0010, ADS(L4)=0.0009
+    ε=0.010: acc=67.3%, ADS(mean)=0.0038, ADS(mid)=0.0037, ADS(L4)=0.0047
+    ε=0.050: acc=61.6%, ADS(mean)=0.0918, ADS(mid)=0.0828, ADS(L4)=0.0917
+    ε=0.100: acc=43.0%, ADS(mean)=0.3736, ADS(mid)=0.3605, ADS(L4)=0.3510
+    ε=0.150: acc=25.9%, ADS(mean)=0.7706, ADS(mid)=0.7190, ADS(L4)=0.7447
+    ε=0.200: acc=17.5%, ADS(mean)=1.3077, ADS(mid)=1.2107, ADS(L4)=1.1209
+    ε=0.300: acc=9.4%, ADS(mean)=2.2815, ADS(mid)=1.8697, ADS(L4)=2.5659
+    ε=0.500: acc=6.0%, ADS(mean)=5.0757, ADS(mid)=4.4804, ADS(L4)=5.2497
+    ε=1.000: acc=3.7%, ADS(mean)=10.6023, ADS(mid)=9.4058, ADS(L4)=12.2847
+
+  Seed 7:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.18%
+    ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.2%, ADS(mean)=0.0010, ADS(mid)=0.0010, ADS(L4)=0.0009
+    ε=0.010: acc=68.0%, ADS(mean)=0.0037, ADS(mid)=0.0037, ADS(L4)=0.0029
+    ε=0.050: acc=62.8%, ADS(mean)=0.0899, ADS(mid)=0.0856, ADS(L4)=0.0771
+    ε=0.100: acc=43.1%, ADS(mean)=0.3674, ADS(mid)=0.3892, ADS(L4)=0.3125
+    ε=0.150: acc=30.7%, ADS(mean)=0.7361, ADS(mid)=0.7513, ADS(L4)=0.6463
+    ε=0.200: acc=24.7%, ADS(mean)=1.1309, ADS(mid)=1.0975, ADS(L4)=1.0042
+    ε=0.300: acc=10.6%, ADS(mean)=2.3618, ADS(mid)=2.3336, ADS(L4)=2.7609
+    ε=0.500: acc=4.6%, ADS(mean)=5.2919, ADS(mid)=5.0722, ADS(L4)=5.0187
+    ε=1.000: acc=2.4%, ADS(mean)=10.8571, ADS(mid)=10.4139, ADS(L4)=11.8916
+
+  Seed 11:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.21%
+    ε=0.000: acc=67.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.0%, ADS(mean)=0.0010, ADS(mid)=0.0010, ADS(L4)=0.0008
+    ε=0.010: acc=66.8%, ADS(mean)=0.0041, ADS(mid)=0.0044, ADS(L4)=0.0033
+    ε=0.050: acc=59.6%, ADS(mean)=0.0961, ADS(mid)=0.1064, ADS(L4)=0.0719
+    ε=0.100: acc=41.0%, ADS(mean)=0.3507, ADS(mid)=0.3555, ADS(L4)=0.2783
+    ε=0.150: acc=29.6%, ADS(mean)=0.7090, ADS(mid)=0.7735, ADS(L4)=0.9679
+    ε=0.200: acc=19.5%, ADS(mean)=1.2284, ADS(mid)=1.3450, ADS(L4)=0.7821
+    ε=0.300: acc=12.1%, ADS(mean)=2.3385, ADS(mid)=2.4217, ADS(L4)=2.1623
+    ε=0.500: acc=5.8%, ADS(mean)=5.2063, ADS(mid)=5.6683, ADS(L4)=4.1386
+    ε=1.000: acc=1.4%, ADS(mean)=10.8503, ADS(mid)=10.9219, ADS(L4)=10.4303
+
+  Seed 13:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.16%
+    ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.1%, ADS(mean)=0.0011, ADS(mid)=0.0010, ADS(L4)=0.0009
+    ε=0.010: acc=67.8%, ADS(mean)=0.0040, ADS(mid)=0.0039, ADS(L4)=0.0045
+    ε=0.050: acc=65.1%, ADS(mean)=0.0951, ADS(mid)=0.0929, ADS(L4)=0.1152
+    ε=0.100: acc=51.5%, ADS(mean)=0.3823, ADS(mid)=0.3656, ADS(L4)=0.5378
+    ε=0.150: acc=37.8%, ADS(mean)=0.7942, ADS(mid)=0.7798, ADS(L4)=0.9289
+    ε=0.200: acc=24.7%, ADS(mean)=1.3057, ADS(mid)=1.2489, ADS(L4)=1.3935
+    ε=0.300: acc=13.6%, ADS(mean)=2.5229, ADS(mid)=2.3896, ADS(L4)=2.2685
+    ε=0.500: acc=6.0%, ADS(mean)=5.5562, ADS(mid)=5.7228, ADS(L4)=6.1160
+    ε=1.000: acc=2.6%, ADS(mean)=10.7485, ADS(mid)=10.9786, ADS(L4)=9.8006
+
+  Seed 21:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.58%
+    ε=0.000: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.4%, ADS(mean)=0.0011, ADS(mid)=0.0010, ADS(L4)=0.0008
+    ε=0.010: acc=67.4%, ADS(mean)=0.0041, ADS(mid)=0.0040, ADS(L4)=0.0031
+    ε=0.050: acc=62.6%, ADS(mean)=0.1087, ADS(mid)=0.1100, ADS(L4)=0.0894
+    ε=0.100: acc=43.9%, ADS(mean)=0.4145, ADS(mid)=0.4188, ADS(L4)=0.2644
+    ε=0.150: acc=26.4%, ADS(mean)=0.8585, ADS(mid)=0.8000, ADS(L4)=0.7478
+    ε=0.200: acc=18.8%, ADS(mean)=1.3446, ADS(mid)=1.3972, ADS(L4)=1.0112
+    ε=0.300: acc=8.4%, ADS(mean)=2.6451, ADS(mid)=2.7928, ADS(L4)=1.4973
+    ε=0.500: acc=3.4%, ADS(mean)=5.4397, ADS(mid)=5.3926, ADS(L4)=4.9595
+    ε=1.000: acc=1.5%, ADS(mean)=11.0843, ADS(mid)=10.6116, ADS(L4)=10.3920
+
+  Seed 42:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.31%
+    ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.2%, ADS(mean)=0.0012, ADS(mid)=0.0013, ADS(L4)=0.0010
+    ε=0.010: acc=68.0%, ADS(mean)=0.0047, ADS(mid)=0.0052, ADS(L4)=0.0039
+    ε=0.050: acc=58.5%, ADS(mean)=0.1152, ADS(mid)=0.1270, ADS(L4)=0.1024
+    ε=0.100: acc=38.3%, ADS(mean)=0.3963, ADS(mid)=0.4189, ADS(L4)=0.4038
+    ε=0.150: acc=27.6%, ADS(mean)=0.8004, ADS(mid)=0.7879, ADS(L4)=0.6893
+    ε=0.200: acc=19.5%, ADS(mean)=1.3387, ADS(mid)=1.4495, ADS(L4)=1.2792
+    ε=0.300: acc=11.2%, ADS(mean)=2.6007, ADS(mid)=2.7509, ADS(L4)=2.4342
+    ε=0.500: acc=6.0%, ADS(mean)=5.5994, ADS(mid)=5.6156, ADS(L4)=6.1833
+    ε=1.000: acc=3.3%, ADS(mean)=11.0706, ADS(mid)=11.0121, ADS(L4)=14.2447
+
+  Seed 99:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.74%
+    ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.7%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0000
+    ε=0.005: acc=67.5%, ADS(mean)=0.0014, ADS(mid)=0.0017, ADS(L4)=0.0010
+    ε=0.010: acc=67.0%, ADS(mean)=0.0055, ADS(mid)=0.0070, ADS(L4)=0.0042
+    ε=0.050: acc=55.9%, ADS(mean)=0.1261, ADS(mid)=0.1476, ADS(L4)=0.1128
+    ε=0.100: acc=37.3%, ADS(mean)=0.4302, ADS(mid)=0.4766, ADS(L4)=0.4131
+    ε=0.150: acc=24.5%, ADS(mean)=0.8780, ADS(mid)=0.9124, ADS(L4)=0.7137
+    ε=0.200: acc=16.8%, ADS(mean)=1.3825, ADS(mid)=1.3767, ADS(L4)=1.3225
+    ε=0.300: acc=8.8%, ADS(mean)=2.6845, ADS(mid)=2.7423, ADS(L4)=2.5537
+    ε=0.500: acc=4.7%, ADS(mean)=5.5660, ADS(mid)=5.8044, ADS(L4)=4.8156
+    ε=1.000: acc=1.8%, ADS(mean)=10.9316, ADS(mid)=10.6227, ADS(L4)=7.9279
+
+  Seed 123:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.28%
+    ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.2%, ADS(mean)=0.0011, ADS(mid)=0.0010, ADS(L4)=0.0011
+    ε=0.010: acc=67.8%, ADS(mean)=0.0044, ADS(mid)=0.0044, ADS(L4)=0.0047
+    ε=0.050: acc=61.5%, ADS(mean)=0.1103, ADS(mid)=0.1084, ADS(L4)=0.1143
+    ε=0.100: acc=45.9%, ADS(mean)=0.4133, ADS(mid)=0.4113, ADS(L4)=0.5136
+    ε=0.150: acc=28.8%, ADS(mean)=0.8274, ADS(mid)=0.8051, ADS(L4)=1.0769
+    ε=0.200: acc=19.9%, ADS(mean)=1.3581, ADS(mid)=1.3303, ADS(L4)=1.6723
+    ε=0.300: acc=9.6%, ADS(mean)=2.7291, ADS(mid)=2.7837, ADS(L4)=3.2588
+    ε=0.500: acc=5.7%, ADS(mean)=5.6582, ADS(mid)=5.1624, ADS(L4)=6.9151
+    ε=1.000: acc=2.5%, ADS(mean)=10.8384, ADS(mid)=11.0634, ADS(L4)=9.4301
+
+  Seed 456:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.70%
+    ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0001
+    ε=0.005: acc=67.6%, ADS(mean)=0.0011, ADS(mid)=0.0009, ADS(L4)=0.0018
+    ε=0.010: acc=67.3%, ADS(mean)=0.0045, ADS(mid)=0.0043, ADS(L4)=0.0070
+    ε=0.050: acc=62.0%, ADS(mean)=0.1110, ADS(mid)=0.1108, ADS(L4)=0.1550
+    ε=0.100: acc=48.4%, ADS(mean)=0.3856, ADS(mid)=0.3652, ADS(L4)=0.4099
+    ε=0.150: acc=27.3%, ADS(mean)=0.8544, ADS(mid)=0.8137, ADS(L4)=1.0095
+    ε=0.200: acc=20.1%, ADS(mean)=1.3542, ADS(mid)=1.2942, ADS(L4)=1.7238
+    ε=0.300: acc=10.4%, ADS(mean)=2.8038, ADS(mid)=2.7105, ADS(L4)=3.5859
+    ε=0.500: acc=6.3%, ADS(mean)=5.6863, ADS(mid)=5.2825, ADS(L4)=6.6960
+    ε=1.000: acc=3.4%, ADS(mean)=11.4506, ADS(mid)=11.0260, ADS(L4)=11.4313
+
+  Seed 2024:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.05%
+    ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.8%, ADS(mean)=0.0011, ADS(mid)=0.0010, ADS(L4)=0.0012
+    ε=0.010: acc=67.4%, ADS(mean)=0.0043, ADS(mid)=0.0044, ADS(L4)=0.0046
+    ε=0.050: acc=58.8%, ADS(mean)=0.1053, ADS(mid)=0.1061, ADS(L4)=0.1008
+    ε=0.100: acc=41.6%, ADS(mean)=0.3865, ADS(mid)=0.3874, ADS(L4)=0.3556
+    ε=0.150: acc=27.7%, ADS(mean)=0.7694, ADS(mid)=0.7899, ADS(L4)=0.7423
+    ε=0.200: acc=18.2%, ADS(mean)=1.2931, ADS(mid)=1.1981, ADS(L4)=1.2391
+    ε=0.300: acc=9.0%, ADS(mean)=2.5790, ADS(mid)=2.1957, ADS(L4)=2.5934
+    ε=0.500: acc=4.5%, ADS(mean)=5.7132, ADS(mid)=5.2451, ADS(L4)=5.9181
+    ε=1.000: acc=2.5%, ADS(mean)=11.4952, ADS(mid)=10.7898, ADS(L4)=12.7048
+
+  Seed 31337:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.69%
+    ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.6%, ADS(mean)=0.0010, ADS(mid)=0.0009, ADS(L4)=0.0011
+    ε=0.010: acc=67.3%, ADS(mean)=0.0038, ADS(mid)=0.0036, ADS(L4)=0.0041
+    ε=0.050: acc=63.6%, ADS(mean)=0.0952, ADS(mid)=0.0962, ADS(L4)=0.0783
+    ε=0.100: acc=45.9%, ADS(mean)=0.4084, ADS(mid)=0.4168, ADS(L4)=0.4222
+    ε=0.150: acc=32.6%, ADS(mean)=0.8331, ADS(mid)=0.8778, ADS(L4)=0.7044
+    ε=0.200: acc=19.0%, ADS(mean)=1.3757, ADS(mid)=1.3901, ADS(L4)=1.7352
+    ε=0.300: acc=12.6%, ADS(mean)=2.4753, ADS(mid)=2.4407, ADS(L4)=2.3126
+    ε=0.500: acc=5.6%, ADS(mean)=5.6418, ADS(mid)=5.4401, ADS(L4)=5.2957
+    ε=1.000: acc=1.9%, ADS(mean)=10.9174, ADS(mid)=10.5346, ADS(L4)=10.4368
+
+  Saved to /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_results_cifar100_canonical_n12.json
+
+============================================================
+PE TYPE: ALIBI_2D
+============================================================
+
+  Seed 1:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.64%
+    ε=0.000: acc=68.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.5%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=68.1%, ADS(mean)=0.0031, ADS(mid)=0.0035, ADS(L4)=0.0031
+    ε=0.100: acc=67.3%, ADS(mean)=0.0124, ADS(mid)=0.0142, ADS(L4)=0.0109
+    ε=0.150: acc=66.0%, ADS(mean)=0.0300, ADS(mid)=0.0330, ADS(L4)=0.0320
+    ε=0.200: acc=63.9%, ADS(mean)=0.0528, ADS(mid)=0.0579, ADS(L4)=0.0473
+    ε=0.300: acc=55.7%, ADS(mean)=0.1217, ADS(mid)=0.1354, ADS(L4)=0.1086
+    ε=0.500: acc=31.8%, ADS(mean)=0.3185, ADS(mid)=0.3471, ADS(L4)=0.3279
+    ε=1.000: acc=8.0%, ADS(mean)=1.0910, ADS(mid)=1.1819, ADS(L4)=1.1645
+
+  Seed 5:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.21%
+    ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+    ε=0.050: acc=68.0%, ADS(mean)=0.0035, ADS(mid)=0.0033, ADS(L4)=0.0037
+    ε=0.100: acc=67.7%, ADS(mean)=0.0144, ADS(mid)=0.0136, ADS(L4)=0.0145
+    ε=0.150: acc=67.0%, ADS(mean)=0.0323, ADS(mid)=0.0313, ADS(L4)=0.0325
+    ε=0.200: acc=66.4%, ADS(mean)=0.0576, ADS(mid)=0.0564, ADS(L4)=0.0524
+    ε=0.300: acc=62.5%, ADS(mean)=0.1291, ADS(mid)=0.1283, ADS(L4)=0.1260
+    ε=0.500: acc=38.0%, ADS(mean)=0.3398, ADS(mid)=0.3462, ADS(L4)=0.4024
+    ε=1.000: acc=3.3%, ADS(mean)=1.1496, ADS(mid)=1.2060, ADS(L4)=1.2968
+
+  Seed 7:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 67.79%
+    ε=0.000: acc=67.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=67.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=67.7%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=67.0%, ADS(mean)=0.0031, ADS(mid)=0.0033, ADS(L4)=0.0034
+    ε=0.100: acc=65.7%, ADS(mean)=0.0133, ADS(mid)=0.0142, ADS(L4)=0.0143
+    ε=0.150: acc=64.3%, ADS(mean)=0.0279, ADS(mid)=0.0315, ADS(L4)=0.0329
+    ε=0.200: acc=61.8%, ADS(mean)=0.0521, ADS(mid)=0.0585, ADS(L4)=0.0527
+    ε=0.300: acc=55.3%, ADS(mean)=0.1221, ADS(mid)=0.1316, ADS(L4)=0.1256
+    ε=0.500: acc=44.5%, ADS(mean)=0.3140, ADS(mid)=0.3431, ADS(L4)=0.3483
+    ε=1.000: acc=39.8%, ADS(mean)=1.0220, ADS(mid)=1.1413, ADS(L4)=1.0288
+
+  Seed 11:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.37%
+    ε=0.000: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.3%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=68.3%, ADS(mean)=0.0033, ADS(mid)=0.0036, ADS(L4)=0.0031
+    ε=0.100: acc=68.0%, ADS(mean)=0.0131, ADS(mid)=0.0134, ADS(L4)=0.0137
+    ε=0.150: acc=67.5%, ADS(mean)=0.0287, ADS(mid)=0.0298, ADS(L4)=0.0331
+    ε=0.200: acc=67.2%, ADS(mean)=0.0544, ADS(mid)=0.0581, ADS(L4)=0.0546
+    ε=0.300: acc=65.5%, ADS(mean)=0.1121, ADS(mid)=0.1223, ADS(L4)=0.1244
+    ε=0.500: acc=52.0%, ADS(mean)=0.3150, ADS(mid)=0.3442, ADS(L4)=0.3982
+    ε=1.000: acc=14.5%, ADS(mean)=1.1122, ADS(mid)=1.2252, ADS(L4)=1.2988
+
+  Seed 13:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.02%
+    ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.0%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=67.7%, ADS(mean)=0.0029, ADS(mid)=0.0031, ADS(L4)=0.0030
+    ε=0.100: acc=67.0%, ADS(mean)=0.0119, ADS(mid)=0.0119, ADS(L4)=0.0125
+    ε=0.150: acc=65.9%, ADS(mean)=0.0274, ADS(mid)=0.0296, ADS(L4)=0.0286
+    ε=0.200: acc=66.3%, ADS(mean)=0.0463, ADS(mid)=0.0469, ADS(L4)=0.0471
+    ε=0.300: acc=63.6%, ADS(mean)=0.1064, ADS(mid)=0.1074, ADS(L4)=0.1155
+    ε=0.500: acc=61.5%, ADS(mean)=0.2975, ADS(mid)=0.3167, ADS(L4)=0.3269
+    ε=1.000: acc=39.2%, ADS(mean)=1.0574, ADS(mid)=1.1231, ADS(L4)=0.9925
+
+  Seed 21:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.23%
+    ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+    ε=0.050: acc=68.1%, ADS(mean)=0.0031, ADS(mid)=0.0032, ADS(L4)=0.0036
+    ε=0.100: acc=67.5%, ADS(mean)=0.0128, ADS(mid)=0.0140, ADS(L4)=0.0137
+    ε=0.150: acc=66.7%, ADS(mean)=0.0281, ADS(mid)=0.0301, ADS(L4)=0.0312
+    ε=0.200: acc=64.4%, ADS(mean)=0.0524, ADS(mid)=0.0561, ADS(L4)=0.0595
+    ε=0.300: acc=58.9%, ADS(mean)=0.1162, ADS(mid)=0.1257, ADS(L4)=0.1451
+    ε=0.500: acc=30.0%, ADS(mean)=0.3096, ADS(mid)=0.3430, ADS(L4)=0.3545
+    ε=1.000: acc=7.9%, ADS(mean)=1.0478, ADS(mid)=1.1309, ADS(L4)=1.2439
+
+  Seed 42:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.50%
+    ε=0.000: acc=68.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=68.1%, ADS(mean)=0.0032, ADS(mid)=0.0037, ADS(L4)=0.0032
+    ε=0.100: acc=66.9%, ADS(mean)=0.0129, ADS(mid)=0.0155, ADS(L4)=0.0122
+    ε=0.150: acc=66.3%, ADS(mean)=0.0294, ADS(mid)=0.0347, ADS(L4)=0.0285
+    ε=0.200: acc=63.1%, ADS(mean)=0.0551, ADS(mid)=0.0630, ADS(L4)=0.0560
+    ε=0.300: acc=56.4%, ADS(mean)=0.1216, ADS(mid)=0.1400, ADS(L4)=0.1217
+    ε=0.500: acc=27.8%, ADS(mean)=0.3326, ADS(mid)=0.3793, ADS(L4)=0.3247
+    ε=1.000: acc=9.6%, ADS(mean)=1.1120, ADS(mid)=1.2620, ADS(L4)=1.1951
+
+  Seed 99:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.79%
+    ε=0.000: acc=68.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.8%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+    ε=0.050: acc=68.6%, ADS(mean)=0.0035, ADS(mid)=0.0032, ADS(L4)=0.0036
+    ε=0.100: acc=68.2%, ADS(mean)=0.0132, ADS(mid)=0.0123, ADS(L4)=0.0134
+    ε=0.150: acc=67.7%, ADS(mean)=0.0309, ADS(mid)=0.0309, ADS(L4)=0.0325
+    ε=0.200: acc=66.8%, ADS(mean)=0.0537, ADS(mid)=0.0520, ADS(L4)=0.0550
+    ε=0.300: acc=64.3%, ADS(mean)=0.1196, ADS(mid)=0.1217, ADS(L4)=0.1142
+    ε=0.500: acc=44.6%, ADS(mean)=0.3323, ADS(mid)=0.3652, ADS(L4)=0.2825
+    ε=1.000: acc=10.4%, ADS(mean)=1.0718, ADS(mid)=1.1452, ADS(L4)=1.0372
+
+  Seed 123:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.33%
+    ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=67.9%, ADS(mean)=0.0030, ADS(mid)=0.0035, ADS(L4)=0.0035
+    ε=0.100: acc=67.2%, ADS(mean)=0.0119, ADS(mid)=0.0142, ADS(L4)=0.0122
+    ε=0.150: acc=65.0%, ADS(mean)=0.0300, ADS(mid)=0.0345, ADS(L4)=0.0335
+    ε=0.200: acc=64.5%, ADS(mean)=0.0493, ADS(mid)=0.0585, ADS(L4)=0.0542
+    ε=0.300: acc=64.1%, ADS(mean)=0.1087, ADS(mid)=0.1216, ADS(L4)=0.1148
+    ε=0.500: acc=53.1%, ADS(mean)=0.2967, ADS(mid)=0.3605, ADS(L4)=0.3336
+    ε=1.000: acc=37.5%, ADS(mean)=1.0733, ADS(mid)=1.2815, ADS(L4)=1.1845
+
+  Seed 456:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 69.01%
+    ε=0.000: acc=69.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=69.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.9%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.8%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=68.0%, ADS(mean)=0.0034, ADS(mid)=0.0035, ADS(L4)=0.0038
+    ε=0.100: acc=66.1%, ADS(mean)=0.0140, ADS(mid)=0.0142, ADS(L4)=0.0168
+    ε=0.150: acc=64.4%, ADS(mean)=0.0305, ADS(mid)=0.0323, ADS(L4)=0.0336
+    ε=0.200: acc=62.4%, ADS(mean)=0.0534, ADS(mid)=0.0582, ADS(L4)=0.0614
+    ε=0.300: acc=57.1%, ADS(mean)=0.1219, ADS(mid)=0.1363, ADS(L4)=0.1465
+    ε=0.500: acc=49.8%, ADS(mean)=0.3018, ADS(mid)=0.3334, ADS(L4)=0.3708
+    ε=1.000: acc=33.6%, ADS(mean)=1.0860, ADS(mid)=1.2080, ADS(L4)=1.2737
+
+  Seed 2024:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.10%
+    ε=0.000: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.0%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=67.6%, ADS(mean)=0.0028, ADS(mid)=0.0029, ADS(L4)=0.0029
+    ε=0.100: acc=66.9%, ADS(mean)=0.0115, ADS(mid)=0.0124, ADS(L4)=0.0113
+    ε=0.150: acc=66.1%, ADS(mean)=0.0263, ADS(mid)=0.0272, ADS(L4)=0.0254
+    ε=0.200: acc=65.7%, ADS(mean)=0.0488, ADS(mid)=0.0529, ADS(L4)=0.0543
+    ε=0.300: acc=62.3%, ADS(mean)=0.1054, ADS(mid)=0.1101, ADS(L4)=0.1139
+    ε=0.500: acc=49.4%, ADS(mean)=0.3119, ADS(mid)=0.3186, ADS(L4)=0.3337
+    ε=1.000: acc=38.0%, ADS(mean)=0.9972, ADS(mid)=1.0635, ADS(L4)=1.1209
+
+  Seed 31337:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 68.25%
+    ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=68.1%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+    ε=0.050: acc=67.8%, ADS(mean)=0.0033, ADS(mid)=0.0034, ADS(L4)=0.0042
+    ε=0.100: acc=66.9%, ADS(mean)=0.0128, ADS(mid)=0.0137, ADS(L4)=0.0167
+    ε=0.150: acc=65.3%, ADS(mean)=0.0298, ADS(mid)=0.0313, ADS(L4)=0.0369
+    ε=0.200: acc=64.9%, ADS(mean)=0.0541, ADS(mid)=0.0612, ADS(L4)=0.0645
+    ε=0.300: acc=56.0%, ADS(mean)=0.1320, ADS(mid)=0.1508, ADS(L4)=0.1429
+    ε=0.500: acc=51.1%, ADS(mean)=0.3230, ADS(mid)=0.3534, ADS(L4)=0.3801
+    ε=1.000: acc=14.2%, ADS(mean)=1.1345, ADS(mid)=1.2440, ADS(L4)=1.4075
+
+  Saved to /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_results_cifar100_canonical_n12.json
+
+============================================================
+PE TYPE: ALIBI_2D_MATCHED
+============================================================
+
+  Seed 1:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.35%
+    ε=0.000: acc=70.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+    ε=0.050: acc=70.3%, ADS(mean)=0.0027, ADS(mid)=0.0025, ADS(L4)=0.0035
+    ε=0.100: acc=70.0%, ADS(mean)=0.0114, ADS(mid)=0.0113, ADS(L4)=0.0135
+    ε=0.150: acc=69.5%, ADS(mean)=0.0248, ADS(mid)=0.0242, ADS(L4)=0.0272
+    ε=0.200: acc=69.0%, ADS(mean)=0.0453, ADS(mid)=0.0447, ADS(L4)=0.0513
+    ε=0.300: acc=68.0%, ADS(mean)=0.1002, ADS(mid)=0.0981, ADS(L4)=0.0900
+    ε=0.500: acc=59.4%, ADS(mean)=0.2658, ADS(mid)=0.2758, ADS(L4)=0.2662
+    ε=1.000: acc=14.0%, ADS(mean)=1.0118, ADS(mid)=1.1509, ADS(L4)=1.0423
+
+  Seed 5:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.47%
+    ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.0%, ADS(mean)=0.0021, ADS(mid)=0.0024, ADS(L4)=0.0019
+    ε=0.100: acc=69.7%, ADS(mean)=0.0087, ADS(mid)=0.0101, ADS(L4)=0.0072
+    ε=0.150: acc=69.3%, ADS(mean)=0.0205, ADS(mid)=0.0223, ADS(L4)=0.0160
+    ε=0.200: acc=68.9%, ADS(mean)=0.0389, ADS(mid)=0.0431, ADS(L4)=0.0355
+    ε=0.300: acc=68.1%, ADS(mean)=0.0765, ADS(mid)=0.0887, ADS(L4)=0.0583
+    ε=0.500: acc=61.1%, ADS(mean)=0.2347, ADS(mid)=0.2698, ADS(L4)=0.2382
+    ε=1.000: acc=19.1%, ADS(mean)=0.8839, ADS(mid)=1.0262, ADS(L4)=0.7860
+
+  Seed 7:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.71%
+    ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.7%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+    ε=0.050: acc=70.4%, ADS(mean)=0.0030, ADS(mid)=0.0031, ADS(L4)=0.0041
+    ε=0.100: acc=70.0%, ADS(mean)=0.0106, ADS(mid)=0.0118, ADS(L4)=0.0118
+    ε=0.150: acc=69.6%, ADS(mean)=0.0246, ADS(mid)=0.0260, ADS(L4)=0.0276
+    ε=0.200: acc=69.1%, ADS(mean)=0.0408, ADS(mid)=0.0459, ADS(L4)=0.0458
+    ε=0.300: acc=67.0%, ADS(mean)=0.0947, ADS(mid)=0.1067, ADS(L4)=0.0933
+    ε=0.500: acc=59.5%, ADS(mean)=0.2604, ADS(mid)=0.2910, ADS(L4)=0.2280
+    ε=1.000: acc=20.6%, ADS(mean)=0.9155, ADS(mid)=1.0677, ADS(L4)=0.6780
+
+  Seed 11:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.38%
+    ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.3%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.2%, ADS(mean)=0.0023, ADS(mid)=0.0026, ADS(L4)=0.0019
+    ε=0.100: acc=69.6%, ADS(mean)=0.0093, ADS(mid)=0.0107, ADS(L4)=0.0080
+    ε=0.150: acc=69.6%, ADS(mean)=0.0203, ADS(mid)=0.0232, ADS(L4)=0.0175
+    ε=0.200: acc=69.3%, ADS(mean)=0.0362, ADS(mid)=0.0440, ADS(L4)=0.0275
+    ε=0.300: acc=67.9%, ADS(mean)=0.0780, ADS(mid)=0.0937, ADS(L4)=0.0673
+    ε=0.500: acc=66.2%, ADS(mean)=0.2172, ADS(mid)=0.2633, ADS(L4)=0.1647
+    ε=1.000: acc=43.5%, ADS(mean)=0.8933, ADS(mid)=1.0583, ADS(L4)=0.6962
+
+  Seed 13:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.21%
+    ε=0.000: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.1%, ADS(mean)=0.0026, ADS(mid)=0.0025, ADS(L4)=0.0031
+    ε=0.100: acc=70.1%, ADS(mean)=0.0103, ADS(mid)=0.0096, ADS(L4)=0.0122
+    ε=0.150: acc=69.8%, ADS(mean)=0.0220, ADS(mid)=0.0199, ADS(L4)=0.0259
+    ε=0.200: acc=69.2%, ADS(mean)=0.0394, ADS(mid)=0.0383, ADS(L4)=0.0393
+    ε=0.300: acc=67.7%, ADS(mean)=0.0841, ADS(mid)=0.0794, ADS(L4)=0.0875
+    ε=0.500: acc=59.6%, ADS(mean)=0.2324, ADS(mid)=0.2391, ADS(L4)=0.2135
+    ε=1.000: acc=17.6%, ADS(mean)=0.8202, ADS(mid)=0.8727, ADS(L4)=0.8677
+
+  Seed 21:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.53%
+    ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.5%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.3%, ADS(mean)=0.0026, ADS(mid)=0.0026, ADS(L4)=0.0033
+    ε=0.100: acc=70.1%, ADS(mean)=0.0092, ADS(mid)=0.0103, ADS(L4)=0.0112
+    ε=0.150: acc=70.1%, ADS(mean)=0.0222, ADS(mid)=0.0226, ADS(L4)=0.0280
+    ε=0.200: acc=69.6%, ADS(mean)=0.0403, ADS(mid)=0.0384, ADS(L4)=0.0493
+    ε=0.300: acc=69.2%, ADS(mean)=0.0836, ADS(mid)=0.0868, ADS(L4)=0.1022
+    ε=0.500: acc=65.3%, ADS(mean)=0.2347, ADS(mid)=0.2447, ADS(L4)=0.2927
+    ε=1.000: acc=25.0%, ADS(mean)=0.9971, ADS(mid)=1.1898, ADS(L4)=1.0742
+
+  Seed 42:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.13%
+    ε=0.000: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.1%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.0%, ADS(mean)=0.0026, ADS(mid)=0.0027, ADS(L4)=0.0030
+    ε=0.100: acc=69.8%, ADS(mean)=0.0107, ADS(mid)=0.0112, ADS(L4)=0.0104
+    ε=0.150: acc=69.5%, ADS(mean)=0.0240, ADS(mid)=0.0247, ADS(L4)=0.0311
+    ε=0.200: acc=68.7%, ADS(mean)=0.0422, ADS(mid)=0.0433, ADS(L4)=0.0523
+    ε=0.300: acc=67.1%, ADS(mean)=0.0929, ADS(mid)=0.0976, ADS(L4)=0.1102
+    ε=0.500: acc=61.5%, ADS(mean)=0.2439, ADS(mid)=0.2497, ADS(L4)=0.2893
+    ε=1.000: acc=19.3%, ADS(mean)=0.9117, ADS(mid)=1.0073, ADS(L4)=1.0451
+
+  Seed 99:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.43%
+    ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.1%, ADS(mean)=0.0023, ADS(mid)=0.0023, ADS(L4)=0.0023
+    ε=0.100: acc=69.8%, ADS(mean)=0.0094, ADS(mid)=0.0100, ADS(L4)=0.0096
+    ε=0.150: acc=69.4%, ADS(mean)=0.0213, ADS(mid)=0.0221, ADS(L4)=0.0230
+    ε=0.200: acc=68.5%, ADS(mean)=0.0382, ADS(mid)=0.0394, ADS(L4)=0.0372
+    ε=0.300: acc=67.1%, ADS(mean)=0.0878, ADS(mid)=0.0892, ADS(L4)=0.0876
+    ε=0.500: acc=63.4%, ADS(mean)=0.2269, ADS(mid)=0.2294, ADS(L4)=0.2101
+    ε=1.000: acc=26.5%, ADS(mean)=0.9258, ADS(mid)=1.0112, ADS(L4)=0.8579
+
+  Seed 123:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.01%
+    ε=0.000: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=69.9%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=69.8%, ADS(mean)=0.0030, ADS(mid)=0.0030, ADS(L4)=0.0037
+    ε=0.100: acc=69.5%, ADS(mean)=0.0115, ADS(mid)=0.0115, ADS(L4)=0.0139
+    ε=0.150: acc=69.1%, ADS(mean)=0.0266, ADS(mid)=0.0274, ADS(L4)=0.0299
+    ε=0.200: acc=68.5%, ADS(mean)=0.0462, ADS(mid)=0.0457, ADS(L4)=0.0484
+    ε=0.300: acc=66.9%, ADS(mean)=0.0978, ADS(mid)=0.0952, ADS(L4)=0.1166
+    ε=0.500: acc=60.2%, ADS(mean)=0.2707, ADS(mid)=0.2525, ADS(L4)=0.3498
+    ε=1.000: acc=19.7%, ADS(mean)=0.9564, ADS(mid)=0.9872, ADS(L4)=1.2194
+
+  Seed 456:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 69.76%
+    ε=0.000: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=69.8%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=69.8%, ADS(mean)=0.0023, ADS(mid)=0.0026, ADS(L4)=0.0028
+    ε=0.100: acc=69.3%, ADS(mean)=0.0092, ADS(mid)=0.0108, ADS(L4)=0.0116
+    ε=0.150: acc=69.6%, ADS(mean)=0.0203, ADS(mid)=0.0232, ADS(L4)=0.0256
+    ε=0.200: acc=66.5%, ADS(mean)=0.0410, ADS(mid)=0.0492, ADS(L4)=0.0546
+    ε=0.300: acc=66.5%, ADS(mean)=0.0801, ADS(mid)=0.0949, ADS(L4)=0.1022
+    ε=0.500: acc=59.1%, ADS(mean)=0.2439, ADS(mid)=0.2927, ADS(L4)=0.3021
+    ε=1.000: acc=35.0%, ADS(mean)=0.8712, ADS(mid)=1.0928, ADS(L4)=1.0751
+
+  Seed 2024:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 70.70%
+    ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=70.6%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=70.3%, ADS(mean)=0.0022, ADS(mid)=0.0026, ADS(L4)=0.0018
+    ε=0.100: acc=69.4%, ADS(mean)=0.0096, ADS(mid)=0.0103, ADS(L4)=0.0091
+    ε=0.150: acc=68.5%, ADS(mean)=0.0218, ADS(mid)=0.0240, ADS(L4)=0.0171
+    ε=0.200: acc=68.6%, ADS(mean)=0.0351, ADS(mid)=0.0391, ADS(L4)=0.0267
+    ε=0.300: acc=62.8%, ADS(mean)=0.0921, ADS(mid)=0.1059, ADS(L4)=0.0831
+    ε=0.500: acc=65.3%, ADS(mean)=0.2074, ADS(mid)=0.2129, ADS(L4)=0.1935
+    ε=1.000: acc=53.3%, ADS(mean)=0.7143, ADS(mid)=0.7753, ADS(L4)=0.6595
+
+  Seed 31337:
+    Model loaded
+    Computing clean attention baseline (256 images)...
+    Clean accuracy: 69.62%
+    ε=0.000: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.001: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.005: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+    ε=0.010: acc=69.6%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+    ε=0.050: acc=69.1%, ADS(mean)=0.0026, ADS(mid)=0.0028, ADS(L4)=0.0030
+    ε=0.100: acc=68.7%, ADS(mean)=0.0106, ADS(mid)=0.0117, ADS(L4)=0.0116
+    ε=0.150: acc=68.3%, ADS(mean)=0.0237, ADS(mid)=0.0241, ADS(L4)=0.0267
+    ε=0.200: acc=68.0%, ADS(mean)=0.0428, ADS(mid)=0.0465, ADS(L4)=0.0490
+    ε=0.300: acc=66.3%, ADS(mean)=0.0929, ADS(mid)=0.0985, ADS(L4)=0.1092
+    ε=0.500: acc=57.7%, ADS(mean)=0.2535, ADS(mid)=0.2809, ADS(L4)=0.2579
+    ε=1.000: acc=41.3%, ADS(mean)=0.9006, ADS(mid)=1.0536, ADS(L4)=0.9127
+
+  Saved to /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_results_cifar100_canonical_n12.json
+
+======================================================================
+KEY FINDINGS: ADS EARLY WARNING ANALYSIS
+======================================================================
+
+ALIBI (n=12 seeds: ['1', '5', '7', '11', '13', '21', '42', '99', '123', '456', '2024', '31337']):
+  Collapse: 44.3% → 29.2% at ε=0.15
+  ADS(L4) before collapse: 0.3961
+  ADS>10×baseline at ε=0.005: 4 steps before collapse ← EARLY WARNING
+
+ALIBI_2D (n=12 seeds: ['1', '5', '7', '11', '13', '21', '42', '99', '123', '456', '2024', '31337']):
+  Collapse: 44.5% → 21.3% at ε=1.0
+  ADS(L4) before collapse: 0.3486
+  ADS>10×baseline at ε=0.005: 8 steps before collapse ← EARLY WARNING
+
+ALIBI_2D_MATCHED (n=12 seeds: ['1', '5', '7', '11', '13', '21', '42', '99', '123', '456', '2024', '31337']):
+  Collapse: 61.5% → 27.9% at ε=1.0
+  ADS(L4) before collapse: 0.2505
+  ADS>10×baseline at ε=0.005: 8 steps before collapse ← EARLY WARNING
+✓ ads_vs_epsilon.png
+✓ ads_early_warning_dual.png
+✓ ads_per_layer_heatmap.png
+
+✅ Complete!

@@ -1,0 +1,1629 @@
+Device: cuda
+Loaded reference indices from /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_ref_indices_cifar100.json
+Reference: 256 images, Val: 10000 images
+ADS Specificity Experiment — CIFAR-100
+PE types: ['alibi', 'alibi_2d', 'alibi_2d_matched']
+Seeds: [1, 5, 7, 11, 13, 21, 42, 99, 123, 456, 2024, 31337]
+Perturbation types: ['pe_only', 'qkv_only', 'mlp_only', 'all_weights']
+Epsilons: [0.0, 0.005, 0.01, 0.05, 0.1, 0.2, 0.5, 1.0]
+
+
+============================================================
+PE TYPE: ALIBI
+============================================================
+
+  Seed 1:
+    Clean accuracy: 68.03%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.8%, ADS(mean)=0.0042, ADS(mid)=0.0038, ADS(L4)=0.0044
+      ε=0.010: acc=67.5%, ADS(mean)=0.0166, ADS(mid)=0.0155, ADS(L4)=0.0205
+      ε=0.050: acc=51.5%, ADS(mean)=0.3780, ADS(mid)=0.3949, ADS(L4)=0.4495
+      ε=0.100: acc=23.1%, ADS(mean)=1.3349, ADS(mid)=1.4289, ADS(L4)=1.7065
+      ε=0.200: acc=10.4%, ADS(mean)=4.0691, ADS(mid)=4.0641, ADS(L4)=5.6065
+      ε=0.500: acc=2.7%, ADS(mean)=11.2207, ADS(mid)=11.0812, ADS(L4)=13.6800
+      ε=1.000: acc=1.1%, ADS(mean)=14.4868, ADS(mid)=13.8527, ADS(L4)=15.1061
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=25.2%, ADS(mean)=0.0220, ADS(mid)=0.0283, ADS(L4)=0.0068
+      ε=0.010: acc=3.6%, ADS(mean)=0.0434, ADS(mid)=0.0623, ADS(L4)=0.0288
+      ε=0.050: acc=1.2%, ADS(mean)=0.0698, ADS(mid)=0.0934, ADS(L4)=0.0712
+      ε=0.100: acc=1.2%, ADS(mean)=0.0793, ADS(mid)=0.0934, ADS(L4)=0.0881
+      ε=0.200: acc=0.9%, ADS(mean)=0.1710, ADS(mid)=0.1244, ADS(L4)=0.1807
+      ε=0.500: acc=1.1%, ADS(mean)=0.4950, ADS(mid)=0.4280, ADS(L4)=0.5460
+      ε=1.000: acc=1.0%, ADS(mean)=0.7829, ADS(mid)=0.6556, ADS(L4)=0.7882
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0537, ADS(mid)=0.0770, ADS(L4)=0.0439
+      ε=0.010: acc=2.0%, ADS(mean)=0.0605, ADS(mid)=0.0850, ADS(L4)=0.0581
+      ε=0.050: acc=1.0%, ADS(mean)=0.0704, ADS(mid)=0.0963, ADS(L4)=0.0704
+      ε=0.100: acc=1.0%, ADS(mean)=0.0710, ADS(mid)=0.0963, ADS(L4)=0.0708
+      ε=0.200: acc=1.0%, ADS(mean)=0.0711, ADS(mid)=0.0963, ADS(L4)=0.0708
+      ε=0.500: acc=1.0%, ADS(mean)=0.0711, ADS(mid)=0.0963, ADS(L4)=0.0708
+      ε=1.000: acc=1.0%, ADS(mean)=0.0711, ADS(mid)=0.0963, ADS(L4)=0.0708
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0662, ADS(mid)=0.0931, ADS(L4)=0.0616
+      ε=0.010: acc=1.0%, ADS(mean)=0.0708, ADS(mid)=0.0976, ADS(L4)=0.0692
+      ε=0.050: acc=0.8%, ADS(mean)=0.0733, ADS(mid)=0.0965, ADS(L4)=0.0711
+      ε=0.100: acc=1.0%, ADS(mean)=0.0765, ADS(mid)=0.0964, ADS(L4)=0.0710
+      ε=0.200: acc=1.0%, ADS(mean)=0.2040, ADS(mid)=0.0967, ADS(L4)=0.0711
+      ε=0.500: acc=1.0%, ADS(mean)=0.2379, ADS(mid)=0.0950, ADS(L4)=0.1275
+      ε=1.000: acc=1.0%, ADS(mean)=0.4382, ADS(mid)=0.2732, ADS(L4)=0.4619
+
+  Seed 5:
+    Clean accuracy: 67.72%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.2%, ADS(mean)=0.0040, ADS(mid)=0.0036, ADS(L4)=0.0046
+      ε=0.010: acc=66.7%, ADS(mean)=0.0150, ADS(mid)=0.0136, ADS(L4)=0.0152
+      ε=0.050: acc=46.9%, ADS(mean)=0.3315, ADS(mid)=0.2845, ADS(L4)=0.2956
+      ε=0.100: acc=16.2%, ADS(mean)=1.2045, ADS(mid)=1.1210, ADS(L4)=1.1382
+      ε=0.200: acc=8.2%, ADS(mean)=3.9178, ADS(mid)=3.6057, ADS(L4)=3.7523
+      ε=0.500: acc=3.9%, ADS(mean)=9.9576, ADS(mid)=9.2329, ADS(L4)=10.0844
+      ε=1.000: acc=1.9%, ADS(mean)=13.2520, ADS(mid)=12.2344, ADS(L4)=12.4171
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=36.3%, ADS(mean)=0.0078, ADS(mid)=0.0097, ADS(L4)=0.0023
+      ε=0.010: acc=6.5%, ADS(mean)=0.0265, ADS(mid)=0.0410, ADS(L4)=0.0101
+      ε=0.050: acc=1.0%, ADS(mean)=0.0684, ADS(mid)=0.1042, ADS(L4)=0.0388
+      ε=0.100: acc=0.9%, ADS(mean)=0.0884, ADS(mid)=0.1168, ADS(L4)=0.0627
+      ε=0.200: acc=0.7%, ADS(mean)=0.1639, ADS(mid)=0.1509, ADS(L4)=0.1219
+      ε=0.500: acc=0.6%, ADS(mean)=0.4427, ADS(mid)=0.3612, ADS(L4)=0.4516
+      ε=1.000: acc=0.6%, ADS(mean)=0.6866, ADS(mid)=0.5806, ADS(L4)=0.6822
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.2%, ADS(mean)=0.0508, ADS(mid)=0.0841, ADS(L4)=0.0255
+      ε=0.010: acc=1.6%, ADS(mean)=0.0646, ADS(mid)=0.1065, ADS(L4)=0.0345
+      ε=0.050: acc=1.0%, ADS(mean)=0.0765, ADS(mid)=0.1240, ADS(L4)=0.0439
+      ε=0.100: acc=1.0%, ADS(mean)=0.0772, ADS(mid)=0.1236, ADS(L4)=0.0435
+      ε=0.200: acc=1.0%, ADS(mean)=0.0772, ADS(mid)=0.1233, ADS(L4)=0.0436
+      ε=0.500: acc=1.0%, ADS(mean)=0.0771, ADS(mid)=0.1231, ADS(L4)=0.0435
+      ε=1.000: acc=1.0%, ADS(mean)=0.0771, ADS(mid)=0.1231, ADS(L4)=0.0435
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.2%, ADS(mean)=0.0639, ADS(mid)=0.1056, ADS(L4)=0.0343
+      ε=0.010: acc=1.3%, ADS(mean)=0.0702, ADS(mid)=0.1152, ADS(L4)=0.0427
+      ε=0.050: acc=1.0%, ADS(mean)=0.0810, ADS(mid)=0.1239, ADS(L4)=0.0432
+      ε=0.100: acc=1.0%, ADS(mean)=0.0805, ADS(mid)=0.1228, ADS(L4)=0.0427
+      ε=0.200: acc=1.0%, ADS(mean)=0.0959, ADS(mid)=0.1204, ADS(L4)=0.0436
+      ε=0.500: acc=1.0%, ADS(mean)=0.2088, ADS(mid)=0.1317, ADS(L4)=0.0576
+      ε=1.000: acc=1.0%, ADS(mean)=0.5430, ADS(mid)=0.3429, ADS(L4)=0.3503
+
+  Seed 7:
+    Clean accuracy: 68.18%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.0%, ADS(mean)=0.0039, ADS(mid)=0.0038, ADS(L4)=0.0033
+      ε=0.010: acc=66.9%, ADS(mean)=0.0157, ADS(mid)=0.0166, ADS(L4)=0.0152
+      ε=0.050: acc=46.9%, ADS(mean)=0.3567, ADS(mid)=0.3884, ADS(L4)=0.3394
+      ε=0.100: acc=22.4%, ADS(mean)=1.1423, ADS(mid)=1.1345, ADS(L4)=0.9533
+      ε=0.200: acc=7.6%, ADS(mean)=3.4015, ADS(mid)=3.2617, ADS(L4)=3.1949
+      ε=0.500: acc=2.4%, ADS(mean)=10.3604, ADS(mid)=9.8100, ADS(L4)=10.1867
+      ε=1.000: acc=1.5%, ADS(mean)=13.0789, ADS(mid)=12.7603, ADS(L4)=11.6101
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=34.7%, ADS(mean)=0.0136, ADS(mid)=0.0208, ADS(L4)=0.0060
+      ε=0.010: acc=4.5%, ADS(mean)=0.0401, ADS(mid)=0.0662, ADS(L4)=0.0267
+      ε=0.050: acc=1.1%, ADS(mean)=0.0647, ADS(mid)=0.0971, ADS(L4)=0.0707
+      ε=0.100: acc=1.2%, ADS(mean)=0.0874, ADS(mid)=0.1050, ADS(L4)=0.0899
+      ε=0.200: acc=0.9%, ADS(mean)=0.1974, ADS(mid)=0.1690, ADS(L4)=0.2422
+      ε=0.500: acc=0.8%, ADS(mean)=0.4535, ADS(mid)=0.3969, ADS(L4)=0.4920
+      ε=1.000: acc=0.9%, ADS(mean)=0.6940, ADS(mid)=0.5876, ADS(L4)=0.7072
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.3%, ADS(mean)=0.0466, ADS(mid)=0.0723, ADS(L4)=0.0435
+      ε=0.010: acc=1.7%, ADS(mean)=0.0574, ADS(mid)=0.0902, ADS(L4)=0.0600
+      ε=0.050: acc=1.0%, ADS(mean)=0.0701, ADS(mid)=0.1092, ADS(L4)=0.0820
+      ε=0.100: acc=1.0%, ADS(mean)=0.0708, ADS(mid)=0.1089, ADS(L4)=0.0830
+      ε=0.200: acc=1.0%, ADS(mean)=0.0709, ADS(mid)=0.1088, ADS(L4)=0.0831
+      ε=0.500: acc=1.0%, ADS(mean)=0.0709, ADS(mid)=0.1088, ADS(L4)=0.0831
+      ε=1.000: acc=0.6%, ADS(mean)=0.0709, ADS(mid)=0.1088, ADS(L4)=0.0830
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.2%, ADS(mean)=0.0609, ADS(mid)=0.0941, ADS(L4)=0.0607
+      ε=0.010: acc=1.0%, ADS(mean)=0.0639, ADS(mid)=0.0965, ADS(L4)=0.0677
+      ε=0.050: acc=1.0%, ADS(mean)=0.0727, ADS(mid)=0.1085, ADS(L4)=0.0821
+      ε=0.100: acc=1.0%, ADS(mean)=0.0746, ADS(mid)=0.1088, ADS(L4)=0.0828
+      ε=0.200: acc=1.0%, ADS(mean)=0.1041, ADS(mid)=0.1082, ADS(L4)=0.0831
+      ε=0.500: acc=1.0%, ADS(mean)=0.2047, ADS(mid)=0.1059, ADS(L4)=0.1071
+      ε=1.000: acc=1.0%, ADS(mean)=0.4972, ADS(mid)=0.3458, ADS(L4)=0.5139
+
+  Seed 11:
+    Clean accuracy: 67.21%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=66.8%, ADS(mean)=0.0036, ADS(mid)=0.0039, ADS(L4)=0.0022
+      ε=0.010: acc=66.2%, ADS(mean)=0.0161, ADS(mid)=0.0167, ADS(L4)=0.0131
+      ε=0.050: acc=43.7%, ADS(mean)=0.3694, ADS(mid)=0.3898, ADS(L4)=0.3389
+      ε=0.100: acc=16.4%, ADS(mean)=1.2432, ADS(mid)=1.2997, ADS(L4)=0.8465
+      ε=0.200: acc=5.6%, ADS(mean)=3.7288, ADS(mid)=3.9847, ADS(L4)=3.1642
+      ε=0.500: acc=1.9%, ADS(mean)=10.5366, ADS(mid)=10.3404, ADS(L4)=8.2394
+      ε=1.000: acc=1.3%, ADS(mean)=13.9548, ADS(mid)=14.0988, ADS(L4)=15.0494
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=21.1%, ADS(mean)=0.0151, ADS(mid)=0.0224, ADS(L4)=0.0093
+      ε=0.010: acc=2.7%, ADS(mean)=0.0379, ADS(mid)=0.0597, ADS(L4)=0.0284
+      ε=0.050: acc=0.9%, ADS(mean)=0.0627, ADS(mid)=0.0883, ADS(L4)=0.0656
+      ε=0.100: acc=1.0%, ADS(mean)=0.0823, ADS(mid)=0.0966, ADS(L4)=0.0980
+      ε=0.200: acc=0.6%, ADS(mean)=0.1637, ADS(mid)=0.1239, ADS(L4)=0.1920
+      ε=0.500: acc=0.5%, ADS(mean)=0.4656, ADS(mid)=0.3309, ADS(L4)=0.4767
+      ε=1.000: acc=0.9%, ADS(mean)=0.6944, ADS(mid)=0.5173, ADS(L4)=0.6941
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.7%, ADS(mean)=0.0538, ADS(mid)=0.0869, ADS(L4)=0.0446
+      ε=0.010: acc=1.2%, ADS(mean)=0.0606, ADS(mid)=0.0959, ADS(L4)=0.0573
+      ε=0.050: acc=1.0%, ADS(mean)=0.0697, ADS(mid)=0.1041, ADS(L4)=0.0766
+      ε=0.100: acc=1.0%, ADS(mean)=0.0701, ADS(mid)=0.1036, ADS(L4)=0.0773
+      ε=0.200: acc=1.0%, ADS(mean)=0.0702, ADS(mid)=0.1034, ADS(L4)=0.0773
+      ε=0.500: acc=1.0%, ADS(mean)=0.0702, ADS(mid)=0.1034, ADS(L4)=0.0772
+      ε=1.000: acc=1.0%, ADS(mean)=0.0701, ADS(mid)=0.1034, ADS(L4)=0.0773
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0625, ADS(mid)=0.0956, ADS(L4)=0.0574
+      ε=0.010: acc=1.0%, ADS(mean)=0.0631, ADS(mid)=0.0924, ADS(L4)=0.0604
+      ε=0.050: acc=1.0%, ADS(mean)=0.0721, ADS(mid)=0.1017, ADS(L4)=0.0751
+      ε=0.100: acc=1.0%, ADS(mean)=0.0736, ADS(mid)=0.1029, ADS(L4)=0.0765
+      ε=0.200: acc=1.0%, ADS(mean)=0.1388, ADS(mid)=0.1028, ADS(L4)=0.0781
+      ε=0.500: acc=1.0%, ADS(mean)=0.1788, ADS(mid)=0.1011, ADS(L4)=0.0909
+      ε=1.000: acc=1.0%, ADS(mean)=0.4167, ADS(mid)=0.2361, ADS(L4)=0.2693
+
+  Seed 13:
+    Clean accuracy: 68.16%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.9%, ADS(mean)=0.0041, ADS(mid)=0.0040, ADS(L4)=0.0039
+      ε=0.010: acc=67.5%, ADS(mean)=0.0156, ADS(mid)=0.0159, ADS(L4)=0.0198
+      ε=0.050: acc=50.5%, ADS(mean)=0.3833, ADS(mid)=0.3685, ADS(L4)=0.4986
+      ε=0.100: acc=24.2%, ADS(mean)=1.3373, ADS(mid)=1.3153, ADS(L4)=1.7526
+      ε=0.200: acc=8.4%, ADS(mean)=3.9041, ADS(mid)=3.9428, ADS(L4)=4.3368
+      ε=0.500: acc=2.9%, ADS(mean)=10.8428, ADS(mid)=11.2572, ADS(L4)=11.3942
+      ε=1.000: acc=2.0%, ADS(mean)=13.5817, ADS(mid)=13.5832, ADS(L4)=14.9517
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.8%, ADS(mean)=0.0098, ADS(mid)=0.0149, ADS(L4)=0.0047
+      ε=0.010: acc=4.2%, ADS(mean)=0.0283, ADS(mid)=0.0456, ADS(L4)=0.0229
+      ε=0.050: acc=1.4%, ADS(mean)=0.0730, ADS(mid)=0.1080, ADS(L4)=0.0977
+      ε=0.100: acc=1.0%, ADS(mean)=0.0947, ADS(mid)=0.1225, ADS(L4)=0.1223
+      ε=0.200: acc=1.1%, ADS(mean)=0.1961, ADS(mid)=0.1866, ADS(L4)=0.1959
+      ε=0.500: acc=0.9%, ADS(mean)=0.5097, ADS(mid)=0.4284, ADS(L4)=0.5175
+      ε=1.000: acc=1.1%, ADS(mean)=0.7363, ADS(mid)=0.6084, ADS(L4)=0.7045
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.1%, ADS(mean)=0.0509, ADS(mid)=0.0824, ADS(L4)=0.0558
+      ε=0.010: acc=1.1%, ADS(mean)=0.0601, ADS(mid)=0.0949, ADS(L4)=0.0775
+      ε=0.050: acc=1.0%, ADS(mean)=0.0793, ADS(mid)=0.1275, ADS(L4)=0.0984
+      ε=0.100: acc=1.0%, ADS(mean)=0.0797, ADS(mid)=0.1266, ADS(L4)=0.0988
+      ε=0.200: acc=1.0%, ADS(mean)=0.0798, ADS(mid)=0.1265, ADS(L4)=0.0989
+      ε=0.500: acc=1.0%, ADS(mean)=0.0798, ADS(mid)=0.1264, ADS(L4)=0.0989
+      ε=1.000: acc=1.0%, ADS(mean)=0.0798, ADS(mid)=0.1264, ADS(L4)=0.0989
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.0624, ADS(mid)=0.0972, ADS(L4)=0.0739
+      ε=0.010: acc=1.0%, ADS(mean)=0.0669, ADS(mid)=0.1001, ADS(L4)=0.0920
+      ε=0.050: acc=1.0%, ADS(mean)=0.0805, ADS(mid)=0.1234, ADS(L4)=0.0993
+      ε=0.100: acc=1.0%, ADS(mean)=0.0829, ADS(mid)=0.1265, ADS(L4)=0.0997
+      ε=0.200: acc=1.0%, ADS(mean)=0.1060, ADS(mid)=0.1263, ADS(L4)=0.0982
+      ε=0.500: acc=1.0%, ADS(mean)=0.2713, ADS(mid)=0.1393, ADS(L4)=0.2620
+      ε=1.000: acc=1.0%, ADS(mean)=0.6093, ADS(mid)=0.4399, ADS(L4)=0.5881
+
+  Seed 21:
+    Clean accuracy: 67.58%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.3%, ADS(mean)=0.0044, ADS(mid)=0.0044, ADS(L4)=0.0045
+      ε=0.010: acc=66.8%, ADS(mean)=0.0180, ADS(mid)=0.0175, ADS(L4)=0.0144
+      ε=0.050: acc=45.1%, ADS(mean)=0.4088, ADS(mid)=0.4332, ADS(L4)=0.2724
+      ε=0.100: acc=19.5%, ADS(mean)=1.3247, ADS(mid)=1.3273, ADS(L4)=0.8849
+      ε=0.200: acc=5.7%, ADS(mean)=4.0114, ADS(mid)=3.9069, ADS(L4)=3.0964
+      ε=0.500: acc=1.7%, ADS(mean)=10.7986, ADS(mid)=10.2926, ADS(L4)=8.0752
+      ε=1.000: acc=1.1%, ADS(mean)=13.4372, ADS(mid)=12.2618, ADS(L4)=12.1248
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=33.9%, ADS(mean)=0.0119, ADS(mid)=0.0183, ADS(L4)=0.0061
+      ε=0.010: acc=6.6%, ADS(mean)=0.0296, ADS(mid)=0.0456, ADS(L4)=0.0177
+      ε=0.050: acc=1.1%, ADS(mean)=0.0657, ADS(mid)=0.1011, ADS(L4)=0.0393
+      ε=0.100: acc=1.0%, ADS(mean)=0.0804, ADS(mid)=0.1027, ADS(L4)=0.0529
+      ε=0.200: acc=0.8%, ADS(mean)=0.1667, ADS(mid)=0.1547, ADS(L4)=0.1363
+      ε=0.500: acc=0.7%, ADS(mean)=0.4329, ADS(mid)=0.3790, ADS(L4)=0.4100
+      ε=1.000: acc=0.7%, ADS(mean)=0.6802, ADS(mid)=0.5752, ADS(L4)=0.6422
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0496, ADS(mid)=0.0801, ADS(L4)=0.0270
+      ε=0.010: acc=1.3%, ADS(mean)=0.0598, ADS(mid)=0.0959, ADS(L4)=0.0350
+      ε=0.050: acc=1.0%, ADS(mean)=0.0714, ADS(mid)=0.1110, ADS(L4)=0.0419
+      ε=0.100: acc=1.0%, ADS(mean)=0.0723, ADS(mid)=0.1110, ADS(L4)=0.0419
+      ε=0.200: acc=1.0%, ADS(mean)=0.0724, ADS(mid)=0.1109, ADS(L4)=0.0419
+      ε=0.500: acc=1.0%, ADS(mean)=0.0725, ADS(mid)=0.1109, ADS(L4)=0.0419
+      ε=1.000: acc=1.0%, ADS(mean)=0.0725, ADS(mid)=0.1109, ADS(L4)=0.0419
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.7%, ADS(mean)=0.0620, ADS(mid)=0.0974, ADS(L4)=0.0351
+      ε=0.010: acc=1.1%, ADS(mean)=0.0652, ADS(mid)=0.1004, ADS(L4)=0.0369
+      ε=0.050: acc=1.0%, ADS(mean)=0.0747, ADS(mid)=0.1106, ADS(L4)=0.0417
+      ε=0.100: acc=1.0%, ADS(mean)=0.0835, ADS(mid)=0.1108, ADS(L4)=0.0418
+      ε=0.200: acc=1.0%, ADS(mean)=0.1080, ADS(mid)=0.1109, ADS(L4)=0.0419
+      ε=0.500: acc=1.0%, ADS(mean)=0.1642, ADS(mid)=0.1046, ADS(L4)=0.0521
+      ε=1.000: acc=1.0%, ADS(mean)=0.5259, ADS(mid)=0.3875, ADS(L4)=0.4574
+
+  Seed 42:
+    Clean accuracy: 68.31%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.9%, ADS(mean)=0.0045, ADS(mid)=0.0050, ADS(L4)=0.0040
+      ε=0.010: acc=67.0%, ADS(mean)=0.0174, ADS(mid)=0.0178, ADS(L4)=0.0155
+      ε=0.050: acc=47.3%, ADS(mean)=0.3706, ADS(mid)=0.4191, ADS(L4)=0.2682
+      ε=0.100: acc=20.4%, ADS(mean)=1.3709, ADS(mid)=1.4444, ADS(L4)=1.2797
+      ε=0.200: acc=8.3%, ADS(mean)=4.1254, ADS(mid)=4.2128, ADS(L4)=4.7006
+      ε=0.500: acc=3.7%, ADS(mean)=10.8476, ADS(mid)=11.1046, ADS(L4)=11.9733
+      ε=1.000: acc=3.2%, ADS(mean)=13.5978, ADS(mid)=13.1555, ADS(L4)=16.4995
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.7%, ADS(mean)=0.0225, ADS(mid)=0.0350, ADS(L4)=0.0129
+      ε=0.010: acc=4.5%, ADS(mean)=0.0437, ADS(mid)=0.0721, ADS(L4)=0.0294
+      ε=0.050: acc=1.6%, ADS(mean)=0.0745, ADS(mid)=0.1147, ADS(L4)=0.0546
+      ε=0.100: acc=1.1%, ADS(mean)=0.0912, ADS(mid)=0.1176, ADS(L4)=0.0749
+      ε=0.200: acc=1.0%, ADS(mean)=0.1990, ADS(mid)=0.1746, ADS(L4)=0.1774
+      ε=0.500: acc=0.9%, ADS(mean)=0.5362, ADS(mid)=0.4708, ADS(L4)=0.5437
+      ε=1.000: acc=0.9%, ADS(mean)=0.7904, ADS(mid)=0.6247, ADS(L4)=0.7369
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.0531, ADS(mid)=0.0890, ADS(L4)=0.0347
+      ε=0.010: acc=1.1%, ADS(mean)=0.0605, ADS(mid)=0.1016, ADS(L4)=0.0421
+      ε=0.050: acc=1.0%, ADS(mean)=0.0742, ADS(mid)=0.1208, ADS(L4)=0.0598
+      ε=0.100: acc=1.0%, ADS(mean)=0.0750, ADS(mid)=0.1208, ADS(L4)=0.0602
+      ε=0.200: acc=1.0%, ADS(mean)=0.0751, ADS(mid)=0.1208, ADS(L4)=0.0603
+      ε=0.500: acc=1.0%, ADS(mean)=0.0751, ADS(mid)=0.1208, ADS(L4)=0.0603
+      ε=1.000: acc=1.0%, ADS(mean)=0.0751, ADS(mid)=0.1208, ADS(L4)=0.0603
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.2%, ADS(mean)=0.0647, ADS(mid)=0.1066, ADS(L4)=0.0430
+      ε=0.010: acc=1.0%, ADS(mean)=0.0706, ADS(mid)=0.1142, ADS(L4)=0.0506
+      ε=0.050: acc=1.0%, ADS(mean)=0.0833, ADS(mid)=0.1206, ADS(L4)=0.0597
+      ε=0.100: acc=1.0%, ADS(mean)=0.0971, ADS(mid)=0.1202, ADS(L4)=0.0577
+      ε=0.200: acc=1.0%, ADS(mean)=0.1268, ADS(mid)=0.1201, ADS(L4)=0.0600
+      ε=0.500: acc=1.0%, ADS(mean)=0.2094, ADS(mid)=0.1073, ADS(L4)=0.0908
+      ε=1.000: acc=1.0%, ADS(mean)=0.6210, ADS(mid)=0.3893, ADS(L4)=0.5429
+
+  Seed 99:
+    Clean accuracy: 67.74%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.0%, ADS(mean)=0.0055, ADS(mid)=0.0068, ADS(L4)=0.0044
+      ε=0.010: acc=65.4%, ADS(mean)=0.0214, ADS(mid)=0.0262, ADS(L4)=0.0182
+      ε=0.050: acc=37.0%, ADS(mean)=0.4343, ADS(mid)=0.4756, ADS(L4)=0.3902
+      ε=0.100: acc=15.3%, ADS(mean)=1.4193, ADS(mid)=1.4801, ADS(L4)=1.1322
+      ε=0.200: acc=5.7%, ADS(mean)=4.1783, ADS(mid)=4.3240, ADS(L4)=3.6576
+      ε=0.500: acc=1.9%, ADS(mean)=10.7075, ADS(mid)=10.2904, ADS(L4)=8.1141
+      ε=1.000: acc=1.3%, ADS(mean)=13.9141, ADS(mid)=13.5347, ADS(L4)=13.7213
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=24.5%, ADS(mean)=0.0141, ADS(mid)=0.0243, ADS(L4)=0.0086
+      ε=0.010: acc=3.2%, ADS(mean)=0.0385, ADS(mid)=0.0685, ADS(L4)=0.0276
+      ε=0.050: acc=1.2%, ADS(mean)=0.0776, ADS(mid)=0.1259, ADS(L4)=0.0641
+      ε=0.100: acc=0.8%, ADS(mean)=0.0898, ADS(mid)=0.1272, ADS(L4)=0.0701
+      ε=0.200: acc=1.0%, ADS(mean)=0.1697, ADS(mid)=0.1615, ADS(L4)=0.1417
+      ε=0.500: acc=1.3%, ADS(mean)=0.4860, ADS(mid)=0.4314, ADS(L4)=0.4523
+      ε=1.000: acc=1.3%, ADS(mean)=0.7238, ADS(mid)=0.6329, ADS(L4)=0.6761
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.3%, ADS(mean)=0.0607, ADS(mid)=0.1039, ADS(L4)=0.0468
+      ε=0.010: acc=1.2%, ADS(mean)=0.0709, ADS(mid)=0.1219, ADS(L4)=0.0554
+      ε=0.050: acc=1.0%, ADS(mean)=0.0838, ADS(mid)=0.1414, ADS(L4)=0.0644
+      ε=0.100: acc=1.0%, ADS(mean)=0.0847, ADS(mid)=0.1416, ADS(L4)=0.0651
+      ε=0.200: acc=1.0%, ADS(mean)=0.0847, ADS(mid)=0.1415, ADS(L4)=0.0651
+      ε=0.500: acc=1.0%, ADS(mean)=0.0847, ADS(mid)=0.1415, ADS(L4)=0.0651
+      ε=1.000: acc=1.0%, ADS(mean)=0.0847, ADS(mid)=0.1415, ADS(L4)=0.0652
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0756, ADS(mid)=0.1279, ADS(L4)=0.0579
+      ε=0.010: acc=1.0%, ADS(mean)=0.0737, ADS(mid)=0.1216, ADS(L4)=0.0539
+      ε=0.050: acc=1.1%, ADS(mean)=0.0862, ADS(mid)=0.1416, ADS(L4)=0.0647
+      ε=0.100: acc=1.0%, ADS(mean)=0.0882, ADS(mid)=0.1417, ADS(L4)=0.0659
+      ε=0.200: acc=1.0%, ADS(mean)=0.1248, ADS(mid)=0.1422, ADS(L4)=0.0678
+      ε=0.500: acc=1.0%, ADS(mean)=0.2302, ADS(mid)=0.1246, ADS(L4)=0.1594
+      ε=1.000: acc=1.0%, ADS(mean)=0.5612, ADS(mid)=0.4362, ADS(L4)=0.4939
+
+  Seed 123:
+    Clean accuracy: 68.28%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.9%, ADS(mean)=0.0038, ADS(mid)=0.0032, ADS(L4)=0.0040
+      ε=0.010: acc=67.3%, ADS(mean)=0.0185, ADS(mid)=0.0174, ADS(L4)=0.0196
+      ε=0.050: acc=46.1%, ADS(mean)=0.4164, ADS(mid)=0.3953, ADS(L4)=0.5502
+      ε=0.100: acc=17.0%, ADS(mean)=1.3555, ADS(mid)=1.2955, ADS(L4)=1.5579
+      ε=0.200: acc=7.7%, ADS(mean)=4.1030, ADS(mid)=3.9401, ADS(L4)=4.3874
+      ε=0.500: acc=2.7%, ADS(mean)=11.1930, ADS(mid)=10.7689, ADS(L4)=12.0031
+      ε=1.000: acc=1.6%, ADS(mean)=13.9430, ADS(mid)=13.3084, ADS(L4)=15.3227
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=35.3%, ADS(mean)=0.0084, ADS(mid)=0.0103, ADS(L4)=0.0027
+      ε=0.010: acc=6.6%, ADS(mean)=0.0295, ADS(mid)=0.0449, ADS(L4)=0.0133
+      ε=0.050: acc=1.1%, ADS(mean)=0.0670, ADS(mid)=0.0939, ADS(L4)=0.0488
+      ε=0.100: acc=1.0%, ADS(mean)=0.0845, ADS(mid)=0.1047, ADS(L4)=0.0713
+      ε=0.200: acc=0.9%, ADS(mean)=0.1677, ADS(mid)=0.1446, ADS(L4)=0.1596
+      ε=0.500: acc=0.7%, ADS(mean)=0.4688, ADS(mid)=0.4077, ADS(L4)=0.5017
+      ε=1.000: acc=0.8%, ADS(mean)=0.7114, ADS(mid)=0.5973, ADS(L4)=0.7177
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.0484, ADS(mid)=0.0708, ADS(L4)=0.0235
+      ε=0.010: acc=1.1%, ADS(mean)=0.0619, ADS(mid)=0.0945, ADS(L4)=0.0358
+      ε=0.050: acc=1.0%, ADS(mean)=0.0766, ADS(mid)=0.1148, ADS(L4)=0.0505
+      ε=0.100: acc=1.0%, ADS(mean)=0.0776, ADS(mid)=0.1149, ADS(L4)=0.0509
+      ε=0.200: acc=1.0%, ADS(mean)=0.0777, ADS(mid)=0.1148, ADS(L4)=0.0510
+      ε=0.500: acc=1.0%, ADS(mean)=0.0778, ADS(mid)=0.1148, ADS(L4)=0.0510
+      ε=1.000: acc=1.0%, ADS(mean)=0.0778, ADS(mid)=0.1148, ADS(L4)=0.0511
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0621, ADS(mid)=0.0902, ADS(L4)=0.0355
+      ε=0.010: acc=1.4%, ADS(mean)=0.0680, ADS(mid)=0.0969, ADS(L4)=0.0451
+      ε=0.050: acc=0.9%, ADS(mean)=0.0791, ADS(mid)=0.1141, ADS(L4)=0.0507
+      ε=0.100: acc=1.0%, ADS(mean)=0.0811, ADS(mid)=0.1142, ADS(L4)=0.0505
+      ε=0.200: acc=1.0%, ADS(mean)=0.1057, ADS(mid)=0.1134, ADS(L4)=0.0509
+      ε=0.500: acc=1.0%, ADS(mean)=0.2212, ADS(mid)=0.1221, ADS(L4)=0.1790
+      ε=1.000: acc=1.0%, ADS(mean)=0.5564, ADS(mid)=0.3817, ADS(L4)=0.5613
+
+  Seed 456:
+    Clean accuracy: 67.70%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.4%, ADS(mean)=0.0043, ADS(mid)=0.0038, ADS(L4)=0.0066
+      ε=0.010: acc=67.0%, ADS(mean)=0.0166, ADS(mid)=0.0153, ADS(L4)=0.0233
+      ε=0.050: acc=48.5%, ADS(mean)=0.3895, ADS(mid)=0.3678, ADS(L4)=0.4430
+      ε=0.100: acc=17.2%, ADS(mean)=1.3987, ADS(mid)=1.3281, ADS(L4)=1.9104
+      ε=0.200: acc=7.6%, ADS(mean)=4.2162, ADS(mid)=4.0122, ADS(L4)=5.1332
+      ε=0.500: acc=3.4%, ADS(mean)=11.0766, ADS(mid)=11.1258, ADS(L4)=11.2502
+      ε=1.000: acc=2.5%, ADS(mean)=13.3715, ADS(mid)=13.5137, ADS(L4)=12.8108
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.7%, ADS(mean)=0.0108, ADS(mid)=0.0144, ADS(L4)=0.0049
+      ε=0.010: acc=5.2%, ADS(mean)=0.0319, ADS(mid)=0.0493, ADS(L4)=0.0206
+      ε=0.050: acc=1.3%, ADS(mean)=0.0747, ADS(mid)=0.1183, ADS(L4)=0.0619
+      ε=0.100: acc=0.9%, ADS(mean)=0.0957, ADS(mid)=0.1303, ADS(L4)=0.0738
+      ε=0.200: acc=0.9%, ADS(mean)=0.1757, ADS(mid)=0.1656, ADS(L4)=0.1678
+      ε=0.500: acc=0.8%, ADS(mean)=0.4706, ADS(mid)=0.4128, ADS(L4)=0.4752
+      ε=1.000: acc=1.0%, ADS(mean)=0.7277, ADS(mid)=0.6299, ADS(L4)=0.7066
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.0587, ADS(mid)=0.0950, ADS(L4)=0.0547
+      ε=0.010: acc=1.3%, ADS(mean)=0.0685, ADS(mid)=0.1120, ADS(L4)=0.0658
+      ε=0.050: acc=1.0%, ADS(mean)=0.0822, ADS(mid)=0.1325, ADS(L4)=0.0856
+      ε=0.100: acc=1.0%, ADS(mean)=0.0827, ADS(mid)=0.1322, ADS(L4)=0.0859
+      ε=0.200: acc=1.0%, ADS(mean)=0.0828, ADS(mid)=0.1321, ADS(L4)=0.0859
+      ε=0.500: acc=1.0%, ADS(mean)=0.0828, ADS(mid)=0.1321, ADS(L4)=0.0859
+      ε=1.000: acc=1.0%, ADS(mean)=0.0828, ADS(mid)=0.1320, ADS(L4)=0.0859
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.0710, ADS(mid)=0.1175, ADS(L4)=0.0685
+      ε=0.010: acc=1.4%, ADS(mean)=0.0771, ADS(mid)=0.1253, ADS(L4)=0.0780
+      ε=0.050: acc=1.0%, ADS(mean)=0.0880, ADS(mid)=0.1328, ADS(L4)=0.0858
+      ε=0.100: acc=1.0%, ADS(mean)=0.0881, ADS(mid)=0.1322, ADS(L4)=0.0857
+      ε=0.200: acc=1.0%, ADS(mean)=0.1086, ADS(mid)=0.1323, ADS(L4)=0.0860
+      ε=0.500: acc=1.0%, ADS(mean)=0.2015, ADS(mid)=0.1229, ADS(L4)=0.0863
+      ε=1.000: acc=1.0%, ADS(mean)=0.4435, ADS(mid)=0.2827, ADS(L4)=0.3239
+
+  Seed 2024:
+    Clean accuracy: 68.05%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.4%, ADS(mean)=0.0042, ADS(mid)=0.0044, ADS(L4)=0.0044
+      ε=0.010: acc=66.9%, ADS(mean)=0.0169, ADS(mid)=0.0178, ADS(L4)=0.0186
+      ε=0.050: acc=44.2%, ADS(mean)=0.3584, ADS(mid)=0.3730, ADS(L4)=0.3627
+      ε=0.100: acc=16.7%, ADS(mean)=1.3126, ADS(mid)=1.1914, ADS(L4)=1.2566
+      ε=0.200: acc=6.2%, ADS(mean)=4.1356, ADS(mid)=3.7652, ADS(L4)=4.1601
+      ε=0.500: acc=2.4%, ADS(mean)=11.1345, ADS(mid)=9.6549, ADS(L4)=13.4376
+      ε=1.000: acc=1.6%, ADS(mean)=14.3106, ADS(mid)=13.9993, ADS(L4)=14.9674
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=28.1%, ADS(mean)=0.0076, ADS(mid)=0.0107, ADS(L4)=0.0040
+      ε=0.010: acc=3.2%, ADS(mean)=0.0285, ADS(mid)=0.0441, ADS(L4)=0.0186
+      ε=0.050: acc=1.1%, ADS(mean)=0.0706, ADS(mid)=0.1013, ADS(L4)=0.0549
+      ε=0.100: acc=1.0%, ADS(mean)=0.0861, ADS(mid)=0.1030, ADS(L4)=0.0634
+      ε=0.200: acc=1.0%, ADS(mean)=0.1828, ADS(mid)=0.1713, ADS(L4)=0.1400
+      ε=0.500: acc=1.0%, ADS(mean)=0.4725, ADS(mid)=0.4236, ADS(L4)=0.4256
+      ε=1.000: acc=1.0%, ADS(mean)=0.7066, ADS(mid)=0.6237, ADS(L4)=0.6330
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.7%, ADS(mean)=0.0469, ADS(mid)=0.0704, ADS(L4)=0.0319
+      ε=0.010: acc=1.9%, ADS(mean)=0.0591, ADS(mid)=0.0881, ADS(L4)=0.0440
+      ε=0.050: acc=1.0%, ADS(mean)=0.0740, ADS(mid)=0.1080, ADS(L4)=0.0584
+      ε=0.100: acc=1.0%, ADS(mean)=0.0749, ADS(mid)=0.1078, ADS(L4)=0.0586
+      ε=0.200: acc=1.0%, ADS(mean)=0.0750, ADS(mid)=0.1077, ADS(L4)=0.0585
+      ε=0.500: acc=1.0%, ADS(mean)=0.0750, ADS(mid)=0.1076, ADS(L4)=0.0584
+      ε=1.000: acc=1.0%, ADS(mean)=0.0750, ADS(mid)=0.1076, ADS(L4)=0.0584
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0658, ADS(mid)=0.0978, ADS(L4)=0.0470
+      ε=0.010: acc=1.1%, ADS(mean)=0.0717, ADS(mid)=0.1044, ADS(L4)=0.0495
+      ε=0.050: acc=1.0%, ADS(mean)=0.0821, ADS(mid)=0.1079, ADS(L4)=0.0584
+      ε=0.100: acc=1.0%, ADS(mean)=0.0838, ADS(mid)=0.1074, ADS(L4)=0.0580
+      ε=0.200: acc=1.0%, ADS(mean)=0.1128, ADS(mid)=0.1071, ADS(L4)=0.0581
+      ε=0.500: acc=1.0%, ADS(mean)=0.2424, ADS(mid)=0.1064, ADS(L4)=0.0644
+      ε=1.000: acc=1.0%, ADS(mean)=0.5664, ADS(mid)=0.3506, ADS(L4)=0.4108
+
+  Seed 31337:
+    Clean accuracy: 67.69%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.3%, ADS(mean)=0.0037, ADS(mid)=0.0035, ADS(L4)=0.0037
+      ε=0.010: acc=66.8%, ADS(mean)=0.0158, ADS(mid)=0.0153, ADS(L4)=0.0149
+      ε=0.050: acc=46.9%, ADS(mean)=0.4080, ADS(mid)=0.3880, ADS(L4)=0.3883
+      ε=0.100: acc=21.0%, ADS(mean)=1.3286, ADS(mid)=1.2643, ADS(L4)=1.6997
+      ε=0.200: acc=7.8%, ADS(mean)=3.9746, ADS(mid)=4.0504, ADS(L4)=3.0467
+      ε=0.500: acc=2.1%, ADS(mean)=11.3591, ADS(mid)=11.5040, ADS(L4)=10.3854
+      ε=1.000: acc=1.5%, ADS(mean)=14.0407, ADS(mid)=13.9195, ADS(L4)=12.4173
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=28.1%, ADS(mean)=0.0170, ADS(mid)=0.0276, ADS(L4)=0.0055
+      ε=0.010: acc=5.9%, ADS(mean)=0.0416, ADS(mid)=0.0732, ADS(L4)=0.0172
+      ε=0.050: acc=1.2%, ADS(mean)=0.0791, ADS(mid)=0.1287, ADS(L4)=0.0465
+      ε=0.100: acc=1.1%, ADS(mean)=0.0919, ADS(mid)=0.1255, ADS(L4)=0.0690
+      ε=0.200: acc=1.1%, ADS(mean)=0.1834, ADS(mid)=0.1671, ADS(L4)=0.2065
+      ε=0.500: acc=1.2%, ADS(mean)=0.4846, ADS(mid)=0.4258, ADS(L4)=0.5252
+      ε=1.000: acc=1.2%, ADS(mean)=0.7031, ADS(mid)=0.5727, ADS(L4)=0.7220
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.8%, ADS(mean)=0.0617, ADS(mid)=0.1086, ADS(L4)=0.0314
+      ε=0.010: acc=1.4%, ADS(mean)=0.0699, ADS(mid)=0.1231, ADS(L4)=0.0384
+      ε=0.050: acc=1.0%, ADS(mean)=0.0805, ADS(mid)=0.1385, ADS(L4)=0.0543
+      ε=0.100: acc=1.0%, ADS(mean)=0.0811, ADS(mid)=0.1382, ADS(L4)=0.0551
+      ε=0.200: acc=1.0%, ADS(mean)=0.0812, ADS(mid)=0.1381, ADS(L4)=0.0551
+      ε=0.500: acc=1.0%, ADS(mean)=0.0811, ADS(mid)=0.1380, ADS(L4)=0.0551
+      ε=1.000: acc=1.0%, ADS(mean)=0.0811, ADS(mid)=0.1380, ADS(L4)=0.0550
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0747, ADS(mid)=0.1307, ADS(L4)=0.0413
+      ε=0.010: acc=1.1%, ADS(mean)=0.0775, ADS(mid)=0.1331, ADS(L4)=0.0429
+      ε=0.050: acc=1.0%, ADS(mean)=0.0851, ADS(mid)=0.1372, ADS(L4)=0.0542
+      ε=0.100: acc=1.3%, ADS(mean)=0.0872, ADS(mid)=0.1376, ADS(L4)=0.0544
+      ε=0.200: acc=1.0%, ADS(mean)=0.1296, ADS(mid)=0.1372, ADS(L4)=0.0535
+      ε=0.500: acc=1.0%, ADS(mean)=0.2792, ADS(mid)=0.1322, ADS(L4)=0.0999
+      ε=1.000: acc=1.0%, ADS(mean)=0.5331, ADS(mid)=0.3463, ADS(L4)=0.5440
+
+  Saved to /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_specificity_cifar100_canonical_n12.json
+
+============================================================
+PE TYPE: ALIBI_2D
+============================================================
+
+  Seed 1:
+    Clean accuracy: 68.64%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.3%, ADS(mean)=0.0005, ADS(mid)=0.0005, ADS(L4)=0.0004
+      ε=0.050: acc=67.4%, ADS(mean)=0.0125, ADS(mid)=0.0140, ADS(L4)=0.0114
+      ε=0.100: acc=63.5%, ADS(mean)=0.0541, ADS(mid)=0.0597, ADS(L4)=0.0549
+      ε=0.200: acc=43.5%, ADS(mean)=0.2102, ADS(mid)=0.2323, ADS(L4)=0.2208
+      ε=0.500: acc=7.6%, ADS(mean)=1.1330, ADS(mid)=1.2500, ADS(L4)=1.1027
+      ε=1.000: acc=3.8%, ADS(mean)=3.4835, ADS(mid)=3.8888, ADS(L4)=3.5141
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.7%, ADS(mean)=0.0148, ADS(mid)=0.0237, ADS(L4)=0.0092
+      ε=0.010: acc=7.6%, ADS(mean)=0.0280, ADS(mid)=0.0448, ADS(L4)=0.0310
+      ε=0.050: acc=0.9%, ADS(mean)=0.0582, ADS(mid)=0.0800, ADS(L4)=0.0753
+      ε=0.100: acc=1.3%, ADS(mean)=0.0860, ADS(mid)=0.0965, ADS(L4)=0.1062
+      ε=0.200: acc=1.4%, ADS(mean)=0.1215, ADS(mid)=0.1118, ADS(L4)=0.1283
+      ε=0.500: acc=1.2%, ADS(mean)=0.2321, ADS(mid)=0.1919, ADS(L4)=0.2397
+      ε=1.000: acc=1.3%, ADS(mean)=0.3433, ADS(mid)=0.2849, ADS(L4)=0.3055
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.7%, ADS(mean)=0.0397, ADS(mid)=0.0637, ADS(L4)=0.0475
+      ε=0.010: acc=1.8%, ADS(mean)=0.0474, ADS(mid)=0.0731, ADS(L4)=0.0581
+      ε=0.050: acc=1.0%, ADS(mean)=0.0546, ADS(mid)=0.0774, ADS(L4)=0.0680
+      ε=0.100: acc=1.0%, ADS(mean)=0.0555, ADS(mid)=0.0773, ADS(L4)=0.0675
+      ε=0.200: acc=1.0%, ADS(mean)=0.0555, ADS(mid)=0.0773, ADS(L4)=0.0674
+      ε=0.500: acc=1.0%, ADS(mean)=0.0555, ADS(mid)=0.0773, ADS(L4)=0.0675
+      ε=1.000: acc=1.0%, ADS(mean)=0.0555, ADS(mid)=0.0773, ADS(L4)=0.0674
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.0477, ADS(mid)=0.0725, ADS(L4)=0.0528
+      ε=0.010: acc=1.4%, ADS(mean)=0.0513, ADS(mid)=0.0779, ADS(L4)=0.0578
+      ε=0.050: acc=1.0%, ADS(mean)=0.0574, ADS(mid)=0.0773, ADS(L4)=0.0687
+      ε=0.100: acc=1.0%, ADS(mean)=0.0575, ADS(mid)=0.0771, ADS(L4)=0.0681
+      ε=0.200: acc=1.0%, ADS(mean)=0.0709, ADS(mid)=0.0767, ADS(L4)=0.0655
+      ε=0.500: acc=1.0%, ADS(mean)=0.1728, ADS(mid)=0.1264, ADS(L4)=0.1784
+      ε=1.000: acc=1.0%, ADS(mean)=0.3576, ADS(mid)=0.2447, ADS(L4)=0.3081
+
+  Seed 5:
+    Clean accuracy: 68.21%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.2%, ADS(mean)=0.0006, ADS(mid)=0.0005, ADS(L4)=0.0006
+      ε=0.050: acc=67.9%, ADS(mean)=0.0133, ADS(mid)=0.0125, ADS(L4)=0.0137
+      ε=0.100: acc=66.3%, ADS(mean)=0.0575, ADS(mid)=0.0565, ADS(L4)=0.0556
+      ε=0.200: acc=54.6%, ADS(mean)=0.2190, ADS(mid)=0.2236, ADS(L4)=0.2087
+      ε=0.500: acc=3.3%, ADS(mean)=1.0900, ADS(mid)=1.1130, ADS(L4)=1.2136
+      ε=1.000: acc=2.3%, ADS(mean)=3.4884, ADS(mid)=3.6219, ADS(L4)=3.2357
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=16.2%, ADS(mean)=0.0135, ADS(mid)=0.0206, ADS(L4)=0.0044
+      ε=0.010: acc=2.0%, ADS(mean)=0.0319, ADS(mid)=0.0510, ADS(L4)=0.0189
+      ε=0.050: acc=1.4%, ADS(mean)=0.0575, ADS(mid)=0.0786, ADS(L4)=0.0525
+      ε=0.100: acc=1.5%, ADS(mean)=0.0861, ADS(mid)=0.0895, ADS(L4)=0.0717
+      ε=0.200: acc=1.2%, ADS(mean)=0.1532, ADS(mid)=0.1338, ADS(L4)=0.1325
+      ε=0.500: acc=1.0%, ADS(mean)=0.2624, ADS(mid)=0.2237, ADS(L4)=0.2555
+      ε=1.000: acc=0.8%, ADS(mean)=0.3872, ADS(mid)=0.3077, ADS(L4)=0.3517
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0375, ADS(mid)=0.0625, ADS(L4)=0.0341
+      ε=0.010: acc=1.9%, ADS(mean)=0.0435, ADS(mid)=0.0685, ADS(L4)=0.0420
+      ε=0.050: acc=1.0%, ADS(mean)=0.0563, ADS(mid)=0.0790, ADS(L4)=0.0698
+      ε=0.100: acc=1.0%, ADS(mean)=0.0576, ADS(mid)=0.0795, ADS(L4)=0.0715
+      ε=0.200: acc=1.0%, ADS(mean)=0.0578, ADS(mid)=0.0796, ADS(L4)=0.0716
+      ε=0.500: acc=1.0%, ADS(mean)=0.0578, ADS(mid)=0.0796, ADS(L4)=0.0716
+      ε=1.000: acc=1.0%, ADS(mean)=0.0579, ADS(mid)=0.0797, ADS(L4)=0.0716
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.0455, ADS(mid)=0.0708, ADS(L4)=0.0371
+      ε=0.010: acc=1.0%, ADS(mean)=0.0477, ADS(mid)=0.0731, ADS(L4)=0.0431
+      ε=0.050: acc=0.9%, ADS(mean)=0.0580, ADS(mid)=0.0793, ADS(L4)=0.0694
+      ε=0.100: acc=1.0%, ADS(mean)=0.0637, ADS(mid)=0.0797, ADS(L4)=0.0728
+      ε=0.200: acc=1.0%, ADS(mean)=0.0794, ADS(mid)=0.0805, ADS(L4)=0.0784
+      ε=0.500: acc=1.0%, ADS(mean)=0.1404, ADS(mid)=0.1048, ADS(L4)=0.1067
+      ε=1.000: acc=1.0%, ADS(mean)=0.3527, ADS(mid)=0.2618, ADS(L4)=0.3173
+
+  Seed 7:
+    Clean accuracy: 67.79%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=67.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.7%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=67.4%, ADS(mean)=0.0006, ADS(mid)=0.0006, ADS(L4)=0.0006
+      ε=0.050: acc=65.4%, ADS(mean)=0.0136, ADS(mid)=0.0146, ADS(L4)=0.0143
+      ε=0.100: acc=60.6%, ADS(mean)=0.0554, ADS(mid)=0.0594, ADS(L4)=0.0542
+      ε=0.200: acc=49.0%, ADS(mean)=0.2004, ADS(mid)=0.2285, ADS(L4)=0.1908
+      ε=0.500: acc=37.0%, ADS(mean)=1.0251, ADS(mid)=1.1636, ADS(L4)=1.1157
+      ε=1.000: acc=17.4%, ADS(mean)=3.1942, ADS(mid)=3.7407, ADS(L4)=3.8878
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=67.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=25.8%, ADS(mean)=0.0170, ADS(mid)=0.0129, ADS(L4)=0.0051
+      ε=0.010: acc=5.1%, ADS(mean)=0.0332, ADS(mid)=0.0374, ADS(L4)=0.0195
+      ε=0.050: acc=1.4%, ADS(mean)=0.0523, ADS(mid)=0.0653, ADS(L4)=0.0517
+      ε=0.100: acc=1.1%, ADS(mean)=0.0680, ADS(mid)=0.0681, ADS(L4)=0.0620
+      ε=0.200: acc=1.0%, ADS(mean)=0.1297, ADS(mid)=0.1031, ADS(L4)=0.1054
+      ε=0.500: acc=1.1%, ADS(mean)=0.2699, ADS(mid)=0.2265, ADS(L4)=0.2395
+      ε=1.000: acc=0.9%, ADS(mean)=0.3915, ADS(mid)=0.3366, ADS(L4)=0.3706
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=67.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.1%, ADS(mean)=0.0377, ADS(mid)=0.0527, ADS(L4)=0.0413
+      ε=0.010: acc=2.0%, ADS(mean)=0.0450, ADS(mid)=0.0604, ADS(L4)=0.0495
+      ε=0.050: acc=1.0%, ADS(mean)=0.0540, ADS(mid)=0.0667, ADS(L4)=0.0609
+      ε=0.100: acc=1.0%, ADS(mean)=0.0550, ADS(mid)=0.0665, ADS(L4)=0.0613
+      ε=0.200: acc=1.0%, ADS(mean)=0.0550, ADS(mid)=0.0665, ADS(L4)=0.0612
+      ε=0.500: acc=1.0%, ADS(mean)=0.0550, ADS(mid)=0.0664, ADS(L4)=0.0610
+      ε=1.000: acc=1.0%, ADS(mean)=0.0550, ADS(mid)=0.0664, ADS(L4)=0.0611
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=67.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.1%, ADS(mean)=0.0464, ADS(mid)=0.0637, ADS(L4)=0.0446
+      ε=0.010: acc=1.0%, ADS(mean)=0.0507, ADS(mid)=0.0677, ADS(L4)=0.0552
+      ε=0.050: acc=1.0%, ADS(mean)=0.0564, ADS(mid)=0.0670, ADS(L4)=0.0612
+      ε=0.100: acc=1.0%, ADS(mean)=0.0598, ADS(mid)=0.0668, ADS(L4)=0.0614
+      ε=0.200: acc=1.0%, ADS(mean)=0.0765, ADS(mid)=0.0677, ADS(L4)=0.0624
+      ε=0.500: acc=1.0%, ADS(mean)=0.1882, ADS(mid)=0.1088, ADS(L4)=0.1039
+      ε=1.000: acc=1.0%, ADS(mean)=0.3314, ADS(mid)=0.2356, ADS(L4)=0.2710
+
+  Seed 11:
+    Clean accuracy: 68.37%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.3%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.3%, ADS(mean)=0.0005, ADS(mid)=0.0005, ADS(L4)=0.0005
+      ε=0.050: acc=68.0%, ADS(mean)=0.0128, ADS(mid)=0.0131, ADS(L4)=0.0127
+      ε=0.100: acc=66.9%, ADS(mean)=0.0513, ADS(mid)=0.0560, ADS(L4)=0.0478
+      ε=0.200: acc=62.0%, ADS(mean)=0.1913, ADS(mid)=0.1943, ADS(L4)=0.2282
+      ε=0.500: acc=14.8%, ADS(mean)=1.0518, ADS(mid)=1.1533, ADS(L4)=1.3896
+      ε=1.000: acc=5.8%, ADS(mean)=3.2648, ADS(mid)=3.4681, ADS(L4)=3.9430
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=37.6%, ADS(mean)=0.0110, ADS(mid)=0.0201, ADS(L4)=0.0041
+      ε=0.010: acc=9.2%, ADS(mean)=0.0273, ADS(mid)=0.0462, ADS(L4)=0.0131
+      ε=0.050: acc=1.4%, ADS(mean)=0.0597, ADS(mid)=0.0823, ADS(L4)=0.0702
+      ε=0.100: acc=1.6%, ADS(mean)=0.0792, ADS(mid)=0.0994, ADS(L4)=0.0805
+      ε=0.200: acc=1.3%, ADS(mean)=0.1482, ADS(mid)=0.1521, ADS(L4)=0.1701
+      ε=0.500: acc=1.0%, ADS(mean)=0.2808, ADS(mid)=0.2655, ADS(L4)=0.2680
+      ε=1.000: acc=1.4%, ADS(mean)=0.3848, ADS(mid)=0.3671, ADS(L4)=0.3758
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.7%, ADS(mean)=0.0395, ADS(mid)=0.0686, ADS(L4)=0.0279
+      ε=0.010: acc=1.3%, ADS(mean)=0.0477, ADS(mid)=0.0774, ADS(L4)=0.0410
+      ε=0.050: acc=1.0%, ADS(mean)=0.0587, ADS(mid)=0.0846, ADS(L4)=0.0643
+      ε=0.100: acc=1.0%, ADS(mean)=0.0595, ADS(mid)=0.0848, ADS(L4)=0.0645
+      ε=0.200: acc=1.0%, ADS(mean)=0.0596, ADS(mid)=0.0848, ADS(L4)=0.0645
+      ε=0.500: acc=1.0%, ADS(mean)=0.0596, ADS(mid)=0.0848, ADS(L4)=0.0646
+      ε=1.000: acc=1.0%, ADS(mean)=0.0596, ADS(mid)=0.0848, ADS(L4)=0.0645
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0495, ADS(mid)=0.0798, ADS(L4)=0.0460
+      ε=0.010: acc=1.1%, ADS(mean)=0.0529, ADS(mid)=0.0815, ADS(L4)=0.0514
+      ε=0.050: acc=1.0%, ADS(mean)=0.0614, ADS(mid)=0.0845, ADS(L4)=0.0644
+      ε=0.100: acc=1.0%, ADS(mean)=0.0706, ADS(mid)=0.0850, ADS(L4)=0.0646
+      ε=0.200: acc=1.0%, ADS(mean)=0.0895, ADS(mid)=0.0857, ADS(L4)=0.0626
+      ε=0.500: acc=1.0%, ADS(mean)=0.2356, ADS(mid)=0.0936, ADS(L4)=0.0627
+      ε=1.000: acc=1.0%, ADS(mean)=0.3235, ADS(mid)=0.2434, ADS(L4)=0.2295
+
+  Seed 13:
+    Clean accuracy: 68.02%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=67.9%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.0%, ADS(mean)=0.0005, ADS(mid)=0.0005, ADS(L4)=0.0005
+      ε=0.050: acc=67.2%, ADS(mean)=0.0115, ADS(mid)=0.0116, ADS(L4)=0.0146
+      ε=0.100: acc=66.5%, ADS(mean)=0.0482, ADS(mid)=0.0531, ADS(L4)=0.0465
+      ε=0.200: acc=62.8%, ADS(mean)=0.1889, ADS(mid)=0.1980, ADS(L4)=0.1877
+      ε=0.500: acc=43.8%, ADS(mean)=1.0090, ADS(mid)=1.0655, ADS(L4)=1.1413
+      ε=1.000: acc=13.1%, ADS(mean)=3.3239, ADS(mid)=3.5328, ADS(L4)=3.9649
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=23.8%, ADS(mean)=0.0106, ADS(mid)=0.0169, ADS(L4)=0.0074
+      ε=0.010: acc=3.7%, ADS(mean)=0.0288, ADS(mid)=0.0484, ADS(L4)=0.0242
+      ε=0.050: acc=1.1%, ADS(mean)=0.0543, ADS(mid)=0.0745, ADS(L4)=0.0642
+      ε=0.100: acc=1.3%, ADS(mean)=0.0753, ADS(mid)=0.0870, ADS(L4)=0.0936
+      ε=0.200: acc=1.4%, ADS(mean)=0.1292, ADS(mid)=0.1192, ADS(L4)=0.1600
+      ε=0.500: acc=1.1%, ADS(mean)=0.2593, ADS(mid)=0.2291, ADS(L4)=0.2778
+      ε=1.000: acc=1.1%, ADS(mean)=0.3786, ADS(mid)=0.3158, ADS(L4)=0.4007
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.8%, ADS(mean)=0.0366, ADS(mid)=0.0578, ADS(L4)=0.0404
+      ε=0.010: acc=1.8%, ADS(mean)=0.0444, ADS(mid)=0.0663, ADS(L4)=0.0552
+      ε=0.050: acc=1.0%, ADS(mean)=0.0536, ADS(mid)=0.0750, ADS(L4)=0.0745
+      ε=0.100: acc=1.0%, ADS(mean)=0.0544, ADS(mid)=0.0750, ADS(L4)=0.0755
+      ε=0.200: acc=1.0%, ADS(mean)=0.0545, ADS(mid)=0.0749, ADS(L4)=0.0757
+      ε=0.500: acc=1.0%, ADS(mean)=0.0545, ADS(mid)=0.0749, ADS(L4)=0.0756
+      ε=1.000: acc=1.0%, ADS(mean)=0.0545, ADS(mid)=0.0748, ADS(L4)=0.0756
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.0453, ADS(mid)=0.0682, ADS(L4)=0.0483
+      ε=0.010: acc=1.2%, ADS(mean)=0.0495, ADS(mid)=0.0730, ADS(L4)=0.0546
+      ε=0.050: acc=1.0%, ADS(mean)=0.0561, ADS(mid)=0.0757, ADS(L4)=0.0744
+      ε=0.100: acc=1.0%, ADS(mean)=0.0586, ADS(mid)=0.0752, ADS(L4)=0.0751
+      ε=0.200: acc=1.0%, ADS(mean)=0.0725, ADS(mid)=0.0756, ADS(L4)=0.0763
+      ε=0.500: acc=1.0%, ADS(mean)=0.2552, ADS(mid)=0.0966, ADS(L4)=0.1068
+      ε=1.000: acc=1.0%, ADS(mean)=0.4309, ADS(mid)=0.1942, ADS(L4)=0.2497
+
+  Seed 21:
+    Clean accuracy: 68.23%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=68.2%, ADS(mean)=0.0005, ADS(mid)=0.0006, ADS(L4)=0.0006
+      ε=0.050: acc=67.2%, ADS(mean)=0.0130, ADS(mid)=0.0132, ADS(L4)=0.0153
+      ε=0.100: acc=65.3%, ADS(mean)=0.0493, ADS(mid)=0.0537, ADS(L4)=0.0537
+      ε=0.200: acc=44.0%, ADS(mean)=0.2071, ADS(mid)=0.2187, ADS(L4)=0.2640
+      ε=0.500: acc=8.0%, ADS(mean)=1.0760, ADS(mid)=1.1735, ADS(L4)=1.3187
+      ε=1.000: acc=3.0%, ADS(mean)=3.2205, ADS(mid)=3.4604, ADS(L4)=4.1872
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=25.1%, ADS(mean)=0.0126, ADS(mid)=0.0192, ADS(L4)=0.0173
+      ε=0.010: acc=3.5%, ADS(mean)=0.0278, ADS(mid)=0.0413, ADS(L4)=0.0496
+      ε=0.050: acc=1.0%, ADS(mean)=0.0475, ADS(mid)=0.0619, ADS(L4)=0.0753
+      ε=0.100: acc=1.0%, ADS(mean)=0.0622, ADS(mid)=0.0655, ADS(L4)=0.0783
+      ε=0.200: acc=1.1%, ADS(mean)=0.1013, ADS(mid)=0.0795, ADS(L4)=0.1112
+      ε=0.500: acc=1.2%, ADS(mean)=0.2199, ADS(mid)=0.1742, ADS(L4)=0.2360
+      ε=1.000: acc=1.1%, ADS(mean)=0.3593, ADS(mid)=0.3055, ADS(L4)=0.3572
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.1%, ADS(mean)=0.0347, ADS(mid)=0.0534, ADS(L4)=0.0548
+      ε=0.010: acc=1.0%, ADS(mean)=0.0404, ADS(mid)=0.0585, ADS(L4)=0.0684
+      ε=0.050: acc=1.0%, ADS(mean)=0.0494, ADS(mid)=0.0654, ADS(L4)=0.0831
+      ε=0.100: acc=1.0%, ADS(mean)=0.0503, ADS(mid)=0.0654, ADS(L4)=0.0836
+      ε=0.200: acc=1.0%, ADS(mean)=0.0505, ADS(mid)=0.0655, ADS(L4)=0.0839
+      ε=0.500: acc=1.0%, ADS(mean)=0.0505, ADS(mid)=0.0655, ADS(L4)=0.0838
+      ε=1.000: acc=1.0%, ADS(mean)=0.0505, ADS(mid)=0.0654, ADS(L4)=0.0838
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.3%, ADS(mean)=0.0423, ADS(mid)=0.0615, ADS(L4)=0.0760
+      ε=0.010: acc=1.2%, ADS(mean)=0.0460, ADS(mid)=0.0642, ADS(L4)=0.0846
+      ε=0.050: acc=1.0%, ADS(mean)=0.0528, ADS(mid)=0.0659, ADS(L4)=0.0844
+      ε=0.100: acc=1.0%, ADS(mean)=0.0615, ADS(mid)=0.0660, ADS(L4)=0.0852
+      ε=0.200: acc=1.0%, ADS(mean)=0.0768, ADS(mid)=0.0651, ADS(L4)=0.0863
+      ε=0.500: acc=1.0%, ADS(mean)=0.1819, ADS(mid)=0.1003, ADS(L4)=0.1594
+      ε=1.000: acc=1.0%, ADS(mean)=0.3386, ADS(mid)=0.2526, ADS(L4)=0.3125
+
+  Seed 42:
+    Clean accuracy: 68.50%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.3%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=68.2%, ADS(mean)=0.0005, ADS(mid)=0.0006, ADS(L4)=0.0005
+      ε=0.050: acc=67.1%, ADS(mean)=0.0125, ADS(mid)=0.0152, ADS(L4)=0.0112
+      ε=0.100: acc=64.5%, ADS(mean)=0.0511, ADS(mid)=0.0587, ADS(L4)=0.0549
+      ε=0.200: acc=40.4%, ADS(mean)=0.2144, ADS(mid)=0.2560, ADS(L4)=0.1978
+      ε=0.500: acc=11.2%, ADS(mean)=1.0666, ADS(mid)=1.2764, ADS(L4)=0.9490
+      ε=1.000: acc=5.5%, ADS(mean)=3.3436, ADS(mid)=4.0196, ADS(L4)=3.4408
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=27.6%, ADS(mean)=0.0120, ADS(mid)=0.0181, ADS(L4)=0.0070
+      ε=0.010: acc=6.7%, ADS(mean)=0.0269, ADS(mid)=0.0416, ADS(L4)=0.0262
+      ε=0.050: acc=1.0%, ADS(mean)=0.0588, ADS(mid)=0.0790, ADS(L4)=0.0779
+      ε=0.100: acc=0.8%, ADS(mean)=0.0792, ADS(mid)=0.0940, ADS(L4)=0.0887
+      ε=0.200: acc=1.0%, ADS(mean)=0.1195, ADS(mid)=0.1099, ADS(L4)=0.1325
+      ε=0.500: acc=1.2%, ADS(mean)=0.2350, ADS(mid)=0.2083, ADS(L4)=0.2661
+      ε=1.000: acc=1.3%, ADS(mean)=0.3518, ADS(mid)=0.2903, ADS(L4)=0.3603
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.4%, ADS(mean)=0.0366, ADS(mid)=0.0562, ADS(L4)=0.0516
+      ε=0.010: acc=1.2%, ADS(mean)=0.0451, ADS(mid)=0.0667, ADS(L4)=0.0626
+      ε=0.050: acc=1.0%, ADS(mean)=0.0545, ADS(mid)=0.0756, ADS(L4)=0.0794
+      ε=0.100: acc=0.9%, ADS(mean)=0.0552, ADS(mid)=0.0755, ADS(L4)=0.0801
+      ε=0.200: acc=0.9%, ADS(mean)=0.0552, ADS(mid)=0.0754, ADS(L4)=0.0799
+      ε=0.500: acc=1.0%, ADS(mean)=0.0552, ADS(mid)=0.0754, ADS(L4)=0.0801
+      ε=1.000: acc=0.8%, ADS(mean)=0.0552, ADS(mid)=0.0755, ADS(L4)=0.0800
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.3%, ADS(mean)=0.0444, ADS(mid)=0.0650, ADS(L4)=0.0543
+      ε=0.010: acc=1.2%, ADS(mean)=0.0494, ADS(mid)=0.0724, ADS(L4)=0.0575
+      ε=0.050: acc=0.8%, ADS(mean)=0.0563, ADS(mid)=0.0747, ADS(L4)=0.0794
+      ε=0.100: acc=1.0%, ADS(mean)=0.0608, ADS(mid)=0.0751, ADS(L4)=0.0780
+      ε=0.200: acc=1.0%, ADS(mean)=0.0724, ADS(mid)=0.0757, ADS(L4)=0.0764
+      ε=0.500: acc=1.0%, ADS(mean)=0.1746, ADS(mid)=0.1436, ADS(L4)=0.1579
+      ε=1.000: acc=1.0%, ADS(mean)=0.3057, ADS(mid)=0.2438, ADS(L4)=0.2997
+
+  Seed 99:
+    Clean accuracy: 68.79%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.7%, ADS(mean)=0.0002, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=68.8%, ADS(mean)=0.0006, ADS(mid)=0.0005, ADS(L4)=0.0006
+      ε=0.050: acc=68.3%, ADS(mean)=0.0136, ADS(mid)=0.0131, ADS(L4)=0.0154
+      ε=0.100: acc=66.9%, ADS(mean)=0.0532, ADS(mid)=0.0527, ADS(L4)=0.0496
+      ε=0.200: acc=55.4%, ADS(mean)=0.2188, ADS(mid)=0.2393, ADS(L4)=0.2364
+      ε=0.500: acc=14.2%, ADS(mean)=1.1168, ADS(mid)=1.2621, ADS(L4)=0.9400
+      ε=1.000: acc=3.7%, ADS(mean)=3.3173, ADS(mid)=3.6530, ADS(L4)=3.5968
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=23.2%, ADS(mean)=0.0138, ADS(mid)=0.0224, ADS(L4)=0.0041
+      ε=0.010: acc=3.3%, ADS(mean)=0.0356, ADS(mid)=0.0647, ADS(L4)=0.0128
+      ε=0.050: acc=0.8%, ADS(mean)=0.0617, ADS(mid)=0.0946, ADS(L4)=0.0471
+      ε=0.100: acc=1.1%, ADS(mean)=0.0887, ADS(mid)=0.1047, ADS(L4)=0.0849
+      ε=0.200: acc=1.0%, ADS(mean)=0.1350, ADS(mid)=0.1229, ADS(L4)=0.1435
+      ε=0.500: acc=1.0%, ADS(mean)=0.2436, ADS(mid)=0.2191, ADS(L4)=0.2523
+      ε=1.000: acc=0.9%, ADS(mean)=0.3670, ADS(mid)=0.3109, ADS(L4)=0.3474
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.0419, ADS(mid)=0.0714, ADS(L4)=0.0373
+      ε=0.010: acc=1.4%, ADS(mean)=0.0518, ADS(mid)=0.0840, ADS(L4)=0.0453
+      ε=0.050: acc=0.9%, ADS(mean)=0.0613, ADS(mid)=0.0949, ADS(L4)=0.0543
+      ε=0.100: acc=1.0%, ADS(mean)=0.0622, ADS(mid)=0.0950, ADS(L4)=0.0550
+      ε=0.200: acc=1.0%, ADS(mean)=0.0623, ADS(mid)=0.0951, ADS(L4)=0.0550
+      ε=0.500: acc=1.0%, ADS(mean)=0.0623, ADS(mid)=0.0951, ADS(L4)=0.0550
+      ε=1.000: acc=1.1%, ADS(mean)=0.0623, ADS(mid)=0.0951, ADS(L4)=0.0550
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0543, ADS(mid)=0.0885, ADS(L4)=0.0406
+      ε=0.010: acc=1.0%, ADS(mean)=0.0567, ADS(mid)=0.0908, ADS(L4)=0.0408
+      ε=0.050: acc=1.0%, ADS(mean)=0.0640, ADS(mid)=0.0949, ADS(L4)=0.0551
+      ε=0.100: acc=1.0%, ADS(mean)=0.0699, ADS(mid)=0.0950, ADS(L4)=0.0552
+      ε=0.200: acc=1.0%, ADS(mean)=0.1062, ADS(mid)=0.0954, ADS(L4)=0.0557
+      ε=0.500: acc=1.0%, ADS(mean)=0.1360, ADS(mid)=0.0999, ADS(L4)=0.0787
+      ε=1.000: acc=1.0%, ADS(mean)=0.3181, ADS(mid)=0.2427, ADS(L4)=0.3634
+
+  Seed 123:
+    Clean accuracy: 68.33%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.0%, ADS(mean)=0.0006, ADS(mid)=0.0006, ADS(L4)=0.0006
+      ε=0.050: acc=67.2%, ADS(mean)=0.0123, ADS(mid)=0.0138, ADS(L4)=0.0139
+      ε=0.100: acc=65.0%, ADS(mean)=0.0508, ADS(mid)=0.0573, ADS(L4)=0.0592
+      ε=0.200: acc=58.5%, ADS(mean)=0.1876, ADS(mid)=0.2318, ADS(L4)=0.1962
+      ε=0.500: acc=26.4%, ADS(mean)=1.0947, ADS(mid)=1.3631, ADS(L4)=1.3192
+      ε=1.000: acc=11.5%, ADS(mean)=3.4604, ADS(mid)=4.1009, ADS(L4)=3.6304
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.2%, ADS(mean)=0.0138, ADS(mid)=0.0233, ADS(L4)=0.0029
+      ε=0.010: acc=5.1%, ADS(mean)=0.0320, ADS(mid)=0.0532, ADS(L4)=0.0112
+      ε=0.050: acc=1.1%, ADS(mean)=0.0579, ADS(mid)=0.0818, ADS(L4)=0.0415
+      ε=0.100: acc=0.8%, ADS(mean)=0.0736, ADS(mid)=0.0883, ADS(L4)=0.0588
+      ε=0.200: acc=0.7%, ADS(mean)=0.1188, ADS(mid)=0.1107, ADS(L4)=0.1084
+      ε=0.500: acc=1.1%, ADS(mean)=0.2595, ADS(mid)=0.2337, ADS(L4)=0.2348
+      ε=1.000: acc=1.0%, ADS(mean)=0.3847, ADS(mid)=0.3260, ADS(L4)=0.3798
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.7%, ADS(mean)=0.0441, ADS(mid)=0.0732, ADS(L4)=0.0250
+      ε=0.010: acc=1.4%, ADS(mean)=0.0498, ADS(mid)=0.0800, ADS(L4)=0.0299
+      ε=0.050: acc=1.0%, ADS(mean)=0.0577, ADS(mid)=0.0848, ADS(L4)=0.0412
+      ε=0.100: acc=1.0%, ADS(mean)=0.0586, ADS(mid)=0.0849, ADS(L4)=0.0419
+      ε=0.200: acc=1.0%, ADS(mean)=0.0587, ADS(mid)=0.0850, ADS(L4)=0.0421
+      ε=0.500: acc=1.0%, ADS(mean)=0.0587, ADS(mid)=0.0850, ADS(L4)=0.0422
+      ε=1.000: acc=1.0%, ADS(mean)=0.0588, ADS(mid)=0.0851, ADS(L4)=0.0422
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.8%, ADS(mean)=0.0504, ADS(mid)=0.0816, ADS(L4)=0.0285
+      ε=0.010: acc=1.5%, ADS(mean)=0.0520, ADS(mid)=0.0806, ADS(L4)=0.0296
+      ε=0.050: acc=1.0%, ADS(mean)=0.0597, ADS(mid)=0.0844, ADS(L4)=0.0427
+      ε=0.100: acc=1.0%, ADS(mean)=0.0629, ADS(mid)=0.0850, ADS(L4)=0.0434
+      ε=0.200: acc=1.0%, ADS(mean)=0.0908, ADS(mid)=0.0876, ADS(L4)=0.0494
+      ε=0.500: acc=1.0%, ADS(mean)=0.2587, ADS(mid)=0.1111, ADS(L4)=0.1240
+      ε=1.000: acc=1.0%, ADS(mean)=0.3621, ADS(mid)=0.2536, ADS(L4)=0.2964
+
+  Seed 456:
+    Clean accuracy: 69.01%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=69.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.8%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.7%, ADS(mean)=0.0005, ADS(mid)=0.0006, ADS(L4)=0.0006
+      ε=0.050: acc=66.1%, ADS(mean)=0.0140, ADS(mid)=0.0147, ADS(L4)=0.0170
+      ε=0.100: acc=61.6%, ADS(mean)=0.0561, ADS(mid)=0.0617, ADS(L4)=0.0585
+      ε=0.200: acc=53.8%, ADS(mean)=0.1924, ADS(mid)=0.2156, ADS(L4)=0.1982
+      ε=0.500: acc=33.3%, ADS(mean)=1.0297, ADS(mid)=1.1428, ADS(L4)=1.0351
+      ε=1.000: acc=20.2%, ADS(mean)=3.2128, ADS(mid)=3.5455, ADS(L4)=3.4844
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=69.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.8%, ADS(mean)=0.0178, ADS(mid)=0.0331, ADS(L4)=0.0096
+      ε=0.010: acc=6.1%, ADS(mean)=0.0363, ADS(mid)=0.0668, ADS(L4)=0.0279
+      ε=0.050: acc=0.9%, ADS(mean)=0.0571, ADS(mid)=0.0814, ADS(L4)=0.0704
+      ε=0.100: acc=0.9%, ADS(mean)=0.0714, ADS(mid)=0.0896, ADS(L4)=0.0849
+      ε=0.200: acc=1.0%, ADS(mean)=0.1244, ADS(mid)=0.1240, ADS(L4)=0.1684
+      ε=0.500: acc=0.9%, ADS(mean)=0.2577, ADS(mid)=0.2442, ADS(L4)=0.3318
+      ε=1.000: acc=1.1%, ADS(mean)=0.3716, ADS(mid)=0.3388, ADS(L4)=0.4328
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=69.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.5%, ADS(mean)=0.0414, ADS(mid)=0.0676, ADS(L4)=0.0491
+      ε=0.010: acc=1.2%, ADS(mean)=0.0486, ADS(mid)=0.0775, ADS(L4)=0.0648
+      ε=0.050: acc=1.0%, ADS(mean)=0.0574, ADS(mid)=0.0840, ADS(L4)=0.0829
+      ε=0.100: acc=1.0%, ADS(mean)=0.0580, ADS(mid)=0.0838, ADS(L4)=0.0826
+      ε=0.200: acc=1.0%, ADS(mean)=0.0581, ADS(mid)=0.0838, ADS(L4)=0.0822
+      ε=0.500: acc=1.0%, ADS(mean)=0.0581, ADS(mid)=0.0837, ADS(L4)=0.0823
+      ε=1.000: acc=1.0%, ADS(mean)=0.0581, ADS(mid)=0.0837, ADS(L4)=0.0823
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=69.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.4%, ADS(mean)=0.0486, ADS(mid)=0.0773, ADS(L4)=0.0592
+      ε=0.010: acc=1.2%, ADS(mean)=0.0514, ADS(mid)=0.0808, ADS(L4)=0.0621
+      ε=0.050: acc=1.0%, ADS(mean)=0.0590, ADS(mid)=0.0836, ADS(L4)=0.0810
+      ε=0.100: acc=1.0%, ADS(mean)=0.0603, ADS(mid)=0.0838, ADS(L4)=0.0822
+      ε=0.200: acc=1.0%, ADS(mean)=0.1008, ADS(mid)=0.0840, ADS(L4)=0.0819
+      ε=0.500: acc=1.0%, ADS(mean)=0.1652, ADS(mid)=0.0960, ADS(L4)=0.1154
+      ε=1.000: acc=1.0%, ADS(mean)=0.3019, ADS(mid)=0.1912, ADS(L4)=0.2781
+
+  Seed 2024:
+    Clean accuracy: 68.10%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.0%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=68.0%, ADS(mean)=0.0004, ADS(mid)=0.0005, ADS(L4)=0.0005
+      ε=0.050: acc=66.8%, ADS(mean)=0.0121, ADS(mid)=0.0126, ADS(L4)=0.0125
+      ε=0.100: acc=66.2%, ADS(mean)=0.0478, ADS(mid)=0.0466, ADS(L4)=0.0515
+      ε=0.200: acc=56.3%, ADS(mean)=0.1876, ADS(mid)=0.2198, ADS(L4)=0.1701
+      ε=0.500: acc=35.2%, ADS(mean)=1.0023, ADS(mid)=1.0536, ADS(L4)=1.1773
+      ε=1.000: acc=5.3%, ADS(mean)=3.3645, ADS(mid)=3.5693, ADS(L4)=3.8035
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=32.5%, ADS(mean)=0.0112, ADS(mid)=0.0208, ADS(L4)=0.0030
+      ε=0.010: acc=6.1%, ADS(mean)=0.0280, ADS(mid)=0.0527, ADS(L4)=0.0107
+      ε=0.050: acc=1.1%, ADS(mean)=0.0579, ADS(mid)=0.0888, ADS(L4)=0.0450
+      ε=0.100: acc=0.9%, ADS(mean)=0.0723, ADS(mid)=0.0931, ADS(L4)=0.0550
+      ε=0.200: acc=1.0%, ADS(mean)=0.1150, ADS(mid)=0.1153, ADS(L4)=0.0795
+      ε=0.500: acc=0.9%, ADS(mean)=0.2411, ADS(mid)=0.2310, ADS(L4)=0.2028
+      ε=1.000: acc=0.9%, ADS(mean)=0.3641, ADS(mid)=0.3280, ADS(L4)=0.3158
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.1%, ADS(mean)=0.0429, ADS(mid)=0.0748, ADS(L4)=0.0266
+      ε=0.010: acc=1.5%, ADS(mean)=0.0492, ADS(mid)=0.0812, ADS(L4)=0.0339
+      ε=0.050: acc=1.0%, ADS(mean)=0.0600, ADS(mid)=0.0916, ADS(L4)=0.0516
+      ε=0.100: acc=1.0%, ADS(mean)=0.0609, ADS(mid)=0.0920, ADS(L4)=0.0512
+      ε=0.200: acc=1.0%, ADS(mean)=0.0609, ADS(mid)=0.0921, ADS(L4)=0.0511
+      ε=0.500: acc=1.0%, ADS(mean)=0.0610, ADS(mid)=0.0921, ADS(L4)=0.0512
+      ε=1.000: acc=1.0%, ADS(mean)=0.0610, ADS(mid)=0.0921, ADS(L4)=0.0511
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.0517, ADS(mid)=0.0852, ADS(L4)=0.0398
+      ε=0.010: acc=1.1%, ADS(mean)=0.0555, ADS(mid)=0.0905, ADS(L4)=0.0453
+      ε=0.050: acc=1.2%, ADS(mean)=0.0613, ADS(mid)=0.0919, ADS(L4)=0.0510
+      ε=0.100: acc=1.0%, ADS(mean)=0.0666, ADS(mid)=0.0922, ADS(L4)=0.0508
+      ε=0.200: acc=1.0%, ADS(mean)=0.1095, ADS(mid)=0.0923, ADS(L4)=0.0496
+      ε=0.500: acc=1.0%, ADS(mean)=0.3813, ADS(mid)=0.1464, ADS(L4)=0.1150
+      ε=1.000: acc=1.0%, ADS(mean)=0.5776, ADS(mid)=0.2590, ADS(L4)=0.2717
+
+  Seed 31337:
+    Clean accuracy: 68.25%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=68.0%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=68.1%, ADS(mean)=0.0005, ADS(mid)=0.0005, ADS(L4)=0.0007
+      ε=0.050: acc=66.7%, ADS(mean)=0.0130, ADS(mid)=0.0132, ADS(L4)=0.0157
+      ε=0.100: acc=62.8%, ADS(mean)=0.0553, ADS(mid)=0.0607, ADS(L4)=0.0655
+      ε=0.200: acc=51.0%, ADS(mean)=0.2172, ADS(mid)=0.2577, ADS(L4)=0.2515
+      ε=0.500: acc=25.6%, ADS(mean)=1.0998, ADS(mid)=1.1655, ADS(L4)=1.4020
+      ε=1.000: acc=19.4%, ADS(mean)=3.4424, ADS(mid)=3.5929, ADS(L4)=4.3540
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=29.7%, ADS(mean)=0.0129, ADS(mid)=0.0204, ADS(L4)=0.0067
+      ε=0.010: acc=2.1%, ADS(mean)=0.0274, ADS(mid)=0.0432, ADS(L4)=0.0222
+      ε=0.050: acc=1.1%, ADS(mean)=0.0547, ADS(mid)=0.0712, ADS(L4)=0.0609
+      ε=0.100: acc=1.3%, ADS(mean)=0.0726, ADS(mid)=0.0772, ADS(L4)=0.0888
+      ε=0.200: acc=1.1%, ADS(mean)=0.1175, ADS(mid)=0.1016, ADS(L4)=0.1380
+      ε=0.500: acc=1.1%, ADS(mean)=0.2201, ADS(mid)=0.1853, ADS(L4)=0.2480
+      ε=1.000: acc=1.3%, ADS(mean)=0.3463, ADS(mid)=0.2970, ADS(L4)=0.3777
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0352, ADS(mid)=0.0537, ADS(L4)=0.0403
+      ε=0.010: acc=1.5%, ADS(mean)=0.0421, ADS(mid)=0.0609, ADS(L4)=0.0507
+      ε=0.050: acc=1.0%, ADS(mean)=0.0534, ADS(mid)=0.0723, ADS(L4)=0.0661
+      ε=0.100: acc=1.0%, ADS(mean)=0.0551, ADS(mid)=0.0724, ADS(L4)=0.0682
+      ε=0.200: acc=1.0%, ADS(mean)=0.0553, ADS(mid)=0.0725, ADS(L4)=0.0684
+      ε=0.500: acc=1.0%, ADS(mean)=0.0553, ADS(mid)=0.0725, ADS(L4)=0.0685
+      ε=1.000: acc=1.0%, ADS(mean)=0.0553, ADS(mid)=0.0724, ADS(L4)=0.0686
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=68.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.0454, ADS(mid)=0.0661, ADS(L4)=0.0500
+      ε=0.010: acc=1.0%, ADS(mean)=0.0467, ADS(mid)=0.0663, ADS(L4)=0.0515
+      ε=0.050: acc=1.0%, ADS(mean)=0.0551, ADS(mid)=0.0713, ADS(L4)=0.0707
+      ε=0.100: acc=1.0%, ADS(mean)=0.0576, ADS(mid)=0.0728, ADS(L4)=0.0690
+      ε=0.200: acc=1.0%, ADS(mean)=0.0753, ADS(mid)=0.0731, ADS(L4)=0.0679
+      ε=0.500: acc=1.0%, ADS(mean)=0.2485, ADS(mid)=0.0802, ADS(L4)=0.0844
+      ε=1.000: acc=1.0%, ADS(mean)=0.4234, ADS(mid)=0.2268, ADS(L4)=0.2739
+
+  Saved to /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_specificity_cifar100_canonical_n12.json
+
+============================================================
+PE TYPE: ALIBI_2D_MATCHED
+============================================================
+
+  Seed 1:
+    Clean accuracy: 70.35%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.3%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=70.3%, ADS(mean)=0.0005, ADS(mid)=0.0004, ADS(L4)=0.0006
+      ε=0.050: acc=70.0%, ADS(mean)=0.0111, ADS(mid)=0.0109, ADS(L4)=0.0135
+      ε=0.100: acc=69.2%, ADS(mean)=0.0457, ADS(mid)=0.0437, ADS(L4)=0.0518
+      ε=0.200: acc=64.9%, ADS(mean)=0.1774, ADS(mid)=0.1734, ADS(L4)=0.1854
+      ε=0.500: acc=13.6%, ADS(mean)=1.0063, ADS(mid)=1.1372, ADS(L4)=0.9335
+      ε=1.000: acc=4.3%, ADS(mean)=3.0761, ADS(mid)=3.4253, ADS(L4)=3.3752
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=23.1%, ADS(mean)=0.0342, ADS(mid)=0.0694, ADS(L4)=0.0244
+      ε=0.010: acc=4.8%, ADS(mean)=0.0950, ADS(mid)=0.1845, ADS(L4)=0.1032
+      ε=0.050: acc=1.2%, ADS(mean)=0.1877, ADS(mid)=0.2971, ADS(L4)=0.3176
+      ε=0.100: acc=0.8%, ADS(mean)=0.1659, ADS(mid)=0.2488, ADS(L4)=0.2385
+      ε=0.200: acc=0.8%, ADS(mean)=0.2217, ADS(mid)=0.2363, ADS(L4)=0.3151
+      ε=0.500: acc=1.0%, ADS(mean)=0.5502, ADS(mid)=0.5368, ADS(L4)=0.6170
+      ε=1.000: acc=0.8%, ADS(mean)=0.8009, ADS(mid)=0.7689, ADS(L4)=0.8284
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=3.0%, ADS(mean)=0.1342, ADS(mid)=0.2248, ADS(L4)=0.2081
+      ε=0.010: acc=1.6%, ADS(mean)=0.1554, ADS(mid)=0.2509, ADS(L4)=0.2501
+      ε=0.050: acc=1.0%, ADS(mean)=0.1747, ADS(mid)=0.2715, ADS(L4)=0.2808
+      ε=0.100: acc=1.0%, ADS(mean)=0.1745, ADS(mid)=0.2696, ADS(L4)=0.2817
+      ε=0.200: acc=1.0%, ADS(mean)=0.1743, ADS(mid)=0.2687, ADS(L4)=0.2810
+      ε=0.500: acc=1.0%, ADS(mean)=0.1743, ADS(mid)=0.2688, ADS(L4)=0.2806
+      ε=1.000: acc=1.0%, ADS(mean)=0.1739, ADS(mid)=0.2683, ADS(L4)=0.2794
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.3%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.2%, ADS(mean)=0.1535, ADS(mid)=0.2457, ADS(L4)=0.2275
+      ε=0.010: acc=1.0%, ADS(mean)=0.1724, ADS(mid)=0.2582, ADS(L4)=0.2667
+      ε=0.050: acc=1.0%, ADS(mean)=0.1797, ADS(mid)=0.2685, ADS(L4)=0.2790
+      ε=0.100: acc=1.0%, ADS(mean)=0.1859, ADS(mid)=0.2698, ADS(L4)=0.2798
+      ε=0.200: acc=1.0%, ADS(mean)=0.2165, ADS(mid)=0.2718, ADS(L4)=0.2783
+      ε=0.500: acc=1.0%, ADS(mean)=0.2695, ADS(mid)=0.2310, ADS(L4)=0.2754
+      ε=1.000: acc=1.0%, ADS(mean)=0.5250, ADS(mid)=0.4086, ADS(L4)=0.4750
+
+  Seed 5:
+    Clean accuracy: 70.47%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.5%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.3%, ADS(mean)=0.0003, ADS(mid)=0.0004, ADS(L4)=0.0003
+      ε=0.050: acc=69.8%, ADS(mean)=0.0081, ADS(mid)=0.0096, ADS(L4)=0.0059
+      ε=0.100: acc=69.2%, ADS(mean)=0.0353, ADS(mid)=0.0404, ADS(L4)=0.0264
+      ε=0.200: acc=64.2%, ADS(mean)=0.1559, ADS(mid)=0.1751, ADS(L4)=0.1465
+      ε=0.500: acc=26.4%, ADS(mean)=0.8318, ADS(mid)=0.9552, ADS(L4)=0.8113
+      ε=1.000: acc=5.1%, ADS(mean)=2.7399, ADS(mid)=3.2887, ADS(L4)=2.6103
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=23.5%, ADS(mean)=0.0302, ADS(mid)=0.0556, ADS(L4)=0.0168
+      ε=0.010: acc=5.1%, ADS(mean)=0.0762, ADS(mid)=0.1401, ADS(L4)=0.0721
+      ε=0.050: acc=1.0%, ADS(mean)=0.1427, ADS(mid)=0.2213, ADS(L4)=0.2293
+      ε=0.100: acc=1.3%, ADS(mean)=0.1549, ADS(mid)=0.2203, ADS(L4)=0.2260
+      ε=0.200: acc=1.2%, ADS(mean)=0.2100, ADS(mid)=0.2277, ADS(L4)=0.2970
+      ε=0.500: acc=1.1%, ADS(mean)=0.4606, ADS(mid)=0.4115, ADS(L4)=0.6165
+      ε=1.000: acc=1.4%, ADS(mean)=0.7492, ADS(mid)=0.6872, ADS(L4)=0.8297
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.1252, ADS(mid)=0.2071, ADS(L4)=0.2073
+      ε=0.010: acc=1.1%, ADS(mean)=0.1434, ADS(mid)=0.2220, ADS(L4)=0.2612
+      ε=0.050: acc=1.0%, ADS(mean)=0.1581, ADS(mid)=0.2367, ADS(L4)=0.3000
+      ε=0.100: acc=1.0%, ADS(mean)=0.1578, ADS(mid)=0.2344, ADS(L4)=0.2996
+      ε=0.200: acc=1.0%, ADS(mean)=0.1574, ADS(mid)=0.2339, ADS(L4)=0.2987
+      ε=0.500: acc=1.0%, ADS(mean)=0.1570, ADS(mid)=0.2331, ADS(L4)=0.2980
+      ε=1.000: acc=1.0%, ADS(mean)=0.1571, ADS(mid)=0.2334, ADS(L4)=0.2981
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.1460, ADS(mid)=0.2257, ADS(L4)=0.2392
+      ε=0.010: acc=1.1%, ADS(mean)=0.1540, ADS(mid)=0.2170, ADS(L4)=0.3199
+      ε=0.050: acc=1.0%, ADS(mean)=0.1639, ADS(mid)=0.2343, ADS(L4)=0.2971
+      ε=0.100: acc=1.0%, ADS(mean)=0.1742, ADS(mid)=0.2399, ADS(L4)=0.3143
+      ε=0.200: acc=1.0%, ADS(mean)=0.2098, ADS(mid)=0.2460, ADS(L4)=0.3061
+      ε=0.500: acc=1.0%, ADS(mean)=0.4789, ADS(mid)=0.2653, ADS(L4)=0.3318
+      ε=1.000: acc=1.1%, ADS(mean)=0.7104, ADS(mid)=0.3754, ADS(L4)=0.6364
+
+  Seed 7:
+    Clean accuracy: 70.71%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.7%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.6%, ADS(mean)=0.0004, ADS(mid)=0.0005, ADS(L4)=0.0005
+      ε=0.050: acc=70.0%, ADS(mean)=0.0109, ADS(mid)=0.0116, ADS(L4)=0.0122
+      ε=0.100: acc=69.1%, ADS(mean)=0.0429, ADS(mid)=0.0468, ADS(L4)=0.0437
+      ε=0.200: acc=62.9%, ADS(mean)=0.1724, ADS(mid)=0.1933, ADS(L4)=0.1531
+      ε=0.500: acc=18.8%, ADS(mean)=1.0057, ADS(mid)=1.1982, ADS(L4)=0.7618
+      ε=1.000: acc=12.0%, ADS(mean)=2.7677, ADS(mid)=3.2185, ADS(L4)=2.5269
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=26.4%, ADS(mean)=0.0332, ADS(mid)=0.0662, ADS(L4)=0.0092
+      ε=0.010: acc=3.8%, ADS(mean)=0.1021, ADS(mid)=0.1979, ADS(L4)=0.0381
+      ε=0.050: acc=0.8%, ADS(mean)=0.1708, ADS(mid)=0.2904, ADS(L4)=0.1770
+      ε=0.100: acc=0.7%, ADS(mean)=0.1773, ADS(mid)=0.2978, ADS(L4)=0.1456
+      ε=0.200: acc=0.9%, ADS(mean)=0.2071, ADS(mid)=0.2792, ADS(L4)=0.2013
+      ε=0.500: acc=0.7%, ADS(mean)=0.4790, ADS(mid)=0.4711, ADS(L4)=0.5578
+      ε=1.000: acc=0.9%, ADS(mean)=0.7194, ADS(mid)=0.6763, ADS(L4)=0.7600
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.1465, ADS(mid)=0.2618, ADS(L4)=0.1388
+      ε=0.010: acc=1.3%, ADS(mean)=0.1647, ADS(mid)=0.2849, ADS(L4)=0.1731
+      ε=0.050: acc=1.0%, ADS(mean)=0.1791, ADS(mid)=0.3035, ADS(L4)=0.2013
+      ε=0.100: acc=1.0%, ADS(mean)=0.1809, ADS(mid)=0.3049, ADS(L4)=0.2028
+      ε=0.200: acc=1.0%, ADS(mean)=0.1809, ADS(mid)=0.3044, ADS(L4)=0.2024
+      ε=0.500: acc=1.0%, ADS(mean)=0.1809, ADS(mid)=0.3050, ADS(L4)=0.2024
+      ε=1.000: acc=1.0%, ADS(mean)=0.1803, ADS(mid)=0.3040, ADS(L4)=0.2014
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.1732, ADS(mid)=0.2988, ADS(L4)=0.1369
+      ε=0.010: acc=0.8%, ADS(mean)=0.1824, ADS(mid)=0.2961, ADS(L4)=0.1758
+      ε=0.050: acc=1.0%, ADS(mean)=0.1856, ADS(mid)=0.3023, ADS(L4)=0.2034
+      ε=0.100: acc=1.0%, ADS(mean)=0.1912, ADS(mid)=0.3033, ADS(L4)=0.2053
+      ε=0.200: acc=1.0%, ADS(mean)=0.2348, ADS(mid)=0.3041, ADS(L4)=0.2074
+      ε=0.500: acc=1.0%, ADS(mean)=0.4123, ADS(mid)=0.2862, ADS(L4)=0.1902
+      ε=1.000: acc=1.0%, ADS(mean)=0.5890, ADS(mid)=0.4717, ADS(L4)=0.3810
+
+  Seed 11:
+    Clean accuracy: 70.38%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.3%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0003
+      ε=0.050: acc=69.8%, ADS(mean)=0.0089, ADS(mid)=0.0099, ADS(L4)=0.0081
+      ε=0.100: acc=69.1%, ADS(mean)=0.0358, ADS(mid)=0.0431, ADS(L4)=0.0328
+      ε=0.200: acc=65.9%, ADS(mean)=0.1397, ADS(mid)=0.1598, ADS(L4)=0.1041
+      ε=0.500: acc=40.7%, ADS(mean)=0.8882, ADS(mid)=1.0591, ADS(L4)=0.7464
+      ε=1.000: acc=27.8%, ADS(mean)=2.7256, ADS(mid)=3.4081, ADS(L4)=1.6867
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=23.0%, ADS(mean)=0.0428, ADS(mid)=0.0843, ADS(L4)=0.0351
+      ε=0.010: acc=3.8%, ADS(mean)=0.1116, ADS(mid)=0.2099, ADS(L4)=0.1231
+      ε=0.050: acc=1.2%, ADS(mean)=0.1579, ADS(mid)=0.2569, ADS(L4)=0.1624
+      ε=0.100: acc=1.0%, ADS(mean)=0.1772, ADS(mid)=0.2636, ADS(L4)=0.1819
+      ε=0.200: acc=1.1%, ADS(mean)=0.2264, ADS(mid)=0.2766, ADS(L4)=0.2046
+      ε=0.500: acc=1.2%, ADS(mean)=0.5170, ADS(mid)=0.4701, ADS(L4)=0.5143
+      ε=1.000: acc=1.0%, ADS(mean)=0.7913, ADS(mid)=0.7206, ADS(L4)=0.7806
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.6%, ADS(mean)=0.1534, ADS(mid)=0.2682, ADS(L4)=0.1793
+      ε=0.010: acc=1.3%, ADS(mean)=0.1687, ADS(mid)=0.2869, ADS(L4)=0.1909
+      ε=0.050: acc=1.0%, ADS(mean)=0.1846, ADS(mid)=0.3028, ADS(L4)=0.2065
+      ε=0.100: acc=1.0%, ADS(mean)=0.1854, ADS(mid)=0.3030, ADS(L4)=0.2075
+      ε=0.200: acc=1.0%, ADS(mean)=0.1850, ADS(mid)=0.3026, ADS(L4)=0.2056
+      ε=0.500: acc=1.0%, ADS(mean)=0.1848, ADS(mid)=0.3025, ADS(L4)=0.2050
+      ε=1.000: acc=1.0%, ADS(mean)=0.1845, ADS(mid)=0.3022, ADS(L4)=0.2043
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.1662, ADS(mid)=0.2786, ADS(L4)=0.1763
+      ε=0.010: acc=1.0%, ADS(mean)=0.1748, ADS(mid)=0.2852, ADS(L4)=0.1686
+      ε=0.050: acc=1.0%, ADS(mean)=0.1895, ADS(mid)=0.3019, ADS(L4)=0.2013
+      ε=0.100: acc=1.0%, ADS(mean)=0.1946, ADS(mid)=0.3050, ADS(L4)=0.2114
+      ε=0.200: acc=1.0%, ADS(mean)=0.2910, ADS(mid)=0.3032, ADS(L4)=0.2078
+      ε=0.500: acc=1.0%, ADS(mean)=0.5491, ADS(mid)=0.2744, ADS(L4)=0.2188
+      ε=1.000: acc=1.0%, ADS(mean)=0.7271, ADS(mid)=0.4043, ADS(L4)=0.6435
+
+  Seed 13:
+    Clean accuracy: 70.21%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.2%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.2%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0005
+      ε=0.050: acc=70.0%, ADS(mean)=0.0100, ADS(mid)=0.0091, ADS(L4)=0.0128
+      ε=0.100: acc=69.3%, ADS(mean)=0.0357, ADS(mid)=0.0326, ADS(L4)=0.0429
+      ε=0.200: acc=65.0%, ADS(mean)=0.1619, ADS(mid)=0.1620, ADS(L4)=0.1634
+      ε=0.500: acc=16.7%, ADS(mean)=0.9099, ADS(mid)=0.9448, ADS(L4)=1.0156
+      ε=1.000: acc=4.7%, ADS(mean)=2.5995, ADS(mid)=2.5855, ADS(L4)=3.1330
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=36.2%, ADS(mean)=0.0165, ADS(mid)=0.0298, ADS(L4)=0.0086
+      ε=0.010: acc=5.8%, ADS(mean)=0.0573, ADS(mid)=0.1043, ADS(L4)=0.0436
+      ε=0.050: acc=1.5%, ADS(mean)=0.1562, ADS(mid)=0.2109, ADS(L4)=0.2438
+      ε=0.100: acc=1.4%, ADS(mean)=0.1641, ADS(mid)=0.2093, ADS(L4)=0.2426
+      ε=0.200: acc=0.9%, ADS(mean)=0.1967, ADS(mid)=0.2127, ADS(L4)=0.2551
+      ε=0.500: acc=1.2%, ADS(mean)=0.4106, ADS(mid)=0.3554, ADS(L4)=0.4071
+      ε=1.000: acc=1.0%, ADS(mean)=0.7610, ADS(mid)=0.6520, ADS(L4)=0.7361
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.1163, ADS(mid)=0.1906, ADS(L4)=0.1831
+      ε=0.010: acc=1.5%, ADS(mean)=0.1352, ADS(mid)=0.2068, ADS(L4)=0.2238
+      ε=0.050: acc=1.0%, ADS(mean)=0.1621, ADS(mid)=0.2236, ADS(L4)=0.2868
+      ε=0.100: acc=1.0%, ADS(mean)=0.1600, ADS(mid)=0.2228, ADS(L4)=0.2861
+      ε=0.200: acc=1.0%, ADS(mean)=0.1604, ADS(mid)=0.2230, ADS(L4)=0.2887
+      ε=0.500: acc=1.0%, ADS(mean)=0.1604, ADS(mid)=0.2229, ADS(L4)=0.2884
+      ε=1.000: acc=1.0%, ADS(mean)=0.1603, ADS(mid)=0.2228, ADS(L4)=0.2886
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.2%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.3%, ADS(mean)=0.1341, ADS(mid)=0.2028, ADS(L4)=0.1740
+      ε=0.010: acc=1.0%, ADS(mean)=0.1513, ADS(mid)=0.2114, ADS(L4)=0.2416
+      ε=0.050: acc=1.0%, ADS(mean)=0.1642, ADS(mid)=0.2228, ADS(L4)=0.2820
+      ε=0.100: acc=1.0%, ADS(mean)=0.1743, ADS(mid)=0.2237, ADS(L4)=0.2862
+      ε=0.200: acc=0.8%, ADS(mean)=0.1985, ADS(mid)=0.2222, ADS(L4)=0.2992
+      ε=0.500: acc=1.0%, ADS(mean)=0.2616, ADS(mid)=0.2002, ADS(L4)=0.2768
+      ε=1.000: acc=1.0%, ADS(mean)=0.4836, ADS(mid)=0.3312, ADS(L4)=0.4113
+
+  Seed 21:
+    Clean accuracy: 70.53%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.5%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.5%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0005
+      ε=0.050: acc=70.2%, ADS(mean)=0.0100, ADS(mid)=0.0098, ADS(L4)=0.0114
+      ε=0.100: acc=69.6%, ADS(mean)=0.0405, ADS(mid)=0.0409, ADS(L4)=0.0513
+      ε=0.200: acc=67.3%, ADS(mean)=0.1481, ADS(mid)=0.1468, ADS(L4)=0.1752
+      ε=0.500: acc=28.8%, ADS(mean)=0.9091, ADS(mid)=1.0325, ADS(L4)=0.9673
+      ε=1.000: acc=8.7%, ADS(mean)=2.9270, ADS(mid)=3.1884, ADS(L4)=3.9461
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=15.8%, ADS(mean)=0.0433, ADS(mid)=0.0850, ADS(L4)=0.0121
+      ε=0.010: acc=1.6%, ADS(mean)=0.1266, ADS(mid)=0.2385, ADS(L4)=0.0533
+      ε=0.050: acc=1.1%, ADS(mean)=0.1925, ADS(mid)=0.3221, ADS(L4)=0.1868
+      ε=0.100: acc=1.0%, ADS(mean)=0.1877, ADS(mid)=0.3008, ADS(L4)=0.1369
+      ε=0.200: acc=0.9%, ADS(mean)=0.2395, ADS(mid)=0.3030, ADS(L4)=0.1684
+      ε=0.500: acc=1.0%, ADS(mean)=0.4750, ADS(mid)=0.4179, ADS(L4)=0.3740
+      ε=1.000: acc=0.9%, ADS(mean)=0.7595, ADS(mid)=0.6823, ADS(L4)=0.6750
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.1652, ADS(mid)=0.3002, ADS(L4)=0.1528
+      ε=0.010: acc=1.0%, ADS(mean)=0.1846, ADS(mid)=0.3221, ADS(L4)=0.1732
+      ε=0.050: acc=1.0%, ADS(mean)=0.1980, ADS(mid)=0.3327, ADS(L4)=0.1899
+      ε=0.100: acc=1.1%, ADS(mean)=0.1968, ADS(mid)=0.3303, ADS(L4)=0.1873
+      ε=0.200: acc=1.0%, ADS(mean)=0.1965, ADS(mid)=0.3295, ADS(L4)=0.1863
+      ε=0.500: acc=1.0%, ADS(mean)=0.1964, ADS(mid)=0.3294, ADS(L4)=0.1852
+      ε=1.000: acc=1.0%, ADS(mean)=0.1963, ADS(mid)=0.3293, ADS(L4)=0.1854
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.5%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.3%, ADS(mean)=0.1876, ADS(mid)=0.3282, ADS(L4)=0.1378
+      ε=0.010: acc=1.1%, ADS(mean)=0.1977, ADS(mid)=0.3300, ADS(L4)=0.1953
+      ε=0.050: acc=1.0%, ADS(mean)=0.2007, ADS(mid)=0.3317, ADS(L4)=0.1947
+      ε=0.100: acc=1.0%, ADS(mean)=0.2080, ADS(mid)=0.3333, ADS(L4)=0.1917
+      ε=0.200: acc=1.0%, ADS(mean)=0.2215, ADS(mid)=0.3268, ADS(L4)=0.1713
+      ε=0.500: acc=1.0%, ADS(mean)=0.3214, ADS(mid)=0.3421, ADS(L4)=0.1759
+      ε=1.000: acc=0.8%, ADS(mean)=0.5035, ADS(mid)=0.3831, ADS(L4)=0.4416
+
+  Seed 42:
+    Clean accuracy: 70.13%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.1%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.0%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0004
+      ε=0.050: acc=69.8%, ADS(mean)=0.0107, ADS(mid)=0.0111, ADS(L4)=0.0118
+      ε=0.100: acc=69.1%, ADS(mean)=0.0383, ADS(mid)=0.0408, ADS(L4)=0.0405
+      ε=0.200: acc=64.7%, ADS(mean)=0.1574, ADS(mid)=0.1632, ADS(L4)=0.1736
+      ε=0.500: acc=18.5%, ADS(mean)=0.9470, ADS(mid)=1.0425, ADS(L4)=1.1956
+      ε=1.000: acc=5.9%, ADS(mean)=2.9133, ADS(mid)=3.2802, ADS(L4)=3.4456
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=18.8%, ADS(mean)=0.0283, ADS(mid)=0.0426, ADS(L4)=0.0185
+      ε=0.010: acc=1.9%, ADS(mean)=0.0970, ADS(mid)=0.1612, ADS(L4)=0.0908
+      ε=0.050: acc=1.2%, ADS(mean)=0.1677, ADS(mid)=0.2683, ADS(L4)=0.1988
+      ε=0.100: acc=1.2%, ADS(mean)=0.1869, ADS(mid)=0.2699, ADS(L4)=0.2210
+      ε=0.200: acc=1.0%, ADS(mean)=0.2093, ADS(mid)=0.2422, ADS(L4)=0.1878
+      ε=0.500: acc=1.3%, ADS(mean)=0.4684, ADS(mid)=0.4544, ADS(L4)=0.4480
+      ε=1.000: acc=1.1%, ADS(mean)=0.7463, ADS(mid)=0.7124, ADS(L4)=0.7172
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.2%, ADS(mean)=0.1421, ADS(mid)=0.2444, ADS(L4)=0.1492
+      ε=0.010: acc=1.1%, ADS(mean)=0.1562, ADS(mid)=0.2623, ADS(L4)=0.1687
+      ε=0.050: acc=1.0%, ADS(mean)=0.1752, ADS(mid)=0.2783, ADS(L4)=0.2079
+      ε=0.100: acc=1.0%, ADS(mean)=0.1751, ADS(mid)=0.2794, ADS(L4)=0.2070
+      ε=0.200: acc=1.0%, ADS(mean)=0.1754, ADS(mid)=0.2799, ADS(L4)=0.2076
+      ε=0.500: acc=1.0%, ADS(mean)=0.1753, ADS(mid)=0.2799, ADS(L4)=0.2063
+      ε=1.000: acc=1.1%, ADS(mean)=0.1752, ADS(mid)=0.2796, ADS(L4)=0.2065
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.1%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.0%, ADS(mean)=0.1552, ADS(mid)=0.2596, ADS(L4)=0.1594
+      ε=0.010: acc=1.2%, ADS(mean)=0.1648, ADS(mid)=0.2665, ADS(L4)=0.1640
+      ε=0.050: acc=1.1%, ADS(mean)=0.1823, ADS(mid)=0.2787, ADS(L4)=0.2168
+      ε=0.100: acc=1.0%, ADS(mean)=0.1939, ADS(mid)=0.2799, ADS(L4)=0.2117
+      ε=0.200: acc=1.0%, ADS(mean)=0.2547, ADS(mid)=0.2767, ADS(L4)=0.2202
+      ε=0.500: acc=1.0%, ADS(mean)=0.3591, ADS(mid)=0.2775, ADS(L4)=0.1872
+      ε=1.000: acc=1.0%, ADS(mean)=0.6714, ADS(mid)=0.3489, ADS(L4)=0.3079
+
+  Seed 99:
+    Clean accuracy: 70.43%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.4%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.4%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0004
+      ε=0.050: acc=69.5%, ADS(mean)=0.0097, ADS(mid)=0.0099, ADS(L4)=0.0097
+      ε=0.100: acc=68.2%, ADS(mean)=0.0391, ADS(mid)=0.0398, ADS(L4)=0.0402
+      ε=0.200: acc=65.4%, ADS(mean)=0.1625, ADS(mid)=0.1641, ADS(L4)=0.1567
+      ε=0.500: acc=29.0%, ADS(mean)=0.9254, ADS(mid)=0.9638, ADS(L4)=0.8447
+      ε=1.000: acc=5.6%, ADS(mean)=2.9625, ADS(mid)=3.2508, ADS(L4)=2.9323
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=24.7%, ADS(mean)=0.0274, ADS(mid)=0.0482, ADS(L4)=0.0159
+      ε=0.010: acc=3.7%, ADS(mean)=0.0883, ADS(mid)=0.1581, ADS(L4)=0.0785
+      ε=0.050: acc=1.2%, ADS(mean)=0.1696, ADS(mid)=0.2634, ADS(L4)=0.2421
+      ε=0.100: acc=1.4%, ADS(mean)=0.1684, ADS(mid)=0.2477, ADS(L4)=0.2130
+      ε=0.200: acc=1.4%, ADS(mean)=0.2048, ADS(mid)=0.2406, ADS(L4)=0.2190
+      ε=0.500: acc=1.2%, ADS(mean)=0.4596, ADS(mid)=0.4354, ADS(L4)=0.5050
+      ε=1.000: acc=1.3%, ADS(mean)=0.7296, ADS(mid)=0.6621, ADS(L4)=0.7346
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.3%, ADS(mean)=0.1533, ADS(mid)=0.2434, ADS(L4)=0.2139
+      ε=0.010: acc=1.4%, ADS(mean)=0.1662, ADS(mid)=0.2560, ADS(L4)=0.2268
+      ε=0.050: acc=1.0%, ADS(mean)=0.1792, ADS(mid)=0.2666, ADS(L4)=0.2511
+      ε=0.100: acc=1.0%, ADS(mean)=0.1763, ADS(mid)=0.2631, ADS(L4)=0.2435
+      ε=0.200: acc=1.0%, ADS(mean)=0.1763, ADS(mid)=0.2632, ADS(L4)=0.2427
+      ε=0.500: acc=0.9%, ADS(mean)=0.1760, ADS(mid)=0.2627, ADS(L4)=0.2423
+      ε=1.000: acc=0.8%, ADS(mean)=0.1761, ADS(mid)=0.2628, ADS(L4)=0.2423
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.4%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.6%, ADS(mean)=0.1687, ADS(mid)=0.2556, ADS(L4)=0.2366
+      ε=0.010: acc=1.3%, ADS(mean)=0.1707, ADS(mid)=0.2557, ADS(L4)=0.2179
+      ε=0.050: acc=1.0%, ADS(mean)=0.1824, ADS(mid)=0.2654, ADS(L4)=0.2471
+      ε=0.100: acc=1.0%, ADS(mean)=0.1844, ADS(mid)=0.2653, ADS(L4)=0.2490
+      ε=0.200: acc=1.0%, ADS(mean)=0.2099, ADS(mid)=0.2661, ADS(L4)=0.2476
+      ε=0.500: acc=0.9%, ADS(mean)=0.3150, ADS(mid)=0.2622, ADS(L4)=0.3082
+      ε=1.000: acc=1.0%, ADS(mean)=0.6563, ADS(mid)=0.4800, ADS(L4)=0.5709
+
+  Seed 123:
+    Clean accuracy: 70.01%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=69.9%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0002
+      ε=0.010: acc=70.0%, ADS(mean)=0.0005, ADS(mid)=0.0006, ADS(L4)=0.0006
+      ε=0.050: acc=69.6%, ADS(mean)=0.0121, ADS(mid)=0.0126, ADS(L4)=0.0150
+      ε=0.100: acc=68.4%, ADS(mean)=0.0468, ADS(mid)=0.0465, ADS(L4)=0.0514
+      ε=0.200: acc=64.6%, ADS(mean)=0.1702, ADS(mid)=0.1598, ADS(L4)=0.2058
+      ε=0.500: acc=29.4%, ADS(mean)=0.8980, ADS(mid)=0.9229, ADS(L4)=1.0522
+      ε=1.000: acc=8.5%, ADS(mean)=2.7926, ADS(mid)=3.0455, ADS(L4)=3.2344
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=25.7%, ADS(mean)=0.0593, ADS(mid)=0.1223, ADS(L4)=0.0341
+      ε=0.010: acc=6.1%, ADS(mean)=0.1256, ADS(mid)=0.2389, ADS(L4)=0.1266
+      ε=0.050: acc=1.3%, ADS(mean)=0.2006, ADS(mid)=0.3515, ADS(L4)=0.1890
+      ε=0.100: acc=1.0%, ADS(mean)=0.2239, ADS(mid)=0.3605, ADS(L4)=0.2229
+      ε=0.200: acc=1.0%, ADS(mean)=0.2301, ADS(mid)=0.3224, ADS(L4)=0.2123
+      ε=0.500: acc=1.2%, ADS(mean)=0.4280, ADS(mid)=0.4115, ADS(L4)=0.4603
+      ε=1.000: acc=1.2%, ADS(mean)=0.7231, ADS(mid)=0.6654, ADS(L4)=0.6851
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.1683, ADS(mid)=0.3129, ADS(L4)=0.1715
+      ε=0.010: acc=1.6%, ADS(mean)=0.1870, ADS(mid)=0.3364, ADS(L4)=0.1889
+      ε=0.050: acc=1.1%, ADS(mean)=0.2108, ADS(mid)=0.3562, ADS(L4)=0.2296
+      ε=0.100: acc=1.0%, ADS(mean)=0.2099, ADS(mid)=0.3565, ADS(L4)=0.2269
+      ε=0.200: acc=1.0%, ADS(mean)=0.2096, ADS(mid)=0.3569, ADS(L4)=0.2260
+      ε=0.500: acc=1.0%, ADS(mean)=0.2096, ADS(mid)=0.3568, ADS(L4)=0.2261
+      ε=1.000: acc=1.0%, ADS(mean)=0.2091, ADS(mid)=0.3564, ADS(L4)=0.2248
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.0%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.4%, ADS(mean)=0.1836, ADS(mid)=0.3270, ADS(L4)=0.1734
+      ε=0.010: acc=0.9%, ADS(mean)=0.1957, ADS(mid)=0.3349, ADS(L4)=0.2108
+      ε=0.050: acc=1.0%, ADS(mean)=0.2112, ADS(mid)=0.3561, ADS(L4)=0.2229
+      ε=0.100: acc=1.1%, ADS(mean)=0.2228, ADS(mid)=0.3578, ADS(L4)=0.2470
+      ε=0.200: acc=1.0%, ADS(mean)=0.2453, ADS(mid)=0.3659, ADS(L4)=0.2327
+      ε=0.500: acc=1.0%, ADS(mean)=0.4037, ADS(mid)=0.3483, ADS(L4)=0.1795
+      ε=1.000: acc=1.0%, ADS(mean)=0.5906, ADS(mid)=0.5189, ADS(L4)=0.4544
+
+  Seed 456:
+    Clean accuracy: 69.76%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=69.8%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=69.7%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0006
+      ε=0.050: acc=69.6%, ADS(mean)=0.0090, ADS(mid)=0.0099, ADS(L4)=0.0124
+      ε=0.100: acc=68.0%, ADS(mean)=0.0383, ADS(mid)=0.0440, ADS(L4)=0.0557
+      ε=0.200: acc=62.7%, ADS(mean)=0.1572, ADS(mid)=0.1813, ADS(L4)=0.2195
+      ε=0.500: acc=34.9%, ADS(mean)=0.8729, ADS(mid)=1.0815, ADS(L4)=1.0617
+      ε=1.000: acc=19.5%, ADS(mean)=2.6749, ADS(mid)=3.2438, ADS(L4)=3.3596
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=28.3%, ADS(mean)=0.0276, ADS(mid)=0.0521, ADS(L4)=0.0181
+      ε=0.010: acc=5.3%, ADS(mean)=0.0906, ADS(mid)=0.1762, ADS(L4)=0.0826
+      ε=0.050: acc=0.9%, ADS(mean)=0.1738, ADS(mid)=0.3049, ADS(L4)=0.2155
+      ε=0.100: acc=1.3%, ADS(mean)=0.1770, ADS(mid)=0.2988, ADS(L4)=0.1832
+      ε=0.200: acc=1.2%, ADS(mean)=0.2132, ADS(mid)=0.2781, ADS(L4)=0.2006
+      ε=0.500: acc=1.1%, ADS(mean)=0.5253, ADS(mid)=0.5317, ADS(L4)=0.5092
+      ε=1.000: acc=0.9%, ADS(mean)=0.7776, ADS(mid)=0.7288, ADS(L4)=0.7356
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.9%, ADS(mean)=0.1514, ADS(mid)=0.2742, ADS(L4)=0.1923
+      ε=0.010: acc=1.8%, ADS(mean)=0.1691, ADS(mid)=0.3001, ADS(L4)=0.2264
+      ε=0.050: acc=1.1%, ADS(mean)=0.1842, ADS(mid)=0.3181, ADS(L4)=0.2546
+      ε=0.100: acc=1.0%, ADS(mean)=0.1820, ADS(mid)=0.3165, ADS(L4)=0.2445
+      ε=0.200: acc=1.0%, ADS(mean)=0.1826, ADS(mid)=0.3176, ADS(L4)=0.2462
+      ε=0.500: acc=1.0%, ADS(mean)=0.1819, ADS(mid)=0.3166, ADS(L4)=0.2443
+      ε=1.000: acc=1.0%, ADS(mean)=0.1824, ADS(mid)=0.3173, ADS(L4)=0.2454
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=69.8%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.1%, ADS(mean)=0.1802, ADS(mid)=0.3091, ADS(L4)=0.2646
+      ε=0.010: acc=1.0%, ADS(mean)=0.1756, ADS(mid)=0.3056, ADS(L4)=0.2094
+      ε=0.050: acc=1.0%, ADS(mean)=0.1859, ADS(mid)=0.3184, ADS(L4)=0.2447
+      ε=0.100: acc=1.0%, ADS(mean)=0.1923, ADS(mid)=0.3191, ADS(L4)=0.2454
+      ε=0.200: acc=1.0%, ADS(mean)=0.2104, ADS(mid)=0.3194, ADS(L4)=0.2406
+      ε=0.500: acc=1.0%, ADS(mean)=0.4201, ADS(mid)=0.3247, ADS(L4)=0.2802
+      ε=1.000: acc=1.0%, ADS(mean)=0.6911, ADS(mid)=0.4356, ADS(L4)=0.4046
+
+  Seed 2024:
+    Clean accuracy: 70.70%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=70.6%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=70.5%, ADS(mean)=0.0004, ADS(mid)=0.0004, ADS(L4)=0.0004
+      ε=0.050: acc=70.0%, ADS(mean)=0.0084, ADS(mid)=0.0092, ADS(L4)=0.0073
+      ε=0.100: acc=67.0%, ADS(mean)=0.0394, ADS(mid)=0.0444, ADS(L4)=0.0340
+      ε=0.200: acc=66.3%, ADS(mean)=0.1376, ADS(mid)=0.1528, ADS(L4)=0.1546
+      ε=0.500: acc=46.6%, ADS(mean)=0.8263, ADS(mid)=0.8868, ADS(L4)=0.7096
+      ε=1.000: acc=26.2%, ADS(mean)=2.4508, ADS(mid)=2.7320, ADS(L4)=2.8011
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=27.6%, ADS(mean)=0.0385, ADS(mid)=0.0780, ADS(L4)=0.0195
+      ε=0.010: acc=4.1%, ADS(mean)=0.1046, ADS(mid)=0.2042, ADS(L4)=0.0895
+      ε=0.050: acc=1.1%, ADS(mean)=0.1718, ADS(mid)=0.2951, ADS(L4)=0.1914
+      ε=0.100: acc=0.9%, ADS(mean)=0.1729, ADS(mid)=0.2804, ADS(L4)=0.1850
+      ε=0.200: acc=1.4%, ADS(mean)=0.2230, ADS(mid)=0.2717, ADS(L4)=0.2262
+      ε=0.500: acc=0.9%, ADS(mean)=0.4770, ADS(mid)=0.4426, ADS(L4)=0.5353
+      ε=1.000: acc=0.8%, ADS(mean)=0.7395, ADS(mid)=0.6909, ADS(L4)=0.7692
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.8%, ADS(mean)=0.1491, ADS(mid)=0.2752, ADS(L4)=0.1505
+      ε=0.010: acc=1.8%, ADS(mean)=0.1685, ADS(mid)=0.2975, ADS(L4)=0.1878
+      ε=0.050: acc=1.0%, ADS(mean)=0.1828, ADS(mid)=0.3133, ADS(L4)=0.2068
+      ε=0.100: acc=1.0%, ADS(mean)=0.1823, ADS(mid)=0.3117, ADS(L4)=0.2079
+      ε=0.200: acc=1.0%, ADS(mean)=0.1827, ADS(mid)=0.3121, ADS(L4)=0.2090
+      ε=0.500: acc=1.0%, ADS(mean)=0.1820, ADS(mid)=0.3111, ADS(L4)=0.2074
+      ε=1.000: acc=1.0%, ADS(mean)=0.1814, ADS(mid)=0.3102, ADS(L4)=0.2054
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=70.7%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.5%, ADS(mean)=0.1641, ADS(mid)=0.2891, ADS(L4)=0.1869
+      ε=0.010: acc=1.1%, ADS(mean)=0.1822, ADS(mid)=0.3046, ADS(L4)=0.2060
+      ε=0.050: acc=1.0%, ADS(mean)=0.1897, ADS(mid)=0.3126, ADS(L4)=0.2121
+      ε=0.100: acc=1.0%, ADS(mean)=0.1999, ADS(mid)=0.3122, ADS(L4)=0.2141
+      ε=0.200: acc=1.0%, ADS(mean)=0.2128, ADS(mid)=0.3092, ADS(L4)=0.2282
+      ε=0.500: acc=1.0%, ADS(mean)=0.3396, ADS(mid)=0.3594, ADS(L4)=0.2589
+      ε=1.000: acc=1.0%, ADS(mean)=0.7187, ADS(mid)=0.5334, ADS(L4)=0.5795
+
+  Seed 31337:
+    Clean accuracy: 69.62%
+
+    Perturbation: PE_ONLY
+      ε=0.000: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=69.6%, ADS(mean)=0.0001, ADS(mid)=0.0001, ADS(L4)=0.0001
+      ε=0.010: acc=69.5%, ADS(mean)=0.0004, ADS(mid)=0.0005, ADS(L4)=0.0005
+      ε=0.050: acc=68.8%, ADS(mean)=0.0097, ADS(mid)=0.0110, ADS(L4)=0.0112
+      ε=0.100: acc=67.9%, ADS(mean)=0.0416, ADS(mid)=0.0439, ADS(L4)=0.0452
+      ε=0.200: acc=64.9%, ADS(mean)=0.1530, ADS(mid)=0.1781, ADS(L4)=0.1487
+      ε=0.500: acc=33.9%, ADS(mean)=0.9344, ADS(mid)=1.0075, ADS(L4)=0.9142
+      ε=1.000: acc=10.4%, ADS(mean)=2.9728, ADS(mid)=3.2665, ADS(L4)=3.0193
+
+    Perturbation: QKV_ONLY
+      ε=0.000: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=25.3%, ADS(mean)=0.0301, ADS(mid)=0.0556, ADS(L4)=0.0225
+      ε=0.010: acc=5.7%, ADS(mean)=0.0826, ADS(mid)=0.1521, ADS(L4)=0.0866
+      ε=0.050: acc=1.0%, ADS(mean)=0.1550, ADS(mid)=0.2527, ADS(L4)=0.1847
+      ε=0.100: acc=1.0%, ADS(mean)=0.1496, ADS(mid)=0.2289, ADS(L4)=0.1487
+      ε=0.200: acc=1.2%, ADS(mean)=0.1967, ADS(mid)=0.2141, ADS(L4)=0.1946
+      ε=0.500: acc=1.0%, ADS(mean)=0.5263, ADS(mid)=0.4668, ADS(L4)=0.4988
+      ε=1.000: acc=1.0%, ADS(mean)=0.8116, ADS(mid)=0.7309, ADS(L4)=0.7515
+
+    Perturbation: MLP_ONLY
+      ε=0.000: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=2.1%, ADS(mean)=0.1289, ADS(mid)=0.2311, ADS(L4)=0.1473
+      ε=0.010: acc=1.9%, ADS(mean)=0.1477, ADS(mid)=0.2514, ADS(L4)=0.1728
+      ε=0.050: acc=1.0%, ADS(mean)=0.1607, ADS(mid)=0.2607, ADS(L4)=0.1946
+      ε=0.100: acc=1.0%, ADS(mean)=0.1613, ADS(mid)=0.2610, ADS(L4)=0.1966
+      ε=0.200: acc=1.0%, ADS(mean)=0.1613, ADS(mid)=0.2606, ADS(L4)=0.1965
+      ε=0.500: acc=1.0%, ADS(mean)=0.1616, ADS(mid)=0.2610, ADS(L4)=0.1973
+      ε=1.000: acc=1.0%, ADS(mean)=0.1613, ADS(mid)=0.2605, ADS(L4)=0.1962
+
+    Perturbation: ALL_WEIGHTS
+      ε=0.000: acc=69.6%, ADS(mean)=0.0000, ADS(mid)=0.0000, ADS(L4)=0.0000
+      ε=0.005: acc=1.8%, ADS(mean)=0.1437, ADS(mid)=0.2463, ADS(L4)=0.1495
+      ε=0.010: acc=1.3%, ADS(mean)=0.1526, ADS(mid)=0.2473, ADS(L4)=0.1636
+      ε=0.050: acc=1.0%, ADS(mean)=0.1649, ADS(mid)=0.2609, ADS(L4)=0.1923
+      ε=0.100: acc=1.0%, ADS(mean)=0.1733, ADS(mid)=0.2613, ADS(L4)=0.1960
+      ε=0.200: acc=1.0%, ADS(mean)=0.2214, ADS(mid)=0.2584, ADS(L4)=0.1925
+      ε=0.500: acc=1.0%, ADS(mean)=0.3578, ADS(mid)=0.2819, ADS(L4)=0.2008
+      ε=1.000: acc=1.0%, ADS(mean)=0.6227, ADS(mid)=0.4388, ADS(L4)=0.4734
+
+  Saved to /content/drive/MyDrive/ads_protocol_robustness_cifar_n12/data/ads_specificity_cifar100_canonical_n12.json
+
+================================================================================
+SPECIFICITY ANALYSIS: ADS(PE) vs ADS(non-PE)
+================================================================================
+
+ALIBI (n=12 seeds: ['1', '5', '7', '11', '13', '21', '42', '99', '123', '456', '2024', '31337']):
+       ε     PE_only    QKV_only    MLP_only   All_weights   Ratio PE/QKV
+  -----------------------------------------------------------------
+   0.000      0.0000      0.0000      0.0000        0.0000           0.00x
+   0.005      0.0041      0.0062      0.0386        0.0514           0.67x
+   0.010      0.0173      0.0218      0.0503        0.0574           0.80x
+   0.050      0.3831      0.0595      0.0655        0.0655           6.44x
+   0.100      1.3432      0.0780      0.0659        0.0656          17.22x
+   0.200      4.0197      0.1718      0.0660        0.0660          23.39x
+   0.500     10.7353      0.4848      0.0659        0.1148          22.14x
+   1.000     13.9165      0.7009      0.0659        0.4598          19.86x
+
+  VERDICT for alibi:
+    At ε=0.1: PE=1.3432, QKV=0.0780, MLP=0.0659, ALL=0.0656
+    -> ADS is PE-SPECIFIC (PE/QKV ratio = 17.2x) -- STRONG RESULT
+
+ALIBI_2D (n=12 seeds: ['1', '5', '7', '11', '13', '21', '42', '99', '123', '456', '2024', '31337']):
+       ε     PE_only    QKV_only    MLP_only   All_weights   Ratio PE/QKV
+  -----------------------------------------------------------------
+   0.000      0.0000      0.0000      0.0000        0.0000           0.00x
+   0.005      0.0001      0.0067      0.0397        0.0481           0.02x
+   0.010      0.0006      0.0223      0.0501        0.0528           0.03x
+   0.050      0.0140      0.0610      0.0663        0.0669           0.23x
+   0.100      0.0543      0.0795      0.0669        0.0672           0.68x
+   0.200      0.2125      0.1315      0.0669        0.0677           1.62x
+   0.500      1.1753      0.2544      0.0669        0.1161           4.62x
+   1.000      3.7536      0.3646      0.0669        0.2893          10.29x
+
+  VERDICT for alibi_2d:
+    At ε=0.1: PE=0.0543, QKV=0.0795, MLP=0.0669, ALL=0.0672
+    -> ADS is NON-SPECIFIC -- reacts to any perturbation -- WEAK CLAIM
+
+ALIBI_2D_MATCHED (n=12 seeds: ['1', '5', '7', '11', '13', '21', '42', '99', '123', '456', '2024', '31337']):
+       ε     PE_only    QKV_only    MLP_only   All_weights   Ratio PE/QKV
+  -----------------------------------------------------------------
+   0.000      0.0000      0.0000      0.0000        0.0000           0.00x
+   0.005      0.0001      0.0196      0.1745        0.1885           0.01x
+   0.010      0.0005      0.0823      0.2036        0.2116           0.01x
+   0.050      0.0109      0.2115      0.2342        0.2328           0.05x
+   0.100      0.0430      0.1954      0.2326        0.2377           0.22x
+   0.200      0.1656      0.2235      0.2325        0.2360           0.74x
+   0.500      0.9178      0.5036      0.2319        0.2403           1.82x
+   1.000      3.0059      0.7502      0.2315        0.4816           4.01x
+
+  VERDICT for alibi_2d_matched:
+    At ε=0.1: PE=0.0430, QKV=0.1954, MLP=0.2326, ALL=0.2377
+    -> ADS is NON-SPECIFIC -- reacts to any perturbation -- WEAK CLAIM
+
+✅ Specificity experiment complete!
