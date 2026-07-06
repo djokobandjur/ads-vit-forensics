@@ -138,10 +138,14 @@ not part of the primary n=6 ImageNet-100/CIFAR-100 sweep.
 
 ## Checkpoint layout
 
-Model checkpoints are **not redistributed in this repository**. They should be
-stored locally or on Google Drive and passed to scripts via `--models_dir`.
+Model checkpoints are **not redistributed in this repository**. They are hosted
+separately on Google Drive and should be passed to scripts via `--models_dir`.
+
+- **Checkpoint root:** [Google Drive — `ads-vit-forensics` checkpoints](PASTE_GOOGLE_DRIVE_FOLDER_LINK_HERE)
+
 Each script expects the checkpoint folders directly inside the corresponding
-`--models_dir`.
+`--models_dir`, so use the dataset-specific subfolder rather than the parent
+checkpoint root.
 
 Example Google Drive layout used for the paper runs:
 
