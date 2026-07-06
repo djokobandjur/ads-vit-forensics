@@ -1,1316 +1,900 @@
+#!/usr/bin/env python3
 """
-reproduce.py — Reproducibility script for
+reproduce.py — CPU-only verification for
 
     "Attention Divergence Score: A Forensic Metric for Characterizing
      Parameter-Level Attacks in Vision Transformers"
-    (IEEE Transactions on Information Forensics and Security submission)
 
-This script reproduces every numerical claim, table value, and figure in the
-paper directly from the archived experimental JSON data. It does NOT train
-models or run GPU experiments; it reads the pre-computed attention distributions
-and accuracy trajectories and regenerates all downstream statistics and plots.
+This script verifies the numerical tables, core statistics, and figure inputs
+used in the IEEE TIFS 13-page resubmission directly from archived JSON result
+files. It does not train models and does not require a GPU or PyTorch.
 
-================================================================================
-USAGE
-================================================================================
-
-    # 1. Place all JSON data files in ./data/ (or set DATA_DIR below)
-    # 2. Run:
+Typical usage
+-------------
     python reproduce.py
+    python reproduce.py --data-dir data --output-dir output
+    python reproduce.py --section 6.3
+    python reproduce.py --no-figures
 
-    # Optional flags:
-    python reproduce.py --no-figures      # skip figure generation (tables only)
-    python reproduce.py --output-dir out  # custom output directory
-    python reproduce.py --section 6.2     # reproduce only a specific section
+Expected data files
+-------------------
+Required for the primary verification:
+    ads_results.json
+    ads_results_cifar100.json
+    ads_specificity.json
+    ads_specificity_cifar.json
+    ads_threshold_fine.json
+    ads_ref_indices.json
+    ads_probing_residual.json
+    ads_probing_residual_cifar.json
 
-================================================================================
-EXPECTED DATA FILES
-================================================================================
+Optional, verified when present:
+    ads_roc_v2.json
+    ads_comparison.json
+    ads_adaptive.json
+    ads_ref_evasion.json
+    ads_results_cifar100_canonical_n12.json
+    ads_specificity_cifar100_canonical_n12.json
+    ads_probing_residual_cifar100_canonical_n12.json
 
-    data/ads_results.json              ImageNet-100 main ADS experiment
-    data/ads_results_cifar100.json     CIFAR-100 main ADS experiment
-    data/ads_specificity.json          ImageNet-100 specificity (4 PE × 4 attacks)
-    data/ads_specificity_cifar.json    CIFAR-100 specificity (4 PE × 4 attacks)
-    data/ads_probing_residual.json     ImageNet-100 residual stream probing (opt.)
-    data/ads_probing_residual_cifar.json CIFAR-100 residual stream probing (opt.)
+Outputs
+-------
+    output/reproduce_log.txt
+    output/tables/*.txt
 
-================================================================================
-OUTPUT
-================================================================================
-
-    output/
-    ├── tables/                    (.txt files, one per table)
-    │   ├── table_VI_fingerprint.txt   (Table VI: ADS(L4)/ADS(mean) ratios)
-    │   ├── table_VII_specificity.txt  (Table VII: PE attack signatures)
-    │   ├── table_VIII_probing.txt     (Table VIII: Residual stream probing)
-    │   ├── stats_ANOVA.txt            (Section 6.3: ANOVA + ICC)
-    │   └── stats_pairwise.txt         (Section 6.3: pairwise t-tests)
-    ├── figures/                   (PNG files, 5 figures)
-    └── reproduce_log.txt          (full log, with timestamps and assertions)
-
-Each table reproduces to within 3 decimal places of the published numbers.
-
-================================================================================
-DEPENDENCIES
-================================================================================
-
-    numpy >= 1.20
-    scipy >= 1.7
-    matplotlib >= 3.4
-    (standard scientific Python; no GPU, no PyTorch required)
+The script treats training seed as the unit of independence. The primary paper
+configuration uses six seeds per PE type: 42, 123, 456, 789, 1011, 1213.
 
 Authors: Djoko Bandjur, Milos Bandjur
-Contact: djoko.bandjur@pr.ac.rs
-Last updated: May 2026
-License: MIT (code) / CC-BY 4.0 (data)
+License: MIT (code) / CC BY 4.0 (data)
+Last updated: July 2026
 """
+
+from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
+import subprocess
 import sys
-from pathlib import Path
+from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 from scipy import stats
 
-# =============================================================================
-# CONFIGURATION
-# =============================================================================
 
-DATA_DIR = 'data'
-OUTPUT_DIR = 'output'
-
-PE_TYPES = ['learned', 'sinusoidal', 'rope', 'alibi']
+PE_TYPES = ["learned", "sinusoidal", "rope", "alibi"]
 PE_DISPLAY = {
-    'learned': 'Learned',
-    'sinusoidal': 'Sinusoidal',
-    'rope': 'RoPE',
-    'alibi': 'ALiBi',
+    "learned": "Learned",
+    "sinusoidal": "Sinusoidal",
+    "rope": "RoPE",
+    "alibi": "ALiBi",
+    "alibi_2d": "2D-ALiBi fixed",
+    "alibi_2d_matched": "2D-ALiBi matched",
 }
-SEEDS = ['42', '123', '456']
-ATTACKS = ['pe_only', 'qkv_only', 'mlp_only', 'all_weights']
-
-# Operation-space grouping (Section 6.3)
-EMBEDDING_SPACE = ['learned', 'sinusoidal']
-ATTENTION_SPACE = ['rope', 'alibi']
-
-# t critical value for 95% CI with df=2 (for n=3 seeds)
-T_CRIT_DF2 = stats.t.ppf(0.975, df=2)  # ≈ 4.303
+PRIMARY_SEEDS = ["42", "123", "456", "789", "1011", "1213"]
+ATTACKS = ["pe_only", "qkv_only", "mlp_only", "all_weights"]
+TARGET_EPS = 0.2
 
 
-# =============================================================================
-# LOGGING
-# =============================================================================
+# -----------------------------------------------------------------------------
+# Logging and helpers
+# -----------------------------------------------------------------------------
 
 class Logger:
-    def __init__(self, logfile):
-        self.logfile = open(logfile, 'w')
-        self.start_time = datetime.now()
+    def __init__(self, output_dir: Path) -> None:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        self.path = output_dir / "reproduce_log.txt"
+        self.file = self.path.open("w", encoding="utf-8")
+        self.start = datetime.now()
+        self.failures: List[str] = []
+        self.warnings: List[str] = []
 
-    def log(self, msg='', also_print=True):
-        ts = (datetime.now() - self.start_time).total_seconds()
-        line = f"[{ts:7.2f}s] {msg}"
-        self.logfile.write(line + '\n')
-        self.logfile.flush()
+    def log(self, msg: str = "", *, also_print: bool = True) -> None:
+        elapsed = (datetime.now() - self.start).total_seconds()
+        line = f"[{elapsed:8.2f}s] {msg}"
+        self.file.write(line + "\n")
+        self.file.flush()
         if also_print:
             print(msg)
 
-    def section(self, title):
-        bar = '=' * 78
-        self.log('')
+    def section(self, title: str) -> None:
+        bar = "=" * 88
+        self.log("")
         self.log(bar)
         self.log(title)
         self.log(bar)
 
-    def subsection(self, title):
-        self.log('')
-        self.log('-' * len(title))
+    def subsection(self, title: str) -> None:
+        self.log("")
         self.log(title)
-        self.log('-' * len(title))
+        self.log("-" * len(title))
 
-    def close(self):
-        self.logfile.close()
+    def warn(self, msg: str) -> None:
+        self.warnings.append(msg)
+        self.log(f"[WARN] {msg}")
+
+    def fail(self, msg: str) -> None:
+        self.failures.append(msg)
+        self.log(f"[FAIL] {msg}")
+
+    def pass_check(self, msg: str) -> None:
+        self.log(f"[PASS] {msg}")
+
+    def close(self) -> None:
+        self.file.close()
 
 
-# =============================================================================
-# DATA LOADING
-# =============================================================================
+def ensure_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
 
-def load_json(filename, log):
-    path = Path(DATA_DIR) / filename
-    if not path.exists():
-        log.log(f"  [SKIP] {filename} not found at {path}")
-        return None
-    with open(path) as f:
-        data = json.load(f)
-    log.log(f"  [OK]   Loaded {filename}")
+
+def fmt(x: Optional[float], nd: int = 3) -> str:
+    if x is None:
+        return "n/a"
+    if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+        return str(x)
+    return f"{x:.{nd}f}"
+
+
+def t_ci(values: Sequence[float], alpha: float = 0.05) -> float:
+    arr = np.asarray(values, dtype=float)
+    arr = arr[~np.isnan(arr)]
+    if len(arr) <= 1:
+        return float("nan")
+    return float(stats.t.ppf(1 - alpha / 2, df=len(arr) - 1) * arr.std(ddof=1) / math.sqrt(len(arr)))
+
+
+def std(values: Sequence[float]) -> float:
+    arr = np.asarray(values, dtype=float)
+    arr = arr[~np.isnan(arr)]
+    return float(arr.std(ddof=1)) if len(arr) > 1 else float("nan")
+
+
+def mean(values: Sequence[float]) -> float:
+    arr = np.asarray(values, dtype=float)
+    arr = arr[~np.isnan(arr)]
+    return float(arr.mean()) if len(arr) else float("nan")
+
+
+def nearest_idx(values: Sequence[float], target: float) -> int:
+    arr = np.asarray(values, dtype=float)
+    return int(np.argmin(np.abs(arr - target)))
+
+
+def get_seeds(block: Mapping[str, Any]) -> List[str]:
+    return sorted([str(s) for s in block.keys()], key=lambda x: int(x) if x.isdigit() else x)
+
+
+def normalize_seed_keys(data: Any) -> Any:
+    """JSON object keys are already strings, but keep this explicit for clarity."""
     return data
 
 
-def load_all_data(log):
-    log.section("STEP 1: Loading data")
-    data = {
-        'imn_main': load_json('ads_results.json', log),
-        'cif_main': load_json('ads_results_cifar100.json', log),
-        'imn_spec': load_json('ads_specificity.json', log),
-        'cif_spec': load_json('ads_specificity_cifar.json', log),
-        'imn_probe': load_json('ads_probing_residual.json', log),
-        'cif_probe': load_json('ads_probing_residual_cifar.json', log),
-        # ADS-specific experiment files (Sections 4.4, 5, 6.5, 6.6, 6.7)
-        'threshold': load_json('ads_threshold_fine.json', log),
-        'roc': load_json('ads_roc_v2.json', log),
-        'comparison': load_json('ads_comparison.json', log),
-        'evasion': load_json('ads_ref_evasion.json', log),
-        'adaptive': load_json('ads_adaptive.json', log),
-        'ref_indices': load_json('ads_ref_indices.json', log),
-    }
-    return data
-
-
-# =============================================================================
-# TABLE VI: FINGERPRINT — ADS(L4)/ADS(mean) ratios (Section 6.3)
-# =============================================================================
-
-def compute_fingerprint_per_seed(data, pe):
-    """
-    For a given PE type, compute the within-model mean ADS(L4)/ADS(mean) ratio
-    for each seed. This is the seed-level aggregation used in v15 Section 7.4.
-
-    Returns: array of 3 ratios (one per seed).
-    """
-    seed_ratios = []
-    for seed in SEEDS:
-        sd = data[pe][seed]
-        ads_l4 = np.array(sd['ads_layer4'])
-        ads_per_layer = np.array(sd['ads_per_layer'])   # (n_eps, 12)
-        ads_mean_layers = ads_per_layer.mean(axis=1)    # (n_eps,)
-        # ratio at each epsilon (skip eps=0 where denominator ≈ 0)
-        with np.errstate(divide='ignore', invalid='ignore'):
-            ratio = np.where(ads_mean_layers > 1e-10,
-                             ads_l4 / ads_mean_layers, np.nan)
-        # Within-model average across epsilons (excluding NaN at eps=0)
-        seed_ratios.append(np.nanmean(ratio))
-    return np.array(seed_ratios)
-
-
-def compute_within_model_cv(data, pe):
-    """Within-model CV of the ratio across epsilon, averaged over seeds."""
-    cvs = []
-    for seed in SEEDS:
-        sd = data[pe][seed]
-        ads_l4 = np.array(sd['ads_layer4'])
-        ads_per_layer = np.array(sd['ads_per_layer'])
-        ads_mean_layers = ads_per_layer.mean(axis=1)
-        with np.errstate(divide='ignore', invalid='ignore'):
-            ratio = np.where(ads_mean_layers > 1e-10,
-                             ads_l4 / ads_mean_layers, np.nan)
-        r = ratio[~np.isnan(ratio)]
-        cv = np.nanstd(r, ddof=1) / np.nanmean(r)
-        cvs.append(cv)
-    return np.mean(cvs)
-
-
-def compute_icc(data, pe):
-    """
-    Intraclass correlation (ICC(1,1)) for within-model ratio clustering.
-    Formula: (MSB - MSW) / (MSB + (k-1) * MSW)
-    where MSB = between-group variance, MSW = within-group variance,
-    k = number of measurements per group.
-    """
-    # Collect ratios per seed (each seed = one cluster of epsilon measurements)
-    all_ratios = []  # list of arrays, one per seed
-    for seed in SEEDS:
-        sd = data[pe][seed]
-        ads_l4 = np.array(sd['ads_layer4'])
-        ads_per_layer = np.array(sd['ads_per_layer'])
-        ads_mean_layers = ads_per_layer.mean(axis=1)
-        with np.errstate(divide='ignore', invalid='ignore'):
-            ratio = np.where(ads_mean_layers > 1e-10,
-                             ads_l4 / ads_mean_layers, np.nan)
-        r = ratio[~np.isnan(ratio)]
-        all_ratios.append(r)
-
-    # One-way ANOVA decomposition
-    k = min(len(r) for r in all_ratios)  # balanced
-    all_ratios = [r[:k] for r in all_ratios]
-    grand_mean = np.mean([np.mean(r) for r in all_ratios])
-    group_means = [np.mean(r) for r in all_ratios]
-    msb = k * np.sum([(gm - grand_mean)**2 for gm in group_means]) / (len(SEEDS) - 1)
-    msw = np.sum([np.sum((r - gm)**2) for r, gm in zip(all_ratios, group_means)])
-    msw /= (len(SEEDS) * (k - 1))
-    icc = (msb - msw) / (msb + (k - 1) * msw)
-    return icc
-
-
-def table_VI_fingerprint(data_imn, data_cif, log, out_dir):
-    log.section("TABLE VI: ADS(L4)/ADS(mean) Fingerprint Ratios")
-    log.log("Seed-level statistics (n=3 per PE type), mean ± 95% CI (t, df=2)")
-    log.log("Expected in paper Section 6.3 / Table VI:")
-    log.log("  IMN: Learned 3.19±1.65, Sinusoidal 2.34±0.86, RoPE 1.82±1.19, ALiBi 0.83±0.59")
-    log.log("  CIF: Learned 1.01,     Sinusoidal 1.44,     RoPE 1.59,     ALiBi 0.99")
-    log.log('')
-
-    header = f"{'PE Type':<12} {'IMN mean':>10} {'IMN ±95%CI':>12} {'IMN CV%':>9} {'IMN ICC':>9}  |  {'CIF mean':>10} {'CIF ±95%CI':>12}"
-    log.log(header)
-    log.log('-' * len(header))
-
-    results = {}
-    for pe in PE_TYPES:
-        r_imn = compute_fingerprint_per_seed(data_imn, pe)
-        m_imn, s_imn = np.mean(r_imn), np.std(r_imn, ddof=1)
-        ci_imn = T_CRIT_DF2 * s_imn / np.sqrt(3)
-        cv_imn = compute_within_model_cv(data_imn, pe) * 100
-        icc_imn = compute_icc(data_imn, pe)
-
-        r_cif = compute_fingerprint_per_seed(data_cif, pe)
-        m_cif, s_cif = np.mean(r_cif), np.std(r_cif, ddof=1)
-        ci_cif = T_CRIT_DF2 * s_cif / np.sqrt(3)
-
-        line = (f"{PE_DISPLAY[pe]:<12} {m_imn:>10.2f} {'±'+f'{ci_imn:.2f}':>12} "
-                f"{cv_imn:>9.1f} {icc_imn:>9.2f}  |  "
-                f"{m_cif:>10.2f} {'±'+f'{ci_cif:.2f}':>12}")
-        log.log(line)
-
-        results[pe] = {
-            'imn_mean': m_imn, 'imn_ci': ci_imn, 'imn_cv': cv_imn, 'imn_icc': icc_imn,
-            'cif_mean': m_cif, 'cif_ci': ci_cif,
-        }
-
-    # Save to file
-    outpath = Path(out_dir) / 'tables' / 'table_VI_fingerprint.txt'
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-    with open(outpath, 'w') as f:
-        f.write("Table VI: ADS(L4)/ADS(mean) Fingerprint Ratios (reproduced)\n")
-        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
-        f.write(header + '\n' + '-' * len(header) + '\n')
-        for pe in PE_TYPES:
-            r = results[pe]
-            f.write(f"{PE_DISPLAY[pe]:<12} "
-                    f"{r['imn_mean']:>10.2f} ±{r['imn_ci']:.2f}  "
-                    f"CV={r['imn_cv']:.1f}%  ICC={r['imn_icc']:.2f}  |  "
-                    f"{r['cif_mean']:>10.2f} ±{r['cif_ci']:.2f}\n")
-
-    return results
-
-
-# =============================================================================
-# Section 6.3: ANOVA & pairwise t-tests
-# =============================================================================
-
-def section_63_anova(data_imn, data_cif, log, out_dir):
-    log.section("SECTION 6.3: ANOVA & Pairwise Tests")
-    log.log("Seed-level tests (n=3 per PE). Expected in paper:")
-    log.log("  IMN: ANOVA F(3,8) = 14.06, p = 0.0015")
-    log.log("  CIF: ANOVA F(3,8) =  1.94, p = 0.20 (null)")
-    log.log("  IMN ALiBi vs rest t = -5.80, p = 0.0002")
-    log.log("  IMN Embedding vs Attention-space t = 3.85, p = 0.003")
-    log.log('')
-
-    # Collect per-seed ratios per PE
-    imn_ratios = {pe: compute_fingerprint_per_seed(data_imn, pe) for pe in PE_TYPES}
-    cif_ratios = {pe: compute_fingerprint_per_seed(data_cif, pe) for pe in PE_TYPES}
-
-    # One-way ANOVA (4 groups × 3 seeds)
-    log.subsection("ImageNet-100 ANOVA")
-    groups_imn = [imn_ratios[pe] for pe in PE_TYPES]
-    f_imn, p_imn = stats.f_oneway(*groups_imn)
-    log.log(f"  F(3,8) = {f_imn:.2f}, p = {p_imn:.4f}")
-
-    log.subsection("CIFAR-100 ANOVA")
-    groups_cif = [cif_ratios[pe] for pe in PE_TYPES]
-    f_cif, p_cif = stats.f_oneway(*groups_cif)
-    log.log(f"  F(3,8) = {f_cif:.2f}, p = {p_cif:.4f}  {'(null)' if p_cif > 0.05 else ''}")
-
-    # Key contrasts on ImageNet
-    log.subsection("ImageNet-100 ALiBi vs. rest")
-    alibi = imn_ratios['alibi']
-    rest = np.concatenate([imn_ratios[pe] for pe in ['learned', 'sinusoidal', 'rope']])
-    t_al, p_al = stats.ttest_ind(alibi, rest, equal_var=False)
-    log.log(f"  t = {t_al:.2f}, p = {p_al:.4f}")
-
-    log.subsection("ImageNet-100 Embedding-space vs. Attention-space")
-    emb = np.concatenate([imn_ratios[pe] for pe in EMBEDDING_SPACE])
-    att = np.concatenate([imn_ratios[pe] for pe in ATTENTION_SPACE])
-    t_es, p_es = stats.ttest_ind(emb, att, equal_var=False)
-    log.log(f"  t = {t_es:.2f}, p = {p_es:.4f}")
-
-    # All pairwise t-tests (Table supplemental)
-    log.subsection("All pairwise t-tests (ImageNet-100, Welch)")
-    pe_list = PE_TYPES
-    for i, pe_a in enumerate(pe_list):
-        for pe_b in pe_list[i+1:]:
-            t, p = stats.ttest_ind(imn_ratios[pe_a], imn_ratios[pe_b], equal_var=False)
-            sig = '*' if p < 0.05 else ''
-            log.log(f"  {PE_DISPLAY[pe_a]:12s} vs. {PE_DISPLAY[pe_b]:12s}: "
-                    f"t = {t:6.2f}, p = {p:.4f} {sig}")
-
-    # Save
-    outpath = Path(out_dir) / 'tables' / 'stats_ANOVA.txt'
-    with open(outpath, 'w') as f:
-        f.write(f"Section 6.3 Statistics (reproduced)\n")
-        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
-        f.write(f"ImageNet ANOVA: F(3,8) = {f_imn:.2f}, p = {p_imn:.4f}\n")
-        f.write(f"CIFAR    ANOVA: F(3,8) = {f_cif:.2f}, p = {p_cif:.4f}\n")
-        f.write(f"IMN ALiBi vs rest:                  t = {t_al:.2f}, p = {p_al:.4f}\n")
-        f.write(f"IMN Embedding vs Attention-space:   t = {t_es:.2f}, p = {p_es:.4f}\n")
-
-
-# =============================================================================
-# 1-NN LOO CLASSIFICATION (Section 6.3)
-# =============================================================================
-
-def section_63_1nn_loo(data_imn, log, out_dir):
-    log.section("SECTION 6.3: 1-NN Leave-One-Out Classification (ImageNet)")
-    log.log("Expected in paper: 6/12 correct (50%), permutation p ≈ 0.047")
-    log.log('')
-
-    # Each (PE, seed) is one point in 1-D ratio space
-    X, y = [], []
-    for pe in PE_TYPES:
-        for seed in SEEDS:
-            sd = data_imn[pe][seed]
-            ads_l4 = np.array(sd['ads_layer4'])
-            ads_per_layer = np.array(sd['ads_per_layer'])
-            ads_mean = ads_per_layer.mean(axis=1)
-            with np.errstate(divide='ignore', invalid='ignore'):
-                ratio = np.where(ads_mean > 1e-10, ads_l4 / ads_mean, np.nan)
-            X.append(np.nanmean(ratio))
-            y.append(pe)
-
-    X = np.array(X)
-    y = np.array(y)
-    n = len(X)
-
-    # Leave-one-out 1-NN
-    correct = 0
-    for i in range(n):
-        mask = np.arange(n) != i
-        dists = np.abs(X[mask] - X[i])
-        pred = y[mask][np.argmin(dists)]
-        if pred == y[i]:
-            correct += 1
-    acc = correct / n
-
-    # Permutation test
-    rng = np.random.default_rng(42)
-    n_perm = 10000
-    perm_accs = []
-    for _ in range(n_perm):
-        y_perm = rng.permutation(y)
-        c = 0
-        for i in range(n):
-            mask = np.arange(n) != i
-            dists = np.abs(X[mask] - X[i])
-            pred = y_perm[mask][np.argmin(dists)]
-            if pred == y_perm[i]:
-                c += 1
-        perm_accs.append(c / n)
-    p_perm = (np.sum(np.array(perm_accs) >= acc) + 1) / (n_perm + 1)
-
-    log.log(f"  Accuracy: {correct}/{n} = {acc*100:.1f}%")
-    log.log(f"  Permutation p-value (n={n_perm}): {p_perm:.4f}")
-
-
-# =============================================================================
-# TABLE VII: SPECIFICITY (Section 6.2)
-# =============================================================================
-
-def section_62_specificity(imn_spec, cif_spec, log, out_dir):
-    log.section("TABLE VII: PE Attack Specificity at ε=0.2")
-    log.log("Mean across 3 seeds. Expected (from paper Section 6.2 Table VII):")
-    log.log("  Learned PE-only:     ADS(L4)=0.25, drop=17.4pp,  ratio=0.014")
-    log.log("  Sinusoidal PE-only:  ADS(L4)=0.05, drop= 9.2pp,  ratio=0.006")
-    log.log("  RoPE PE-only:        ADS(L4)=0.11, drop= 2.3pp,  ratio=0.049")
-    log.log("  ALiBi PE-only:       ADS(L4)=3.57, drop=73.0pp,  ratio=0.049")
-    log.log('')
-
-    target_eps = 0.2
-
-    def compute_table_row(data, pe, attack):
-        ads_l4_list, ads_mean_list, drop_list = [], [], []
-        for seed in SEEDS:
-            sd = data[pe][seed][attack]
-            eps = np.array(sd['epsilons'])
-            accs = np.array(sd['accuracies'])
-            ads_l4 = np.array(sd['ads_layer4'])
-            ads_mean = np.array(sd['ads_mean'])
-            idx = np.argmin(np.abs(eps - target_eps))
-            idx0 = np.where(eps == 0)[0]
-            clean = accs[idx0[0]] if len(idx0) > 0 else accs[0]
-            drop = clean - accs[idx]
-            ads_l4_list.append(ads_l4[idx])
-            ads_mean_list.append(ads_mean[idx])
-            drop_list.append(drop)
-        return (np.mean(ads_l4_list), np.mean(ads_mean_list), np.mean(drop_list))
-
-    for label, data in [('IMAGENET-100', imn_spec), ('CIFAR-100', cif_spec)]:
-        log.subsection(label)
-        hdr = f"  {'PE':<12} {'Attack':<14} {'ADS(L4)':>10} {'ADS(mean)':>11} {'Drop(pp)':>10} {'ADS/Drop':>10}"
-        log.log(hdr)
-        log.log('  ' + '-' * (len(hdr) - 2))
-        for pe in PE_TYPES:
-            if pe not in data:
-                continue
-            for attack in ATTACKS:
-                ads_l4, ads_mean, drop = compute_table_row(data, pe, attack)
-                ratio = ads_l4 / drop if drop > 0.5 else float('nan')
-                log.log(f"  {PE_DISPLAY[pe]:<12} {attack:<14} "
-                        f"{ads_l4:>10.3f} {ads_mean:>11.3f} "
-                        f"{drop:>10.2f} {ratio:>10.4f}")
-            log.log('')
-
-    # Damage asymmetry (Effect 1 in Section 6.2)
-    log.subsection("Damage asymmetry: MLP-drop / PE-drop at ε=0.2 (ImageNet)")
-    log.log("  PE         MLP drop (pp)  PE drop (pp)  Asymmetry ratio")
-    log.log("  ---------  -------------  ------------  ----------------")
-    for pe in PE_TYPES:
-        _, _, pe_drop = compute_table_row(imn_spec, pe, 'pe_only')
-        _, _, mlp_drop = compute_table_row(imn_spec, pe, 'mlp_only')
-        ratio = mlp_drop / pe_drop if pe_drop > 0.1 else float('inf')
-        log.log(f"  {PE_DISPLAY[pe]:<10} {mlp_drop:>12.2f}   {pe_drop:>11.2f}   {ratio:>14.1f}×")
-
-
-# =============================================================================
-# Section 6.2 EFFECT 1: SATURATION BUDGET ASYMMETRY (saturation reframe)
-# =============================================================================
-
-def section_62_saturation(imn_spec, cif_spec, log, out_dir):
-    """
-    Reproduce the saturation-budget asymmetry claim from Section 6.2 Effect 1:
-    PE-only attacks require 17x-200x larger perturbation budgets than MLP-only
-    attacks to operationally compromise the model (residual accuracy <= 50% of
-    clean baseline).
-    """
-    log.section("SECTION 6.2 EFFECT 1: Saturation Budget Asymmetry")
-    log.log("Saturation budget = smallest ε at which residual accuracy ≤ 50% of clean.")
-    log.log("Following Carlini et al.~\\cite{carlini2019evaluating} 'operational compromise' threshold.")
-    log.log('')
-    log.log("Expected in paper Section 6.2 Effect 1 / Abstract / Conclusion First finding:")
-    log.log("  ImageNet: Learned 100×, Sinusoidal 100×, RoPE 200×, ALiBi 17×")
-    log.log("  CIFAR:    Learned 20×,  Sinusoidal 40×,  RoPE 200×, ALiBi 40×")
-    log.log("  Combined range: 17×–200× (RoPE PE-only does not robustly saturate)")
-    log.log('')
-
-    def find_saturation_eps(data, pe, attack, threshold_func):
-        """Find smallest ε where threshold_func(residual_acc, clean) returns True
-        averaged across seeds."""
-        eps_per_seed = []
-        for seed in SEEDS:
-            sd = data[pe][seed][attack]
-            eps = np.array(sd['epsilons'])
-            accs = np.array(sd['accuracies'])
-            idx0 = np.where(eps == 0)[0]
-            if len(idx0) == 0:
-                continue
-            clean = accs[idx0[0]]
-            mask = np.array([threshold_func(a, clean) for a in accs])
-            if mask.any():
-                first_idx = np.argmax(mask)
-                eps_per_seed.append(eps[first_idx])
-            else:
-                eps_per_seed.append(None)
-        valid = [e for e in eps_per_seed if e is not None]
-        return np.mean(valid) if valid else None, len(valid)
-
-    thresholds = [
-        ("50% clean (operational compromise)",
-         lambda a, c: a <= 0.5 * c, 50),
-        ("5% absolute (severe degradation)",
-         lambda a, c: a <= 5.0, 5),
-    ]
-
-    all_ratios_per_threshold = {}
-
-    for tname, tfunc, tval in thresholds:
-        log.subsection(f"Threshold: {tname}")
-        log.log(f"  {'Dataset':<14} {'PE':<12} {'ε_PE':>10} {'ε_MLP':>10} {'Ratio':>8}")
-        log.log('  ' + '-' * 56)
-
-        ratios_at_threshold = []
-        for label, data in [('IMAGENET-100', imn_spec), ('CIFAR-100', cif_spec)]:
-            for pe in PE_TYPES:
-                pe_eps, pe_n = find_saturation_eps(data, pe, 'pe_only', tfunc)
-                mlp_eps, mlp_n = find_saturation_eps(data, pe, 'mlp_only', tfunc)
-                if pe_eps is not None and mlp_eps is not None:
-                    ratio = pe_eps / mlp_eps
-                    ratios_at_threshold.append(ratio)
-                    log.log(f"  {label:<14} {PE_DISPLAY[pe]:<12} "
-                            f"{pe_eps:>10.4f} {mlp_eps:>10.4f} {ratio:>7.0f}×")
-                elif pe_eps is None:
-                    log.log(f"  {label:<14} {PE_DISPLAY[pe]:<12} "
-                            f"{'never':>10} {mlp_eps:>10.4f} {'>200×':>8} (PE attacks fail)")
-                else:
-                    log.log(f"  {label:<14} {PE_DISPLAY[pe]:<12} "
-                            f"{pe_eps:>10.4f} {'never':>10} {'?':>8}")
-
-        if ratios_at_threshold:
-            log.log(f"  Range across observable PE/dataset combinations: "
-                    f"{min(ratios_at_threshold):.0f}× – {max(ratios_at_threshold):.0f}×")
-
-        all_ratios_per_threshold[tval] = ratios_at_threshold
-
-    # Save to file
-    outpath = Path(out_dir) / 'tables' / 'stats_saturation_budget.txt'
-    with open(outpath, 'w') as f:
-        f.write("Section 6.2 Effect 1: Saturation Budget Asymmetry (reproduced)\n")
-        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
-        for tname, _, tval in thresholds:
-            ratios = all_ratios_per_threshold[tval]
-            if ratios:
-                f.write(f"Threshold {tname}:\n")
-                f.write(f"  Range: {min(ratios):.0f}× – {max(ratios):.0f}×\n")
-                f.write(f"  Median: {np.median(ratios):.0f}×\n\n")
-
-    return all_ratios_per_threshold
-
-
-# =============================================================================
-# Section 6.3 HIERARCHICAL FINGERPRINT: Slope (Level 1) + Profile LOO (Level 2)
-# =============================================================================
-
-def section_63_hierarchical_fingerprint(imn_main, cif_main, log, out_dir):
-    """
-    Reproduce the hierarchical PE fingerprint introduced in Section 6.3:
-    - Level 1 (universal): per-PE slope of layer-wise ratio profile.
-                           Expected: ALiBi ≈ +0.01, others ≈ -0.2.
-    - Level 2 (within-dataset): 12-d profile 1-NN LOO classification.
-                                Expected: 67% IMN, 92% CIF (cityblock).
-    """
-    log.section("HIERARCHICAL PE FINGERPRINT (Section 6.3)")
-    log.log("Two complementary identification levels from layer-wise ADS profile:")
-    log.log("  Level 1 (universal): attenuation slope of ratio profile")
-    log.log("  Level 2 (within-dataset): 12-d profile classification")
-    log.log('')
-    log.log("Expected (paper Section 6.3 / Tables VII, VIII):")
-    log.log("  Level 1 slopes IMN: Learned -0.245, Sin -0.224, RoPE -0.218, ALiBi +0.013")
-    log.log("  Level 1 slopes CIF: Learned -0.206, Sin -0.155, RoPE -0.253, ALiBi +0.016")
-    log.log("  Level 2 LOO IMN (cityblock): 66.7%; CIF: 91.7%")
-    log.log('')
-
-    def get_profiles(data):
-        """Returns dict {pe: [seed_profiles]}, each seed_profile is 12-d."""
-        result = {pe: [] for pe in PE_TYPES}
-        for pe in PE_TYPES:
-            for seed in SEEDS:
-                sd = data[pe][seed]
-                ads_per_layer = np.array(sd['ads_per_layer'])
-                ads_mean = ads_per_layer.mean(axis=1)
-                profile = []
-                for layer in range(12):
-                    ratios = []
-                    for ei in range(1, ads_per_layer.shape[0]):
-                        if ads_mean[ei] > 1e-10:
-                            ratios.append(ads_per_layer[ei, layer] / ads_mean[ei])
-                    profile.append(np.mean(ratios) if ratios else 0)
-                result[pe].append(profile)
-        return result
-
-    log.subsection("Level 1: Attenuation Slope (Table VII)")
-
-    slope_results = {}
-    for ds_label, data in [('IMN', imn_main), ('CIF', cif_main)]:
-        slope_results[ds_label] = {}
-        profiles = get_profiles(data)
-        for pe in PE_TYPES:
-            x = np.arange(1, 13)
-            slopes = [np.polyfit(x, p, 1)[0] for p in profiles[pe]]
-            stds = [np.std(p) for p in profiles[pe]]
-            slope_results[ds_label][pe] = {
-                'mean': np.mean(slopes),
-                'std': np.std(slopes, ddof=1),
-                'profile_std': np.mean(stds),
-            }
-
-    log.log(f"  {'PE':<12} {'IMN slope':<22} {'CIF slope':<22} {'IMN/CIF profile std'}")
-    for pe in PE_TYPES:
-        i = slope_results['IMN'][pe]
-        c = slope_results['CIF'][pe]
-        log.log(f"  {PE_DISPLAY[pe]:<12} "
-                f"{i['mean']:+.3f} ± {i['std']:.3f}      "
-                f"{c['mean']:+.3f} ± {c['std']:.3f}      "
-                f"{i['profile_std']:.2f} / {c['profile_std']:.2f}")
-
-    # Verify ALiBi vs others contrast
-    log.log('')
-    alibi_imn = slope_results['IMN']['alibi']['mean']
-    others_imn = np.mean([slope_results['IMN'][pe]['mean'] for pe in ['learned', 'sinusoidal', 'rope']])
-    ratio = abs(others_imn / alibi_imn) if alibi_imn != 0 else float('inf')
-    log.log(f"  ALiBi vs others slope magnitude ratio (IMN): "
-            f"|{others_imn:.3f}/{alibi_imn:+.3f}| = {ratio:.0f}×  (paper: ~17×)")
-
-    log.subsection("Level 2: 12-d Profile LOO Classification (Table VIII)")
-
-    loo_results = {}
-    for ds_label, data in [('IMN', imn_main), ('CIF', cif_main)]:
-        profiles = get_profiles(data)
-        X = np.array([p for pe in PE_TYPES for p in profiles[pe]])
-        y = np.array([pe for pe in PE_TYPES for _ in profiles[pe]])
-
-        loo_results[ds_label] = {}
-        for metric_name in ['euclidean', 'cosine', 'cityblock']:
-            n = len(X)
-            correct = 0
-            for i in range(n):
-                mask = np.arange(n) != i
-                if metric_name == 'euclidean':
-                    dists = np.linalg.norm(X[mask] - X[i], axis=1)
-                elif metric_name == 'cosine':
-                    norms = np.linalg.norm(X[mask], axis=1) * np.linalg.norm(X[i])
-                    dists = 1 - (X[mask] @ X[i]) / (norms + 1e-10)
-                else:  # cityblock
-                    dists = np.sum(np.abs(X[mask] - X[i]), axis=1)
-                pred = y[mask][np.argmin(dists)]
-                if pred == y[i]:
-                    correct += 1
-            loo_results[ds_label][metric_name] = correct / n
-
-    log.log(f"  {'Dataset':<14} {'Euclidean':>10} {'Cosine':>10} {'Cityblock':>10}")
-    for ds_label in ['IMN', 'CIF']:
-        ds_full = 'ImageNet-100' if ds_label == 'IMN' else 'CIFAR-100'
-        log.log(f"  {ds_full:<14} "
-                f"{loo_results[ds_label]['euclidean']*100:>8.1f}% "
-                f"{loo_results[ds_label]['cosine']*100:>9.1f}% "
-                f"{loo_results[ds_label]['cityblock']*100:>9.1f}%")
-
-    # Cross-dataset transfer test
-    log.log('')
-    log.subsection("Cross-dataset profile transfer (Section 6.3)")
-    profiles_imn = get_profiles(imn_main)
-    profiles_cif = get_profiles(cif_main)
-
-    # IMN centroids → predict CIF
-    centroids_imn = {pe: np.mean(profiles_imn[pe], axis=0) for pe in PE_TYPES}
-    correct = 0
-    total = 0
-    for pe in PE_TYPES:
-        for profile in profiles_cif[pe]:
-            dists = {p: np.linalg.norm(np.array(profile) - centroids_imn[p]) for p in PE_TYPES}
-            pred = min(dists, key=dists.get)
-            if pred == pe:
-                correct += 1
-            total += 1
-    transfer_imn_to_cif = correct / total
-    log.log(f"  IMN centroids → CIF: {correct}/{total} = {transfer_imn_to_cif*100:.1f}%")
-
-    centroids_cif = {pe: np.mean(profiles_cif[pe], axis=0) for pe in PE_TYPES}
-    correct = 0
-    total = 0
-    for pe in PE_TYPES:
-        for profile in profiles_imn[pe]:
-            dists = {p: np.linalg.norm(np.array(profile) - centroids_cif[p]) for p in PE_TYPES}
-            pred = min(dists, key=dists.get)
-            if pred == pe:
-                correct += 1
-            total += 1
-    transfer_cif_to_imn = correct / total
-    log.log(f"  CIF centroids → IMN: {correct}/{total} = {transfer_cif_to_imn*100:.1f}%")
-    log.log(f"  Paper claim: 50% (limited cross-dataset transfer)")
-
-    # Save
-    outpath = Path(out_dir) / 'tables' / 'stats_hierarchical_fingerprint.txt'
-    with open(outpath, 'w') as f:
-        f.write("Section 6.3 Hierarchical PE Fingerprint (reproduced)\n")
-        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
-        f.write("Level 1 (Slope) - IMN:\n")
-        for pe in PE_TYPES:
-            r = slope_results['IMN'][pe]
-            f.write(f"  {PE_DISPLAY[pe]:<12}: slope = {r['mean']:+.3f} ± {r['std']:.3f}\n")
-        f.write("\nLevel 1 (Slope) - CIF:\n")
-        for pe in PE_TYPES:
-            r = slope_results['CIF'][pe]
-            f.write(f"  {PE_DISPLAY[pe]:<12}: slope = {r['mean']:+.3f} ± {r['std']:.3f}\n")
-        f.write(f"\nLevel 2 (LOO 12-d profile):\n")
-        f.write(f"  IMN cityblock: {loo_results['IMN']['cityblock']*100:.1f}%\n")
-        f.write(f"  CIF cityblock: {loo_results['CIF']['cityblock']*100:.1f}%\n")
-        f.write(f"\nCross-dataset transfer:\n")
-        f.write(f"  IMN→CIF: {transfer_imn_to_cif*100:.1f}%\n")
-        f.write(f"  CIF→IMN: {transfer_cif_to_imn*100:.1f}%\n")
-
-    return slope_results, loo_results
-
-
-# =============================================================================
-# Section 4.4 THRESHOLD CALIBRATION (interpolated baseline ε̂)
-# =============================================================================
-
-def section_44_threshold(threshold_data, log, out_dir):
-    """
-    Reproduce the interpolated detection threshold ε̂ ≈ 0.003 reported in
-    Section 4.4 (and referenced throughout). The threshold is computed per
-    (PE, seed) by interpolating the ε at which ADS(L4) reaches a multiple
-    of the clean baseline ADS.
-    """
-    log.section("SECTION 4.4: Threshold Calibration (ε̂ interpolation)")
-    log.log("Per-(PE, seed) interpolated threshold ε̂ at which ADS(L4) crosses")
-    log.log("a fixed multiple of the clean baseline ADS.")
-    log.log('')
-    log.log("Expected (paper): ε̂ ≈ 0.003 across all PE types (Kruskal-Wallis")
-    log.log("H = 5.05, p = 0.168, confirming universality).")
-    log.log('')
-
-    if threshold_data is None:
-        log.log("  [SKIP] ads_threshold_fine.json not available")
-        return None
-
-    log.log(f"  {'PE':<12} {'Seed 42':>10} {'Seed 123':>10} {'Seed 456':>10} {'Mean':>10}")
-    log.log('  ' + '-' * 55)
-
-    all_thresholds = {}
-    for pe in PE_TYPES:
-        per_seed = []
-        for seed in SEEDS:
-            sd = threshold_data[pe][seed]
-            per_seed.append(sd['interpolated_threshold'])
-        m = np.mean(per_seed)
-        all_thresholds[pe] = {'per_seed': per_seed, 'mean': m}
-        log.log(f"  {PE_DISPLAY[pe]:<12} "
-                f"{per_seed[0]:>10.4f} {per_seed[1]:>10.4f} {per_seed[2]:>10.4f} "
-                f"{m:>10.4f}")
-
-    # Kruskal-Wallis test for universality
-    groups = [all_thresholds[pe]['per_seed'] for pe in PE_TYPES]
-    h_stat, p_val = stats.kruskal(*groups)
-    log.log('')
-    log.log(f"  Kruskal-Wallis H = {h_stat:.2f}, p = {p_val:.4f} "
-            f"{'(non-significant — universal)' if p_val > 0.05 else '(significant)'}")
-    log.log(f"  Paper claim: H = 5.05, p = 0.168")
-
-    # Save
-    outpath = Path(out_dir) / 'tables' / 'stats_threshold_calibration.txt'
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-    with open(outpath, 'w') as f:
-        f.write(f"Section 4.4 Threshold Calibration (reproduced)\n")
-        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
-        for pe in PE_TYPES:
-            t = all_thresholds[pe]
-            f.write(f"  {PE_DISPLAY[pe]:<12}: ε̂ = {t['mean']:.4f} "
-                    f"(per-seed: {t['per_seed']})\n")
-        f.write(f"\nKruskal-Wallis H = {h_stat:.2f}, p = {p_val:.4f}\n")
-
-    return {'thresholds': all_thresholds, 'kw_H': h_stat, 'kw_p': p_val}
-
-
-# =============================================================================
-# Section 5: ROC ANALYSIS (deployment detection boundary)
-# =============================================================================
-
-def section_5_roc(roc_data, log, out_dir):
-    """
-    Reproduce the operational detection boundary (Section 5):
-    - Per-(PE, seed) AUC at each ε
-    - Confirm AUC ≥ 0.82 at ε ≥ 0.1 (Learned) / ε ≥ 0.2 (RoPE)
-    """
-    log.section("SECTION 5: ROC Analysis (Detection Boundary)")
-    log.log("Per-(PE, seed) AUC against benign distribution shifts (clean noise +")
-    log.log("JPEG compression + Gaussian blur + Gaussian noise as negatives).")
-    log.log('')
-    log.log("Expected (paper): AUC ≥ 0.82 at ε ≥ 0.1 (Learned), ε ≥ 0.2 (RoPE).")
-    log.log('')
-
-    if roc_data is None:
-        log.log("  [SKIP] ads_roc_v2.json not available")
-        return None
-
-    pe_list = [pe for pe in PE_TYPES if pe in roc_data]
-
-    # Find epsilons available
-    sample_pe = pe_list[0]
-    eps_keys = sorted(roc_data[sample_pe]['42']['roc_by_eps'].keys(), key=float)
-
-    log.log(f"  {'PE':<10} " + ' '.join(f"{'ε='+e:>10}" for e in eps_keys))
-    log.log('  ' + '-' * (10 + 11 * len(eps_keys)))
-
-    auc_results = {pe: {} for pe in pe_list}
-    for pe in pe_list:
-        line = f"  {PE_DISPLAY[pe]:<10} "
-        for eps in eps_keys:
-            seed_aucs = []
-            for seed in SEEDS:
-                roc_eps = roc_data[pe][seed]['roc_by_eps'][eps]
-                seed_aucs.append(roc_eps['auc'])
-            mean_auc = np.mean(seed_aucs)
-            auc_results[pe][eps] = mean_auc
-            line += f"{mean_auc:>10.3f} "
-        log.log(line)
-
-    # Verify operational boundary claim
-    log.log('')
-    log.log("Operational boundary verification:")
-    if 'learned' in auc_results:
-        l_01 = auc_results['learned'].get('0.1', 0)
-        log.log(f"  Learned at ε=0.1:  AUC = {l_01:.3f}  "
-                f"{'✓' if l_01 >= 0.82 else '✗'} (paper claim ≥ 0.82)")
-    if 'rope' in auc_results:
-        r_02 = auc_results['rope'].get('0.2', 0)
-        log.log(f"  RoPE at ε=0.2:    AUC = {r_02:.3f}  "
-                f"{'✓' if r_02 >= 0.82 else '✗'} (paper claim ≥ 0.82)")
-
-    # Save
-    outpath = Path(out_dir) / 'tables' / 'stats_roc_analysis.txt'
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-    with open(outpath, 'w') as f:
-        f.write(f"Section 5 ROC Analysis (reproduced)\n")
-        f.write(f"Generated: {datetime.now().isoformat()}\n\n")
-        for pe in pe_list:
-            f.write(f"{PE_DISPLAY[pe]}:\n")
-            for eps in eps_keys:
-                f.write(f"  ε={eps}: AUC={auc_results[pe][eps]:.3f}\n")
-
-    return auc_results
-
-
-# =============================================================================
-# Section 6.6 COMPARISON: ADS vs Mahalanobis vs LogitKL (Table VIII)
-# =============================================================================
-
-def section_66_comparison(comparison_data, log, out_dir):
-    """
-    Reproduce Table VIII: Detection AUC comparison across methods (ADS,
-    Mahalanobis, LogitKL) at multiple ε.
-    """
-    log.section("SECTION 6.6: Detection Method Comparison (Table VIII)")
-    log.log("Detection AUC at each ε for ADS vs. Mahalanobis vs. LogitKL.")
-    log.log('')
-    log.log("Expected (paper Table VIII): ADS AUC ≈ 1.0 from ε ≥ 0.05;")
-    log.log("Mahalanobis AUC = 1.0 starting from ε = 0.001 (overconfident);")
-    log.log("LogitKL AUC = 0.0 throughout (fails for PE attacks).")
-    log.log('')
-
-    if comparison_data is None:
-        log.log("  [SKIP] ads_comparison.json not available")
-        return None
-
-    pe_list = [pe for pe in PE_TYPES if pe in comparison_data]
-    eps_keys = sorted(comparison_data[pe_list[0]]['42']['attack'].keys(),
-                      key=float)
-
-    for pe in pe_list:
-        log.subsection(f"{PE_DISPLAY[pe]}")
-        log.log(f"    {'ε':<8} {'ADS AUC':<10} {'Mahal AUC':<11} {'LogitKL AUC':<12}")
-        log.log('    ' + '-' * 42)
-        for eps in eps_keys:
-            seed_aucs = {'ads': [], 'mahalanobis': [], 'logit_kl': []}
-            for seed in SEEDS:
-                attack_data = comparison_data[pe][seed]['attack'][eps]
-                for method in seed_aucs:
-                    seed_aucs[method].append(attack_data[method]['auc'])
-            log.log(f"    {eps:<8} "
-                    f"{np.mean(seed_aucs['ads']):<10.3f} "
-                    f"{np.mean(seed_aucs['mahalanobis']):<11.3f} "
-                    f"{np.mean(seed_aucs['logit_kl']):<12.3f}")
-
-    # Calibration timing
-    log.log('')
-    log.log("Calibration time (seconds, mean over PE × seeds):")
-    timing_summary = {'ads': [], 'mahal': [], 'logit': []}
-    for pe in pe_list:
-        for seed in SEEDS:
-            t = comparison_data[pe][seed]['timing']
-            timing_summary['ads'].append(t['ads_calibration_s'])
-            timing_summary['mahal'].append(t['mahalanobis_calibration_s'])
-            timing_summary['logit'].append(t['logit_calibration_s'])
-    log.log(f"  ADS:        {np.mean(timing_summary['ads']):.2f} s (paper: ~2s)")
-    log.log(f"  Mahalanobis: {np.mean(timing_summary['mahal']):.2f} s")
-    log.log(f"  LogitKL:    {np.mean(timing_summary['logit']):.2f} s")
-
-    return None
-
-
-# =============================================================================
-# Section 6.6 REFERENCE SET EVASION (Table IX in paper text — actually reuses
-# the "lambda regularization on ref vs hold" concept)
-# =============================================================================
-
-def section_66_evasion(evasion_data, log, out_dir):
-    """
-    Reproduce reference set evasion analysis: does an attacker who knows
-    the reference set indices evade detection on the held-out set as well?
-    """
-    log.section("SECTION 6.6: Reference Set Evasion")
-    log.log("Adaptive attacker that minimizes ADS on the reference set:")
-    log.log("does the resulting attack also evade detection on a held-out set?")
-    log.log('')
-    log.log("Expected (paper): No --- adaptive attacker fails to evade")
-    log.log("on held-out set in operational regime, demonstrating robustness")
-    log.log("to reference-set-specific overfitting.")
-    log.log('')
-
-    if evasion_data is None:
-        log.log("  [SKIP] ads_ref_evasion.json not available")
-        return None
-
-    pe_list = [pe for pe in PE_TYPES if pe in evasion_data]
-
-    for pe in pe_list:
-        log.subsection(f"{PE_DISPLAY[pe]}")
-        eps_keys = sorted(evasion_data[pe]['42'].keys(), key=float)
-        for eps in eps_keys:
-            lam_keys = sorted(evasion_data[pe]['42'][eps].keys(), key=float)
-            log.log(f"    ε = {eps}:")
-            log.log(f"      {'λ':<6} {'AccDrop':<10} {'ADS_ref':<12} "
-                    f"{'ADS_hold':<12} {'Evades_ref':<11} {'Evades_hold':<11}")
-            for lam in lam_keys:
-                vals = {'acc_drop': [], 'ads_ref': [], 'ads_hold': [],
-                        'evades_ref': [], 'evades_hold': []}
-                for seed in SEEDS:
-                    d = evasion_data[pe][seed][eps][lam]
-                    vals['acc_drop'].append(d['acc_drop'])
-                    vals['ads_ref'].append(d['ads_ref'])
-                    vals['ads_hold'].append(d['ads_hold'])
-                    vals['evades_ref'].append(d['evades_ref'])
-                    vals['evades_hold'].append(d['evades_hold'])
-                log.log(f"      {lam:<6} "
-                        f"{np.mean(vals['acc_drop']):<10.2f} "
-                        f"{np.mean(vals['ads_ref']):<12.4f} "
-                        f"{np.mean(vals['ads_hold']):<12.4f} "
-                        f"{sum(vals['evades_ref'])}/{len(vals['evades_ref'])}{'':<7} "
-                        f"{sum(vals['evades_hold'])}/{len(vals['evades_hold'])}")
-
-    return None
-
-
-# =============================================================================
-# Section 6.7 ADAPTIVE ATTACKER (PGD with ADS-minimization regularization)
-# =============================================================================
-
-def section_67_adaptive(adaptive_data, log, out_dir):
-    """
-    Reproduce the adaptive attacker analysis (Section 6.7): a PGD attacker
-    that adds an ADS-minimization term to its loss, parameterized by λ.
-    Verify that increasing λ does NOT enable evasion in operational regime.
-    """
-    log.section("SECTION 6.7: Adaptive Attacker (PGD + ADS-min regularization)")
-    log.log("PGD attacker with loss: L = L_attack - λ * ADS_L4")
-    log.log("Higher λ should reduce ADS, but at the cost of attack effectiveness.")
-    log.log('')
-    log.log("Expected (paper): At ε ≥ 0.1, ADS remains structurally above")
-    log.log("baseline regardless of λ; adaptive attacker cannot evade detection.")
-    log.log('')
-
-    if adaptive_data is None:
-        log.log("  [SKIP] ads_adaptive.json not available")
-        return None
-
-    pe_list = [pe for pe in PE_TYPES if pe in adaptive_data]
-
-    for pe in pe_list:
-        log.subsection(f"{PE_DISPLAY[pe]}")
-        eps_keys = sorted(adaptive_data[pe]['42'].keys(), key=float)
-        for eps in eps_keys:
-            lam_keys = sorted(adaptive_data[pe]['42'][eps].keys(), key=float)
-            log.log(f"    ε = {eps}:")
-            log.log(f"      {'λ':<6} {'AccDrop':<10} {'ADS_L4':<10} "
-                    f"{'ADS_ratio':<11} {'Evades?'}")
-            for lam in lam_keys:
-                vals = {'acc_drop': [], 'ads_l4': [], 'ratio': [], 'evades': []}
-                for seed in SEEDS:
-                    d = adaptive_data[pe][seed][eps][lam]
-                    vals['acc_drop'].append(d['acc_drop'])
-                    vals['ads_l4'].append(d['ads_l4'])
-                    vals['ratio'].append(d['ads_ratio'])
-                    vals['evades'].append(d['evades_detection'])
-                evades_count = sum(vals['evades'])
-                log.log(f"      {lam:<6} "
-                        f"{np.mean(vals['acc_drop']):<10.2f} "
-                        f"{np.mean(vals['ads_l4']):<10.4f} "
-                        f"{np.mean(vals['ratio']):<11.2f} "
-                        f"{evades_count}/{len(vals['evades'])}")
-
-    return None
-
-
-# =============================================================================
-# Reference Set Indices verification
-# =============================================================================
-
-def section_4_ref_indices(ref_indices_data, log, out_dir):
-    """Verify that the reference set has 256 indices as reported in the paper."""
-    log.section("Reference Set Indices Verification")
-    if ref_indices_data is None:
-        log.log("  [SKIP] ads_ref_indices.json not available")
-        return None
-
-    n = len(ref_indices_data)
-    is_unique = len(set(ref_indices_data)) == n
-    in_range = all(0 <= i < 5000 for i in ref_indices_data)  # ImageNet-100 val: 5k images
-
-    log.log(f"  Reference set size: {n} (paper claim: 256)")
-    log.log(f"  All unique: {'✓' if is_unique else '✗'}")
-    log.log(f"  All in [0, 5000): {'✓' if in_range else '✗'}")
-    log.log(f"  Min index: {min(ref_indices_data)}, Max: {max(ref_indices_data)}")
-
-    return {'n': n, 'unique': is_unique, 'in_range': in_range}
-
-
-# =============================================================================
-# TABLE IX: RESIDUAL STREAM PROBING (Section 7.1)
-# =============================================================================
-
-def section_71_probing(imn_probe, cif_probe, log, out_dir):
-    log.section("TABLE VIII: Residual Stream Probing")
-    log.log("Peak decodability (R²-mean) across layers 1-12 (mean of 3 seeds).")
-    log.log("Expected (paper Section 7.1 Table VIII):")
-    log.log("  IMN: Learned L1 R²=0.79, Sinus L2 R²=0.94, RoPE L8 R²=0.27, ALiBi L3 R²=0.48")
-    log.log("  CIF: Learned L1 R²=0.99, Sinus L1 R²=0.99, RoPE L6 R²=0.61, ALiBi L5 R²=0.49")
-    log.log('')
-
-    for label, data in [('IMAGENET-100', imn_probe), ('CIFAR-100', cif_probe)]:
-        log.subsection(label)
-        if data is None:
-            log.log("  [SKIP] Probing JSON not available in data/")
-            continue
-
-        hdr = f"  {'PE':<12} {'Peak L':>8} {'Peak R²':>10} {'R²(L4)':>10} {'R²(L1)':>10} {'Peaks/seed':<20}"
-        log.log(hdr)
-        log.log('  ' + '-' * (len(hdr) - 2))
-        for pe in PE_TYPES:
-            if pe not in data:
-                continue
-            # Collect R²(mean) per layer, averaged across seeds
-            r2_per_layer = []
-            peaks_per_seed = []
-            for layer in range(1, 13):
-                vals = [data[pe][s]['layers'][str(layer)]['r2_mean']
-                        for s in SEEDS]
-                r2_per_layer.append(np.mean(vals))
-            # Per-seed peaks
-            for s in SEEDS:
-                layer_vals = [(l, data[pe][s]['layers'][str(l)]['r2_mean'])
-                              for l in range(1, 13)]
-                peaks_per_seed.append(max(layer_vals, key=lambda x: x[1])[0])
-            peak_layer = int(np.argmax(r2_per_layer)) + 1
-            peak_r2 = r2_per_layer[peak_layer - 1]
-            log.log(f"  {PE_DISPLAY[pe]:<12} L{peak_layer:<7} "
-                    f"{peak_r2:>10.3f} {r2_per_layer[3]:>10.3f} "
-                    f"{r2_per_layer[0]:>10.3f} {str(peaks_per_seed):<20}")
-
-
-# =============================================================================
-# FIGURE GENERATION (calls external generate_ads_figures.py if available)
-# =============================================================================
-
-def generate_figures(log, out_dir):
-    log.section("STEP 4: Figure generation")
-    log.log("Figures are generated via a separate script (generate_ads_figures.py)")
-    log.log("which reads the same JSONs from data/ and writes PNGs to output/figures/.")
-    log.log('')
-    log.log("To regenerate all 4 figures:")
-    log.log("    python generate_ads_figures.py")
-    log.log('')
-    log.log("Expected outputs in output/figures/:")
-    log.log("    ads_fig1_l4_vs_epsilon.png         (Fig 1 in paper)")
-    log.log("    ads_fig2_per_layer_heatmap.png     (Fig 2 in paper)")
-    log.log("    ads_fig3_layer_profile.png         (Fig 3 in paper)")
-    log.log("    ads_fig4_early_warning_combined.png (Fig 4 in paper)")
-
-
-# =============================================================================
-# VERIFICATION: compare reproduced values to paper values
-# =============================================================================
-
-def verify_against_paper(fingerprint_results, saturation_results, log):
-    log.section("STEP 5: Verification against published values")
-    log.log("Tolerance: ±0.1 for ratios, ±0.05 for CI widths, ±5× for budget ratios")
-    log.log('')
-
-    log.subsection("Fingerprint ratios (Table VI)")
-    expected = {
-        'learned':    {'imn_mean': 3.19, 'imn_ci': 1.65},
-        'sinusoidal': {'imn_mean': 2.34, 'imn_ci': 0.86},
-        'rope':       {'imn_mean': 1.82, 'imn_ci': 1.19},
-        'alibi':      {'imn_mean': 0.83, 'imn_ci': 0.59},
-    }
-
-    fingerprint_pass = True
-    for pe, exp in expected.items():
-        got = fingerprint_results[pe]
-        diff_mean = abs(got['imn_mean'] - exp['imn_mean'])
-        diff_ci = abs(got['imn_ci'] - exp['imn_ci'])
-        pass_mean = diff_mean < 0.1
-        pass_ci = diff_ci < 0.05
-        status = '✓ PASS' if (pass_mean and pass_ci) else '✗ FAIL'
-        log.log(f"  {PE_DISPLAY[pe]:<12}: "
-                f"mean={got['imn_mean']:.2f} (exp {exp['imn_mean']}, Δ={diff_mean:.2f})  "
-                f"CI=±{got['imn_ci']:.2f} (exp ±{exp['imn_ci']}, Δ={diff_ci:.2f})  "
-                f"{status}")
-        if not (pass_mean and pass_ci):
-            fingerprint_pass = False
-
-    log.log('')
-    log.subsection("Saturation budget ratios (Section 6.2 Effect 1)")
-    log.log("  Paper claims:")
-    log.log("    50% threshold: 17×–200× combined range across PE types and datasets")
-    log.log("    5% threshold:  100×–200× on ImageNet (where applicable)")
-    log.log('')
-
-    sat_pass = True
-    if saturation_results and 50 in saturation_results:
-        ratios_50 = saturation_results[50]
-        if ratios_50:
-            min_r, max_r = min(ratios_50), max(ratios_50)
-            # Paper claims combined range 17x-200x
-            min_match = abs(min_r - 17) < 5
-            max_match = abs(max_r - 200) < 5
-            status_min = '✓' if min_match else '✗'
-            status_max = '✓' if max_match else '✗'
-            log.log(f"  50% threshold actual range: {min_r:.0f}× – {max_r:.0f}×")
-            log.log(f"    Min ratio (claim 17×):    {status_min} (Δ={abs(min_r-17):.0f}×)")
-            log.log(f"    Max ratio (claim 200×):   {status_max} (Δ={abs(max_r-200):.0f}×)")
-            if not (min_match and max_match):
-                sat_pass = False
-        else:
-            log.log("  No 50%-threshold ratios computed (data missing)")
-
-    if saturation_results and 5 in saturation_results:
-        ratios_5 = saturation_results[5]
-        if ratios_5:
-            log.log(f"  5% threshold actual range: {min(ratios_5):.0f}× – {max(ratios_5):.0f}×")
-            # Note: this is a softer check; we just log it
-            # Paper claims 100×–167× on ImageNet alone
-
-    log.log('')
-    if fingerprint_pass and sat_pass:
-        log.log("✓ All reproduced values within tolerance of published numbers.")
+def write_table(path: Path, lines: Iterable[str]) -> None:
+    ensure_dir(path.parent)
+    with path.open("w", encoding="utf-8") as f:
+        for line in lines:
+            f.write(line.rstrip() + "\n")
+
+
+# -----------------------------------------------------------------------------
+# Data loading
+# -----------------------------------------------------------------------------
+
+FALLBACK_FILENAMES = {
+    "imn_main": ["ads_results.json", "ads_results(1).json", "ads_results (1).json"],
+    "cif_main": ["ads_results_cifar100.json"],
+    "imn_spec": ["ads_specificity.json", "ads_specificity(1).json"],
+    "cif_spec": ["ads_specificity_cifar.json"],
+    "threshold": ["ads_threshold_fine.json"],
+    "roc": ["ads_roc_v2.json", "ads_roc_v2(1).json"],
+    "comparison": ["ads_comparison.json", "ads_comparison(1).json"],
+    "adaptive": ["ads_adaptive.json", "ads_adaptive(1).json", "ads_adaptive(2).json"],
+    "evasion": ["ads_ref_evasion.json", "ads_ref_evasion(1).json", "ads_ref_evasion(2).json"],
+    "ref_indices": ["ads_ref_indices.json", "ads_ref_indices (1).json"],
+    "imn_probe": ["ads_probing_residual.json"],
+    "cif_probe": ["ads_probing_residual_cifar.json"],
+    "canonical_main": ["ads_results_cifar100_canonical_n12.json"],
+    "canonical_spec": ["ads_specificity_cifar100_canonical_n12.json", "ads_specificity_cifar100_canonical_n12(1).json"],
+    "canonical_probe": ["ads_probing_residual_cifar100_canonical_n12.json", "ads_probing_residual_cifar100_canonical_n12(1).json"],
+}
+
+
+def load_json_file(data_dir: Path, candidates: Sequence[str], log: Logger, required: bool = False) -> Any:
+    for filename in candidates:
+        path = data_dir / filename
+        if path.exists():
+            with path.open("r", encoding="utf-8") as f:
+                obj = json.load(f)
+            log.log(f"  [OK]   {filename}")
+            return normalize_seed_keys(obj)
+    label = candidates[0]
+    if required:
+        log.fail(f"Required data file missing: {label}")
     else:
-        log.log("✗ Some values differ from published numbers. Check data/ and code/.")
+        log.warn(f"Optional data file missing: {label}")
+    return None
 
 
-# =============================================================================
-# MAIN
-# =============================================================================
+def load_all_data(data_dir: Path, log: Logger) -> Dict[str, Any]:
+    log.section("STEP 1 — Loading JSON artifacts")
+    required = {"imn_main", "cif_main", "imn_spec", "cif_spec", "threshold", "ref_indices", "imn_probe", "cif_probe"}
+    data: Dict[str, Any] = {}
+    for key, candidates in FALLBACK_FILENAMES.items():
+        data[key] = load_json_file(data_dir, candidates, log, required=(key in required))
+    return data
 
-def main():
-    global DATA_DIR, OUTPUT_DIR
 
-    parser = argparse.ArgumentParser(
-        description="Reproduce paper numbers from archived JSON data."
-    )
-    parser.add_argument('--no-figures', action='store_true',
-                        help="Skip figure generation (tables only)")
-    parser.add_argument('--output-dir', default=OUTPUT_DIR,
-                        help="Where to write tables and figures")
-    parser.add_argument('--data-dir', default=DATA_DIR,
-                        help="Where to find JSON data files")
-    parser.add_argument('--section', default=None,
-                        help="Reproduce only specific section (e.g., '6.2', '6.3', '7.1')")
-    args = parser.parse_args()
-
-    DATA_DIR = args.data_dir
-    OUTPUT_DIR = args.output_dir
-
-    # Set up output directory
-    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-    log = Logger(Path(OUTPUT_DIR) / 'reproduce_log.txt')
-
-    log.section("REPRODUCTION RUN — " + datetime.now().isoformat())
-    log.log("Paper: 'Attention Divergence Score: A Forensic Metric for")
-    log.log("        Characterizing Parameter-Level Attacks in Vision Transformers'")
-    log.log("Submitted to: IEEE TIFS")
-    log.log(f"Data dir:     {DATA_DIR}")
-    log.log(f"Output dir:   {OUTPUT_DIR}")
-
-    data = load_all_data(log)
-
-    # ----- Smoke-mode guard -------------------------------------------------
-    # reproduce.py reproduces *paper* numbers (Table VI CIs, ANOVA F-stats,
-    # 1-NN LOO accuracies, ICC, etc.) all of which assume n=3 seeds per PE.
-    # If the user mistakenly points --data-dir at a smoke-test output dir
-    # that contains only a partial seed set, those statistics are undefined
-    # (or worse, silently misleading). Detect and abort with a clear message.
-    expected = set(SEEDS)
-    incomplete = []
-    for key in ('imn_main', 'cif_main', 'imn_spec', 'cif_spec',
-                'imn_probe', 'cif_probe'):
-        d = data.get(key)
-        if not d:
+def validate_primary_seed_coverage(data: Mapping[str, Any], log: Logger) -> None:
+    log.section("STEP 2 — Seed coverage check")
+    expected = set(PRIMARY_SEEDS)
+    core_keys = ["imn_main", "cif_main", "imn_spec", "cif_spec", "threshold", "imn_probe", "cif_probe"]
+    problems: List[str] = []
+    for key in core_keys:
+        block = data.get(key)
+        if block is None:
             continue
-        for pe, pe_dict in d.items():
-            present = set(pe_dict.keys())
+        for pe in PE_TYPES:
+            if pe not in block:
+                problems.append(f"{key}/{pe}: PE missing")
+                continue
+            present = set(get_seeds(block[pe]))
             if present != expected:
-                incomplete.append((key, pe, sorted(present)))
-    if incomplete:
-        log.log('')
-        log.log("=" * 78)
-        log.log("ABORT: reproduce.py expects all 3 seeds (42, 123, 456) per PE type.")
-        log.log("=" * 78)
-        log.log("This script reproduces *paper* numbers (CIs, ANOVA, ICC, 1-NN LOO)")
-        log.log("which are only defined for n=3. It does NOT run on smoke-test")
-        log.log("output. Point --data-dir at the shipped JSONs in the cloned")
-        log.log("repo's `data/` folder, e.g.:")
-        log.log("")
-        log.log("    python reproduce.py --data-dir <repo>/data")
-        log.log("")
-        log.log("Incomplete cells found:")
-        for key, pe, present in incomplete[:8]:
-            log.log(f"  {key} / {pe:11s} → seeds present: {present}")
-        if len(incomplete) > 8:
-            log.log(f"  ... and {len(incomplete) - 8} more")
-        log.log('')
-        log.log("To inspect smoke-test results, run individual experiment scripts")
-        log.log("(ads_experiment.py etc.) with their JSON outputs; those handle")
-        log.log("partial seed sets defensively.")
-        log.log('')
+                problems.append(f"{key}/{pe}: seeds {sorted(present)}; expected {PRIMARY_SEEDS}")
+    if problems:
+        for problem in problems[:20]:
+            log.fail(problem)
+        if len(problems) > 20:
+            log.fail(f"... {len(problems) - 20} additional seed-coverage problems")
+        log.log("\nPrimary verification requires the final n=6 JSON artifacts.")
         log.close()
         sys.exit(2)
-    # ------------------------------------------------------------------------
+    log.pass_check("Primary n=6 coverage present for main, specificity, threshold, and probing files.")
 
-    # Pre-init for verify
-    fp_results = None
-    sat_results = None
-
-    # Run each section's reproduction
-    if args.section is None or args.section == '4':
-        section_4_ref_indices(data['ref_indices'], log, OUTPUT_DIR)
-
-    if args.section is None or args.section == '4.4':
-        section_44_threshold(data['threshold'], log, OUTPUT_DIR)
-
-    if args.section is None or args.section == '5':
-        section_5_roc(data['roc'], log, OUTPUT_DIR)
-
-    if args.section is None or args.section == '6.2':
-        if data['imn_spec'] and data['cif_spec']:
-            section_62_specificity(data['imn_spec'], data['cif_spec'], log, OUTPUT_DIR)
-            sat_results = section_62_saturation(data['imn_spec'], data['cif_spec'],
-                                                log, OUTPUT_DIR)
+    for optional_key in ["roc", "comparison", "adaptive", "evasion"]:
+        block = data.get(optional_key)
+        if not isinstance(block, dict):
+            continue
+        optional_problems = []
+        for pe, pe_block in block.items():
+            if not isinstance(pe_block, dict):
+                continue
+            present = set(get_seeds(pe_block))
+            if present != expected:
+                optional_problems.append(f"{optional_key}/{pe}: seeds {sorted(present)}")
+        if optional_problems:
+            log.warn(f"Optional {optional_key} file is not final n=6: " + "; ".join(optional_problems))
         else:
-            log.log("\n[SKIP] Section 6.2 — specificity data missing")
+            log.pass_check(f"Optional {optional_key} file has final n=6 seed coverage.")
 
-    if args.section is None or args.section == '6.3':
-        if data['imn_main'] and data['cif_main']:
-            fp_results = table_VI_fingerprint(data['imn_main'], data['cif_main'],
-                                              log, OUTPUT_DIR)
-            section_63_anova(data['imn_main'], data['cif_main'], log, OUTPUT_DIR)
-            section_63_1nn_loo(data['imn_main'], log, OUTPUT_DIR)
-            section_63_hierarchical_fingerprint(data['imn_main'], data['cif_main'],
-                                                log, OUTPUT_DIR)
+
+# -----------------------------------------------------------------------------
+# Core computations
+# -----------------------------------------------------------------------------
+
+
+def clean_accuracy_table(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Clean accuracies")
+    lines = ["Clean accuracy (%), mean ± std over six seeds", ""]
+    header = f"{'PE':<12} {'ImageNet-100':>18} {'CIFAR-100':>18}"
+    lines += [header, "-" * len(header)]
+    log.log(header)
+    log.log("-" * len(header))
+    for pe in PE_TYPES:
+        row_vals = []
+        for key in ["imn_main", "cif_main"]:
+            values = []
+            for seed in PRIMARY_SEEDS:
+                sd = data[key][pe][seed]
+                if "clean_acc" in sd:
+                    values.append(float(sd["clean_acc"]))
+                else:
+                    eps = np.asarray(sd["epsilons"], dtype=float)
+                    acc = np.asarray(sd["accuracies"], dtype=float)
+                    values.append(float(acc[nearest_idx(eps, 0.0)]))
+            row_vals.append(f"{mean(values):.1f} ± {std(values):.1f}")
+        line = f"{PE_DISPLAY[pe]:<12} {row_vals[0]:>18} {row_vals[1]:>18}"
+        log.log(line)
+        lines.append(line)
+    write_table(output_dir / "tables" / "table_clean_accuracy.txt", lines)
+
+
+def reference_indices_check(ref_indices: Any, log: Logger, output_dir: Path) -> None:
+    log.section("Reference set indices")
+    if ref_indices is None:
+        return
+    n = len(ref_indices)
+    unique = len(set(ref_indices)) == n
+    in_range = all(isinstance(i, int) and 0 <= i < 5000 for i in ref_indices)
+    msg = f"n={n}, unique={unique}, in [0,5000)={in_range}, min={min(ref_indices)}, max={max(ref_indices)}"
+    log.log(msg)
+    if n == 256 and unique and in_range:
+        log.pass_check("Reference set matches the manuscript protocol: 256 unique ImageNet-100 validation indices.")
+    else:
+        log.fail("Reference set index verification failed.")
+    write_table(output_dir / "tables" / "stats_reference_indices.txt", [msg])
+
+
+def mean_accuracy_curve(main_data: Mapping[str, Any], pe: str) -> Tuple[np.ndarray, np.ndarray, float]:
+    eps = np.asarray(main_data[pe][PRIMARY_SEEDS[0]]["epsilons"], dtype=float)
+    curves = []
+    cleans = []
+    for seed in PRIMARY_SEEDS:
+        sd = main_data[pe][seed]
+        curves.append(np.asarray(sd["accuracies"], dtype=float))
+        if "clean_acc" in sd:
+            cleans.append(float(sd["clean_acc"]))
         else:
-            log.log("\n[SKIP] Section 6.3 — main ADS data missing")
+            cleans.append(float(np.asarray(sd["accuracies"], dtype=float)[nearest_idx(eps, 0.0)]))
+    return eps, np.mean(curves, axis=0), float(np.mean(cleans))
 
-    if args.section is None or args.section == '6.6':
-        section_66_comparison(data['comparison'], log, OUTPUT_DIR)
-        section_66_evasion(data['evasion'], log, OUTPUT_DIR)
 
-    if args.section is None or args.section == '6.7':
-        section_67_adaptive(data['adaptive'], log, OUTPUT_DIR)
+def mean_ads_l4_curve(main_data: Mapping[str, Any], pe: str) -> Tuple[np.ndarray, np.ndarray]:
+    eps = np.asarray(main_data[pe][PRIMARY_SEEDS[0]]["epsilons"], dtype=float)
+    curves = [np.asarray(main_data[pe][seed]["ads_layer4"], dtype=float) for seed in PRIMARY_SEEDS]
+    return eps, np.mean(curves, axis=0)
 
-    if args.section is None or args.section == '7.1':
-        section_71_probing(data['imn_probe'], data['cif_probe'], log, OUTPUT_DIR)
 
-    # Run verification at the end (after both 6.2 saturation and 6.3 fingerprint computed)
-    if fp_results is not None:
-        verify_against_paper(fp_results, sat_results, log)
+def first_eps_where(eps: np.ndarray, values: np.ndarray, condition: Callable[[float], bool]) -> Optional[float]:
+    for e, v in zip(eps, values):
+        if condition(float(v)):
+            return float(e)
+    return None
 
-    if not args.no_figures and args.section is None:
-        generate_figures(log, OUTPUT_DIR)
 
-    log.section("DONE")
-    log.log(f"All outputs saved to: {OUTPUT_DIR}/")
-    log.log(f"Full log: {OUTPUT_DIR}/reproduce_log.txt")
+def early_warning_table(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Low-budget self-baseline trigger and 50%-of-clean collapse")
+    header = f"{'PE':<12} {'Dataset':<12} {'collapse ε*':>12} {'ADS>10x at':>12} {'steps before':>12}"
+    lines = [header, "-" * len(header)]
+    log.log(header)
+    log.log("-" * len(header))
+    for pe in PE_TYPES:
+        for key, label in [("imn_main", "ImageNet"), ("cif_main", "CIFAR")]:
+            eps, acc_mean, clean = mean_accuracy_curve(data[key], pe)
+            collapse = first_eps_where(eps, acc_mean, lambda a, c=clean: a <= 0.5 * c)
+            eps_ads, ads_l4 = mean_ads_l4_curve(data[key], pe)
+            baseline_idx = nearest_idx(eps_ads, 0.001)
+            baseline = float(ads_l4[baseline_idx])
+            trigger = first_eps_where(eps_ads, ads_l4, lambda a, b=baseline: a > 10.0 * b)
+            if collapse is None or trigger is None:
+                steps = "n/a"
+            else:
+                # Count tested epsilon grid points strictly between trigger and collapse.
+                steps = int(np.sum((eps > trigger) & (eps <= collapse)))
+            line = f"{PE_DISPLAY[pe]:<12} {label:<12} {collapse:>12.3f} {trigger:>12.3f} {str(steps):>12}"
+            log.log(line)
+            lines.append(line)
+    write_table(output_dir / "tables" / "table_early_warning.txt", lines)
+
+
+def threshold_calibration(threshold_data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Interpolated self-baseline threshold calibration")
+    if threshold_data is None:
+        return
+    header = f"{'PE':<12} {'mean εhat':>10} {'min':>10} {'max':>10} {'max/min':>10}"
+    lines = [header, "-" * len(header)]
+    log.log(header)
+    log.log("-" * len(header))
+    groups = []
+    all_values = []
+    for pe in PE_TYPES:
+        values = [float(threshold_data[pe][seed]["interpolated_threshold"]) for seed in PRIMARY_SEEDS]
+        groups.append(values)
+        all_values.extend(values)
+        ratio = max(values) / min(values)
+        line = f"{PE_DISPLAY[pe]:<12} {mean(values):>10.5f} {min(values):>10.5f} {max(values):>10.5f} {ratio:>10.2f}"
+        log.log(line)
+        lines.append(line)
+    h, p = stats.kruskal(*groups)
+    summary = f"Kruskal-Wallis H={h:.2f}, p={p:.3f}; global range=[{min(all_values):.5f}, {max(all_values):.5f}], max/min={max(all_values)/min(all_values):.2f}x"
+    log.log(summary)
+    lines += ["", summary]
+    if p > 0.05:
+        log.pass_check("Self-baseline thresholds are not significantly different across PE types.")
+    else:
+        log.warn("Self-baseline thresholds differ significantly across PE types.")
+    write_table(output_dir / "tables" / "stats_threshold_calibration.txt", lines)
+
+
+def specificity_table(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Specificity table at ε=0.2")
+
+    def row(spec_data: Mapping[str, Any], pe: str, attack: str) -> Tuple[float, float, float]:
+        ads_values = []
+        drops = []
+        for seed in PRIMARY_SEEDS:
+            sd = spec_data[pe][seed][attack]
+            eps = np.asarray(sd["epsilons"], dtype=float)
+            idx = nearest_idx(eps, TARGET_EPS)
+            idx0 = nearest_idx(eps, 0.0)
+            acc = np.asarray(sd["accuracies"], dtype=float)
+            ads_l4 = np.asarray(sd["ads_layer4"], dtype=float)
+            ads_values.append(float(ads_l4[idx]))
+            drops.append(float(acc[idx0] - acc[idx]))
+        ads = mean(ads_values)
+        drop = mean(drops)
+        ratio = ads / drop if drop > 0 else float("nan")
+        return ads, drop, ratio
+
+    for key, label in [("imn_spec", "ImageNet-100"), ("cif_spec", "CIFAR-100")]:
+        log.subsection(label)
+        lines = [f"Specificity at ε={TARGET_EPS} — {label}", ""]
+        header = f"{'PE':<12} {'Attack':<14} {'ADS(L4)':>10} {'Drop(pp)':>10} {'ADS/Drop':>10}"
+        lines += [header, "-" * len(header)]
+        log.log(header)
+        log.log("-" * len(header))
+        for pe in PE_TYPES:
+            for attack in ATTACKS:
+                ads, drop, ratio = row(data[key], pe, attack)
+                line = f"{PE_DISPLAY[pe]:<12} {attack:<14} {ads:>10.3f} {drop:>10.2f} {ratio:>10.4f}"
+                log.log(line)
+                lines.append(line)
+            log.log("")
+            lines.append("")
+        write_table(output_dir / "tables" / f"table_specificity_{label.lower().replace('-', '').replace(' ', '_')}.txt", lines)
+
+    # Budget ratios from main PE-only curves and MLP-only specificity curves.
+    log.subsection("50%-of-clean saturation-budget ratios")
+    lines = []
+    header = f"{'Dataset':<12} {'PE':<12} {'PE ε*':>8} {'MLP ε*':>8} {'ratio':>8}"
+    log.log(header)
+    log.log("-" * len(header))
+    lines += [header, "-" * len(header)]
+
+    def collapse_from_spec(spec_data: Mapping[str, Any], pe: str, attack: str) -> Optional[float]:
+        eps = np.asarray(spec_data[pe][PRIMARY_SEEDS[0]][attack]["epsilons"], dtype=float)
+        acc_curves = []
+        clean_values = []
+        for seed in PRIMARY_SEEDS:
+            sd = spec_data[pe][seed][attack]
+            acc = np.asarray(sd["accuracies"], dtype=float)
+            acc_curves.append(acc)
+            clean_values.append(float(acc[nearest_idx(eps, 0.0)]))
+        acc_mean = np.mean(acc_curves, axis=0)
+        clean = mean(clean_values)
+        return first_eps_where(eps, acc_mean, lambda a, c=clean: a <= 0.5 * c)
+
+    for main_key, spec_key, label in [("imn_main", "imn_spec", "ImageNet"), ("cif_main", "cif_spec", "CIFAR")]:
+        for pe in PE_TYPES:
+            eps, acc_mean, clean = mean_accuracy_curve(data[main_key], pe)
+            pe_eps = first_eps_where(eps, acc_mean, lambda a, c=clean: a <= 0.5 * c)
+            mlp_eps = collapse_from_spec(data[spec_key], pe, "mlp_only")
+            ratio = pe_eps / mlp_eps if pe_eps is not None and mlp_eps else float("nan")
+            line = f"{label:<12} {PE_DISPLAY[pe]:<12} {pe_eps:>8.3f} {mlp_eps:>8.3f} {ratio:>7.0f}x"
+            log.log(line)
+            lines.append(line)
+    write_table(output_dir / "tables" / "stats_saturation_budget.txt", lines)
+
+
+def profile_for_seed(main_data: Mapping[str, Any], pe: str, seed: str) -> np.ndarray:
+    sd = main_data[pe][seed]
+    ads_per_layer = np.asarray(sd["ads_per_layer"], dtype=float)
+    ads_mean = ads_per_layer.mean(axis=1)
+    valid = ads_mean > 1e-12
+    # Skip epsilon=0 and any all-zero rows.
+    valid[0] = False
+    ratios = ads_per_layer[valid] / ads_mean[valid, None]
+    return ratios.mean(axis=0)
+
+
+def all_profiles(main_data: Mapping[str, Any]) -> Tuple[np.ndarray, np.ndarray, List[str]]:
+    X = []
+    y = []
+    labels = []
+    for pe in PE_TYPES:
+        for seed in PRIMARY_SEEDS:
+            X.append(profile_for_seed(main_data, pe, seed))
+            y.append(pe)
+            labels.append(f"{pe}:{seed}")
+    return np.asarray(X), np.asarray(y), labels
+
+
+def l4_ratio_stats(main_data: Mapping[str, Any], pe: str) -> Tuple[float, float, List[float]]:
+    vals = [float(profile_for_seed(main_data, pe, seed)[3]) for seed in PRIMARY_SEEDS]
+    return mean(vals), t_ci(vals), vals
+
+
+def slope_stats(main_data: Mapping[str, Any], pe: str) -> Dict[str, float]:
+    x = np.arange(1, 13)
+    profiles = np.asarray([profile_for_seed(main_data, pe, seed) for seed in PRIMARY_SEEDS])
+    slopes = [float(np.polyfit(x, p, 1)[0]) for p in profiles]
+    mean_profile = profiles.mean(axis=0)
+    return {
+        "slope_mean": mean(slopes),
+        "slope_ci": t_ci(slopes),
+        "profile_std": float(mean_profile.std(ddof=0)),
+    }
+
+
+def loo_accuracy(X: np.ndarray, y: np.ndarray, metric: str, feature_index: Optional[int] = None) -> float:
+    if feature_index is not None:
+        X_use = X[:, [feature_index]]
+    else:
+        X_use = X
+    correct = 0
+    for i in range(len(X_use)):
+        mask = np.arange(len(X_use)) != i
+        train = X_use[mask]
+        if metric == "euclidean":
+            dists = np.linalg.norm(train - X_use[i], axis=1)
+        elif metric == "cityblock":
+            dists = np.sum(np.abs(train - X_use[i]), axis=1)
+        elif metric == "cosine":
+            denom = np.linalg.norm(train, axis=1) * np.linalg.norm(X_use[i])
+            dists = 1.0 - (train @ X_use[i]) / (denom + 1e-12)
+        else:
+            raise ValueError(f"Unsupported metric: {metric}")
+        pred = y[mask][int(np.argmin(dists))]
+        correct += int(pred == y[i])
+    return correct / len(X_use)
+
+
+def centroid_transfer(train_data: Mapping[str, Any], test_data: Mapping[str, Any]) -> float:
+    centroids = {}
+    for pe in PE_TYPES:
+        centroids[pe] = np.mean([profile_for_seed(train_data, pe, seed) for seed in PRIMARY_SEEDS], axis=0)
+    correct = 0
+    total = 0
+    for pe in PE_TYPES:
+        for seed in PRIMARY_SEEDS:
+            p = profile_for_seed(test_data, pe, seed)
+            d = {candidate: float(np.linalg.norm(p - c)) for candidate, c in centroids.items()}
+            pred = min(d, key=d.get)
+            correct += int(pred == pe)
+            total += 1
+    return correct / total
+
+
+def fingerprint_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Hierarchical PE fingerprint")
+
+    # Slope and L4 ratio tables.
+    lines_slope = []
+    header = f"{'PE':<12} {'Slope IMN':>18} {'Slope CIF':>18} {'Profile std IMN/CIF':>22}"
+    lines_slope += [header, "-" * len(header)]
+    log.subsection("Layer-wise attenuation slopes")
+    log.log(header)
+    log.log("-" * len(header))
+    for pe in PE_TYPES:
+        imn = slope_stats(data["imn_main"], pe)
+        cif = slope_stats(data["cif_main"], pe)
+        line = (f"{PE_DISPLAY[pe]:<12} "
+                f"{imn['slope_mean']:+.3f} ± {imn['slope_ci']:.3f} "
+                f"{cif['slope_mean']:+.3f} ± {cif['slope_ci']:.3f} "
+                f"{imn['profile_std']:.2f} / {cif['profile_std']:.2f}")
+        log.log(line)
+        lines_slope.append(line)
+    write_table(output_dir / "tables" / "table_slope.txt", lines_slope)
+
+    lines_l4 = []
+    header = f"{'PE':<12} {'L4 ratio IMN':>18} {'L4 ratio CIF':>18}"
+    lines_l4 += [header, "-" * len(header)]
+    log.subsection("ADS(L4)/ADS(mean) ratio")
+    log.log(header)
+    log.log("-" * len(header))
+    for pe in PE_TYPES:
+        mi, cii, _ = l4_ratio_stats(data["imn_main"], pe)
+        mc, cic, _ = l4_ratio_stats(data["cif_main"], pe)
+        line = f"{PE_DISPLAY[pe]:<12} {mi:>7.2f} ± {cii:<7.2f} {mc:>7.2f} ± {cic:<7.2f}"
+        log.log(line)
+        lines_l4.append(line)
+    write_table(output_dir / "tables" / "table_fingerprint_l4.txt", lines_l4)
+
+    # ANOVA and contrasts.
+    lines_stats = []
+    for key, label in [("imn_main", "ImageNet-100"), ("cif_main", "CIFAR-100")]:
+        groups = []
+        for pe in PE_TYPES:
+            _, _, vals = l4_ratio_stats(data[key], pe)
+            groups.append(vals)
+        f_stat, p_val = stats.f_oneway(*groups)
+        line = f"{label}: L4-ratio ANOVA F(3,20)={f_stat:.2f}, p={p_val:.4g}"
+        log.log(line)
+        lines_stats.append(line)
+        alibi = np.asarray(groups[3])
+        rest = np.concatenate(groups[:3])
+        t, p = stats.ttest_ind(alibi, rest, equal_var=False)
+        line = f"{label}: ALiBi vs rest Welch t={t:.2f}, p={p:.4g}"
+        log.log(line)
+        lines_stats.append(line)
+    write_table(output_dir / "tables" / "stats_fingerprint_anova.txt", lines_stats)
+
+    # LOO classifier.
+    log.subsection("1-NN LOO classification")
+    header = f"{'Dataset':<12} {'Euclidean':>10} {'Cosine':>10} {'Cityblock':>10} {'L4 only':>10}"
+    lines_loo = [header, "-" * len(header)]
+    log.log(header)
+    log.log("-" * len(header))
+    for key, label in [("imn_main", "ImageNet"), ("cif_main", "CIFAR")]:
+        X, y, _ = all_profiles(data[key])
+        e = loo_accuracy(X, y, "euclidean")
+        c = loo_accuracy(X, y, "cosine")
+        m = loo_accuracy(X, y, "cityblock")
+        l4 = loo_accuracy(X, y, "euclidean", feature_index=3)
+        line = f"{label:<12} {100*e:>9.1f}% {100*c:>9.1f}% {100*m:>9.1f}% {100*l4:>9.1f}%"
+        log.log(line)
+        lines_loo.append(line)
+    transfer_i2c = centroid_transfer(data["imn_main"], data["cif_main"])
+    transfer_c2i = centroid_transfer(data["cif_main"], data["imn_main"])
+    lines_loo += ["", f"IMN centroids -> CIF: {100*transfer_i2c:.1f}%", f"CIF centroids -> IMN: {100*transfer_c2i:.1f}%"]
+    log.log(f"Cross-dataset centroid transfer: IMN->CIF {100*transfer_i2c:.1f}%, CIF->IMN {100*transfer_c2i:.1f}%")
+    write_table(output_dir / "tables" / "table_fingerprint_loo.txt", lines_loo)
+
+
+def roc_stats(roc_data: Optional[Mapping[str, Any]], log: Logger, output_dir: Path) -> None:
+    log.section("ROC detection boundary")
+    if roc_data is None:
+        return
+    pe_list = [pe for pe in ["learned", "rope"] if pe in roc_data]
+    lines = []
+    for pe in pe_list:
+        eps_keys = sorted(roc_data[pe][PRIMARY_SEEDS[0]]["roc_by_eps"].keys(), key=float)
+        header = f"{PE_DISPLAY[pe]}: " + " ".join([f"ε={e}" for e in eps_keys])
+        log.log(header)
+        lines.append(header)
+        aucs_line = []
+        for eps in eps_keys:
+            values = [float(roc_data[pe][seed]["roc_by_eps"][eps]["auc"]) for seed in PRIMARY_SEEDS]
+            aucs_line.append(f"{mean(values):.3f}")
+        line = "AUC: " + " ".join(aucs_line)
+        log.log(line)
+        lines.append(line)
+    if "learned" in roc_data:
+        vals = [float(roc_data["learned"][seed]["roc_by_eps"].get("0.1", {}).get("auc", float("nan"))) for seed in PRIMARY_SEEDS]
+        log.pass_check(f"Learned ε=0.1 mean AUC={mean(vals):.3f} (operational boundary; manuscript claims AUC ≥ 0.99).")
+    if "rope" in roc_data:
+        vals = [float(roc_data["rope"][seed]["roc_by_eps"].get("0.2", {}).get("auc", float("nan"))) for seed in PRIMARY_SEEDS]
+        log.pass_check(f"RoPE ε=0.2 mean AUC={mean(vals):.3f} (operational boundary; manuscript claims AUC ≥ 0.99).")
+    write_table(output_dir / "tables" / "stats_roc.txt", lines)
+
+
+def comparison_stats(comparison_data: Optional[Mapping[str, Any]], log: Logger, output_dir: Path) -> None:
+    log.section("ADS vs Attn-L2/Mahalanobis-style vs LogitKL comparison")
+    if comparison_data is None:
+        return
+    lines = []
+    for pe in [pe for pe in ["learned", "rope"] if pe in comparison_data]:
+        eps_keys = sorted(comparison_data[pe][PRIMARY_SEEDS[0]]["attack"].keys(), key=float)
+        lines.append(PE_DISPLAY[pe])
+        log.subsection(PE_DISPLAY[pe])
+        header = f"{'ε':>8} {'ADS AUC':>10} {'Attn-L2 AUC':>12} {'LogitKL AUC':>12}"
+        log.log(header)
+        lines += [header, "-" * len(header)]
+        for eps in eps_keys:
+            vals = {"ads": [], "mahalanobis": [], "logit_kl": []}
+            for seed in PRIMARY_SEEDS:
+                attack = comparison_data[pe][seed]["attack"][eps]
+                for method in vals:
+                    vals[method].append(float(attack[method]["auc"]))
+            line = f"{eps:>8} {mean(vals['ads']):>10.3f} {mean(vals['mahalanobis']):>12.3f} {mean(vals['logit_kl']):>12.3f}"
+            log.log(line)
+            lines.append(line)
+        lines.append("")
+    write_table(output_dir / "tables" / "stats_detection_comparison.txt", lines)
+
+
+def evasion_stats(evasion_data: Optional[Mapping[str, Any]], adaptive_data: Optional[Mapping[str, Any]], log: Logger, output_dir: Path) -> None:
+    log.section("Reference-set and adaptive evasion summaries")
+    lines = []
+    if evasion_data is not None:
+        lines.append("Reference-set evasion")
+        for pe in [pe for pe in ["learned", "rope"] if pe in evasion_data]:
+            eps_keys = sorted(evasion_data[pe][PRIMARY_SEEDS[0]].keys(), key=float)
+            for eps in eps_keys:
+                lam_keys = sorted(evasion_data[pe][PRIMARY_SEEDS[0]][eps].keys(), key=float)
+                acc, ref, hold, ev_ref, ev_hold, ev_both = [], [], [], 0, 0, 0
+                denom = 0
+                for seed in PRIMARY_SEEDS:
+                    for lam in lam_keys:
+                        d = evasion_data[pe][seed][eps][lam]
+                        acc.append(float(d["acc_drop"]))
+                        ref.append(float(d.get("ads_ref_ratio", d.get("ads_ref"))))
+                        hold.append(float(d.get("ads_hold_ratio", d.get("ads_hold"))))
+                        r = bool(d.get("evades_ref", False))
+                        h = bool(d.get("evades_hold", False))
+                        ev_ref += int(r)
+                        ev_hold += int(h)
+                        ev_both += int(r and h)
+                        denom += 1
+                line = (f"{PE_DISPLAY[pe]} ε={eps}: drop={mean(acc):.2f}pp, "
+                        f"ADS(ref)={mean(ref):.2f}x, ADS(hold)={mean(hold):.2f}x, "
+                        f"Ref/Hold/Both={ev_ref}/{denom}, {ev_hold}/{denom}, {ev_both}/{denom}")
+                log.log(line)
+                lines.append(line)
+    elif adaptive_data is None:
+        log.warn("Reference-evasion JSON not available.")
+
+    if adaptive_data is not None:
+        lines += ["", "Adaptive evasion"]
+        for pe in [pe for pe in ["learned", "rope"] if pe in adaptive_data]:
+            eps_keys = sorted(adaptive_data[pe][PRIMARY_SEEDS[0]].keys(), key=float)
+            for eps in eps_keys:
+                # Report λ=0 and λ=50 when present, because those are the manuscript rows.
+                for target_lam in [0.0, 50.0]:
+                    lam_keys = sorted(adaptive_data[pe][PRIMARY_SEEDS[0]][eps].keys(), key=float)
+                    matches = [k for k in lam_keys if abs(float(k) - target_lam) < 1e-12]
+                    if not matches:
+                        continue
+                    lam = matches[0]
+                    acc, ratio, evades = [], [], 0
+                    for seed in PRIMARY_SEEDS:
+                        d = adaptive_data[pe][seed][eps][lam]
+                        acc.append(float(d["acc_drop"]))
+                        ratio.append(float(d["ads_ratio"]))
+                        evades += int(bool(d.get("evades_detection", False)))
+                    line = f"{PE_DISPLAY[pe]} ε={eps}, λ={float(lam):g}: drop={mean(acc):.2f}pp, ADS ratio={mean(ratio):.2f}x, evades={evades}/6"
+                    log.log(line)
+                    lines.append(line)
+    elif evasion_data is None:
+        log.warn("Adaptive JSON not available.")
+
+    write_table(output_dir / "tables" / "stats_evasion.txt", lines)
+
+
+def probing_table(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Residual-stream probing sanity check")
+    header = f"{'PE':<12} {'IMN peak':>12} {'IMN R2(L4)':>12} {'CIF peak':>12} {'CIF R2(L4)':>12}"
+    lines = [header, "-" * len(header)]
+    log.log(header)
+    log.log("-" * len(header))
+
+    def probe_summary(probe_data: Mapping[str, Any], pe: str) -> Tuple[str, float, float]:
+        layer_means = []
+        for layer in range(1, 13):
+            vals = [float(probe_data[pe][seed]["layers"][str(layer)]["r2_mean"]) for seed in PRIMARY_SEEDS]
+            layer_means.append(mean(vals))
+        peak_val = max(layer_means)
+        peak_layers = [i + 1 for i, v in enumerate(layer_means) if abs(v - peak_val) < 0.01]
+        if len(peak_layers) == 1:
+            peak_label = f"L{peak_layers[0]} {peak_val:.2f}"
+        else:
+            peak_label = f"L{peak_layers[0]}-L{peak_layers[-1]} {peak_val:.2f}"
+        return peak_label, peak_val, layer_means[3]
+
+    for pe in PE_TYPES:
+        imn_peak, _, imn_l4 = probe_summary(data["imn_probe"], pe)
+        cif_peak, _, cif_l4 = probe_summary(data["cif_probe"], pe)
+        line = f"{PE_DISPLAY[pe]:<12} {imn_peak:>12} {imn_l4:>12.2f} {cif_peak:>12} {cif_l4:>12.2f}"
+        log.log(line)
+        lines.append(line)
+    write_table(output_dir / "tables" / "table_residual_probing.txt", lines)
+
+
+def canonical_protocol_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    log.section("Optional protocol-robustness cohort")
+    main = data.get("canonical_main")
+    spec = data.get("canonical_spec")
+    if main is None:
+        log.warn("Canonical n=12 ALiBi-style cohort not found; skipping.")
+        return
+    pe_list = [pe for pe in ["alibi", "alibi_2d", "alibi_2d_matched"] if pe in main]
+    seeds = get_seeds(main[pe_list[0]])
+    log.log(f"Canonical cohort seeds/checkpoints per condition: n={len(seeds)}")
+    lines = [f"Canonical CIFAR-100 ALiBi-style cohort, n={len(seeds)}", ""]
+    header = f"{'Condition':<20} {'slope':>15} {'profile std':>12}"
+    log.log(header)
+    lines += [header, "-" * len(header)]
+    x = np.arange(1, 13)
+    slopes_by_pe: Dict[str, List[float]] = {}
+    for pe in pe_list:
+        profiles = []
+        for seed in seeds:
+            sd = main[pe][seed]
+            arr = np.asarray(sd["ads_per_layer"], dtype=float)
+            ads_mean = arr.mean(axis=1)
+            valid = ads_mean > 1e-12
+            valid[0] = False
+            profiles.append((arr[valid] / ads_mean[valid, None]).mean(axis=0))
+        slopes = [float(np.polyfit(x, p, 1)[0]) for p in profiles]
+        slopes_by_pe[pe] = slopes
+        profile_std = float(np.mean(np.std(np.asarray(profiles), axis=1)))
+        line = f"{PE_DISPLAY[pe]:<20} {mean(slopes):+7.3f} ± {t_ci(slopes):.3f} {profile_std:>12.3f}"
+        log.log(line)
+        lines.append(line)
+    if "alibi_2d" in slopes_by_pe and "alibi_2d_matched" in slopes_by_pe:
+        t, p = stats.ttest_ind(slopes_by_pe["alibi_2d"], slopes_by_pe["alibi_2d_matched"], equal_var=False)
+        line = f"2D fixed vs matched Welch t={t:.2f}, p={p:.3f}"
+        log.log(line)
+        lines += ["", line]
+    write_table(output_dir / "tables" / "stats_protocol_robustness.txt", lines)
+
+
+def maybe_generate_figures(data_dir: Path, output_dir: Path, log: Logger) -> None:
+    log.section("Figure generation")
+    script = Path("generate_ads_figures.py")
+    if not script.exists():
+        log.warn("generate_ads_figures.py not found in current working directory; skipping figure generation.")
+        log.log("Run manually: python generate_ads_figures.py --data-dir data --output-dir output")
+        return
+    cmd = [sys.executable, str(script), "--data-dir", str(data_dir), "--output-dir", str(output_dir)]
+    log.log("Running: " + " ".join(cmd))
+    try:
+        subprocess.run(cmd, check=True)
+        log.pass_check("Figures regenerated successfully.")
+    except subprocess.CalledProcessError as exc:
+        log.warn(f"Figure generation failed with exit code {exc.returncode}; tables/stats are still available.")
+
+
+# -----------------------------------------------------------------------------
+# Main
+# -----------------------------------------------------------------------------
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Verify ADS paper numbers from archived JSON files.")
+    parser.add_argument("--data-dir", default="data", help="Directory containing JSON artifacts.")
+    parser.add_argument("--output-dir", default="output", help="Directory for generated tables/logs.")
+    parser.add_argument("--section", default=None,
+                        help="Optional section filter: ref, clean, 4.4, 5, 6.2, 6.3, 6.6, 6.7, 7.1, protocol")
+    parser.add_argument("--no-figures", action="store_true", help="Do not call generate_ads_figures.py.")
+    args = parser.parse_args()
+
+    data_dir = Path(args.data_dir)
+    output_dir = Path(args.output_dir)
+    ensure_dir(output_dir)
+    ensure_dir(output_dir / "tables")
+
+    log = Logger(output_dir)
+    log.section("ADS REPRODUCTION RUN — " + datetime.now().isoformat())
+    log.log("Paper: Attention Divergence Score: A Forensic Metric for Characterizing")
+    log.log("       Parameter-Level Attacks in Vision Transformers")
+    log.log("Target: IEEE TIFS 13-page resubmission")
+    log.log(f"Data dir:   {data_dir}")
+    log.log(f"Output dir: {output_dir}")
+
+    data = load_all_data(data_dir, log)
+    validate_primary_seed_coverage(data, log)
+
+    section = args.section
+    if section is None or section == "ref":
+        reference_indices_check(data["ref_indices"], log, output_dir)
+    if section is None or section == "clean":
+        clean_accuracy_table(data, log, output_dir)
+    if section is None or section == "4.4":
+        threshold_calibration(data["threshold"], log, output_dir)
+    if section is None or section == "5":
+        roc_stats(data.get("roc"), log, output_dir)
+    if section is None or section == "6.2":
+        specificity_table(data, log, output_dir)
+        early_warning_table(data, log, output_dir)
+    if section is None or section == "6.3":
+        fingerprint_stats(data, log, output_dir)
+    if section is None or section == "6.6":
+        comparison_stats(data.get("comparison"), log, output_dir)
+        evasion_stats(data.get("evasion"), None, log, output_dir)
+    if section is None or section == "6.7":
+        evasion_stats(None, data.get("adaptive"), log, output_dir)
+    if section is None or section == "7.1":
+        probing_table(data, log, output_dir)
+    if section is None or section == "protocol":
+        canonical_protocol_stats(data, log, output_dir)
+
+    if section is None and not args.no_figures:
+        maybe_generate_figures(data_dir, output_dir, log)
+
+    log.section("SUMMARY")
+    if log.warnings:
+        log.log(f"Warnings: {len(log.warnings)}")
+        for w in log.warnings[:10]:
+            log.log(f"  - {w}")
+        if len(log.warnings) > 10:
+            log.log(f"  ... {len(log.warnings) - 10} more")
+    if log.failures:
+        log.log(f"Failures: {len(log.failures)}")
+        for f in log.failures[:20]:
+            log.log(f"  - {f}")
+        log.log("Result: FAIL")
+        log.close()
+        sys.exit(1)
+    log.log("Result: PASS")
+    log.log(f"Full log: {log.path}")
     log.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

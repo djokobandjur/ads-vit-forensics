@@ -1,3 +1,14 @@
-numpy>=1.20
-scipy>=1.7
-matplotlib>=3.4
+# Core CPU-only reproduction and figure generation
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+pandas>=2.0
+
+# Full GPU experiment pipeline
+# CPU-only verification does not require torch/torchvision, but the
+# experiment scripts and Colab pipeline do.
+torch>=2.1
+torchvision>=0.16
+scikit-learn>=1.3
+tqdm>=4.66
+Pillow>=10.0
