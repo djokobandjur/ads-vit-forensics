@@ -1,31 +1,38 @@
 """
-ADS ROC Analysis — Corrected Design
-=====================================
-Fixes the noise floor estimation error in the previous experiment.
+ADS ROC Analysis — ImageNet-100, n=6 protocol
+==============================================
 
-KEY DESIGN PRINCIPLE:
-ADS measures: KL(attn_clean_model(X) || attn_perturbed_model(X))
-              where X is the SAME set of reference images.
+Evaluates the ADS detector against benign image transformations and
+PE-parameter attacks using the corrected ROC design.
 
-The "clean" noise floor should estimate: how much does ADS vary
-when the model is NOT perturbed but we measure on different random
-subsets of the same reference images? This tells us the measurement
-uncertainty of ADS, not the distributional distance between image sets.
+Dataset/protocol:
+  - ImageNet-100 validation set in ImageFolder format.
+  - Default PE types: Learned and RoPE.
+  - Default seeds: 42, 123, 456, 789, 1011, 1213 (n=6).
+  - Primary checkpoint per run: <models_dir>/<pe_type>_seed<seed>/best_model.pth.
+  - Shared reference set: 256 ImageNet-100 validation images, stored in
+    ads_ref_indices_imagenet100.json for reproducibility.
 
-Correct procedure:
-  - Clean noise: ADS(model, subset_A, subset_B) where model is unperturbed
-    and subset_A, subset_B are different random 128-image subsets
-    This measures: measurement variance of ADS under no perturbation
-  - Attack signal: ADS(model_clean, X_ref, model_perturbed, X_ref)
-    where X_ref is the FIXED 256-image reference set
-    This measures: actual PE perturbation effect
+Correct ADS design:
+  ADS measures KL(attn_clean_model(X) || attn_perturbed_model(X)) on the
+  same fixed reference image set X. This isolates parameter-level PE
+  perturbations from image-set variation.
 
-For ROC:
-  - Negative class: benign conditions (clean subsets, distribution shifts)
-    all measured vs the SAME calibrated reference
-  - Positive class: attacked model measured vs same reference
+Noise/negative-class design:
+  - Clean noise floor: ADS between clean-model attention estimates from
+    different random 128-image subsets of the fixed 256-image reference set.
+    This estimates measurement variance under no parameter perturbation.
+  - Benign shifts: JPEG, blur, and noise applied to the same reference images.
+  - Positive class: PE-perturbed model evaluated on the same fixed reference set.
 
-This ensures apples-to-apples comparison.
+Outputs:
+  - ads_roc_v2.json
+    containing clean noise floors, benign ADS scores, attack ADS scores,
+    ROC tables by epsilon, and overall ROC summaries.
+
+This script is ImageNet-100 only. CIFAR-100 is intentionally not included
+because the benign-shift calibration and reference-index file are
+dataset-specific.
 """
 
 import argparse
@@ -47,7 +54,7 @@ print(f"Device: {device}")
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="ADS experiment script. See module docstring for details.",
+        description="ADS ROC analysis on ImageNet-100 (benign shifts vs PE attacks, n=6 default). See module docstring for details.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -72,8 +79,8 @@ def parse_args():
         '--ref_indices_path',
         type=str,
         default=None,
-        help='Path to ads_ref_indices.json. If not specified, defaults to '
-             'a path alongside --output_path. If the file does not exist, '
+        help='Path to the ImageNet-100 ADS reference-index JSON. If not specified, defaults to '
+             'ads_ref_indices_imagenet100.json alongside --output_path. If the file does not exist, '
              'it will be generated using a fixed seed.',
     )
     parser.add_argument(
@@ -82,16 +89,16 @@ def parse_args():
         nargs='+',
         default=None,
         choices=['learned', 'sinusoidal', 'rope', 'alibi'],
-        help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (paper configuration).',
+        help='Optional. PE types to evaluate. If omitted, uses the default ROC subset '
+             'defined in the script: learned rope.',
     )
     parser.add_argument(
         '--seeds',
         type=int,
         nargs='+',
         default=None,
-        help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (paper configuration).',
+        help='Optional. Random seeds to evaluate. If omitted, uses the n=6 TFS protocol '
+             'defined in the script: 42 123 456 789 1011 1213.',
     )
     return parser.parse_args()
 
@@ -111,13 +118,13 @@ if args.ref_indices_path:
     REF_INDICES_PATH = args.ref_indices_path
 else:
     REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices.json'
+        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
     )
 
 os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
 
 PE_TYPES        = ['learned', 'rope']
-SEEDS           = [42, 123, 456]
+SEEDS           = [42, 123, 456, 789, 1011, 1213]
 
 # Apply CLI overrides for PE_TYPES and SEEDS if user provided them
 if args.pe_types is not None:
@@ -146,8 +153,17 @@ base_transform = transforms.Compose([
 
 val_dataset = datasets.ImageFolder(DATA_DIR, base_transform)
 
-with open(REF_INDICES_PATH) as f:
-    ref_indices = json.load(f)
+N_REF_IMAGES = 256
+if os.path.exists(REF_INDICES_PATH):
+    with open(REF_INDICES_PATH) as f:
+        ref_indices = json.load(f)
+    print(f"Loaded reference indices from {REF_INDICES_PATH}")
+else:
+    torch.manual_seed(42)
+    ref_indices = torch.randperm(len(val_dataset))[:N_REF_IMAGES].tolist()
+    with open(REF_INDICES_PATH, 'w') as f:
+        json.dump(ref_indices, f)
+    print(f"Generated and saved {N_REF_IMAGES} ImageNet-100 reference indices to {REF_INDICES_PATH}")
 
 # Full reference set loader (fixed 256 images)
 ref_loader = DataLoader(
@@ -443,34 +459,45 @@ def run():
 # ANALYSIS
 # ============================================================
 def analyze(results):
-    seeds = [str(s) for s in SEEDS]
+    seeds_str = [str(s) for s in SEEDS]
     print("\n" + "=" * 75)
     print("CORRECTED ROC ANALYSIS SUMMARY")
     print("=" * 75)
 
     for pe_type in PE_TYPES:
-        print(f"\n{pe_type.upper()}:")
+        if pe_type not in results:
+            continue
+
+        available = [s for s in seeds_str if s in results[pe_type]]
+        if not available:
+            print(f"\n{pe_type.upper()}: no results")
+            continue
+
+        n = len(available)
+        ddof = 1 if n > 1 else 0
+        print(f"\n{pe_type.upper()} (n={n} seeds: {available}):")
 
         # Clean noise floor
-        cvs = [results[pe_type][s]['clean_noise_floor']['cv'] for s in seeds]
-        means = [results[pe_type][s]['clean_noise_floor']['mean'] for s in seeds]
-        print(f"  Clean noise CV: {np.mean(cvs)*100:.1f}% ± {np.std(cvs,ddof=1)*100:.1f}%")
-        print(f"  Clean noise mean: {np.mean(means):.6f} ± {np.std(means,ddof=1):.6f}")
+        cvs = [results[pe_type][s]['clean_noise_floor']['cv'] for s in available]
+        means = [results[pe_type][s]['clean_noise_floor']['mean'] for s in available]
+        print(f"  Clean noise CV: {np.mean(cvs)*100:.1f}% ± {np.std(cvs, ddof=ddof)*100:.1f}%")
+        print(f"  Clean noise mean: {np.mean(means):.6f} ± {np.std(means, ddof=ddof):.6f}")
 
         # Max benign ratio
         max_ratios = []
-        for s in seeds:
+        for s in available:
             baseline = results[pe_type][s]['clean_noise_floor']['mean']
-            vals = [v for v in results[pe_type][s]['benign_ads'].values() if v]
-            max_ratios.append(max(vals)/baseline if vals else 0)
-        print(f"  Max benign/baseline: {np.mean(max_ratios):.1f}x")
+            vals = [v for v in results[pe_type][s]['benign_ads'].values()
+                    if v is not None]
+            max_ratios.append(max(vals) / baseline if vals else 0.0)
+        print(f"  Max benign/baseline: {np.mean(max_ratios):.1f}x ± {np.std(max_ratios, ddof=ddof):.1f}x")
 
         # TPR/FPR table
         print(f"\n  TPR/FPR (all epsilons combined):")
         print(f"  {'tau':>8}  {'TPR':>6}  {'FPR':>6}")
         for mult in [5.0, 10.0, 20.0, 50.0]:
             tprs, fprs = [], []
-            for s in seeds:
+            for s in available:
                 for r in results[pe_type][s]['roc_all']['roc']:
                     if abs(r['tau_mult'] - mult) < 0.01:
                         tprs.append(r['tpr'])
@@ -479,21 +506,28 @@ def analyze(results):
                 print(f"  {mult:>7.0f}x  {np.mean(tprs):>6.3f}  {np.mean(fprs):>6.3f}")
 
         # AUC
-        aucs = [results[pe_type][s]['roc_all']['auc'] for s in seeds]
-        print(f"\n  Overall AUC: {np.mean(aucs):.3f} ± {np.std(aucs,ddof=1):.3f}")
+        aucs = [results[pe_type][s]['roc_all']['auc'] for s in available]
+        print(f"\n  Overall AUC: {np.mean(aucs):.3f} ± {np.std(aucs, ddof=ddof):.3f}")
+        print(f"  Minimum seed AUC: {np.min(aucs):.3f}")
 
         # AUC by epsilon
+        first_seed = available[0]
         print(f"\n  AUC by epsilon:")
         for eps in ['0.003', '0.005', '0.01', '0.05', '0.1', '0.2']:
-            if eps in results[pe_type]['42']['roc_by_eps']:
-                aucs_eps = [results[pe_type][s]['roc_by_eps'][eps]['auc'] for s in seeds]
-                print(f"    ε={eps}: AUC={np.mean(aucs_eps):.3f} ± {np.std(aucs_eps,ddof=1):.3f}")
+            if eps in results[pe_type][first_seed]['roc_by_eps']:
+                aucs_eps = [results[pe_type][s]['roc_by_eps'][eps]['auc']
+                            for s in available
+                            if eps in results[pe_type][s]['roc_by_eps']]
+                if aucs_eps:
+                    print(f"    ε={eps}: AUC={np.mean(aucs_eps):.3f} ± "
+                          f"{np.std(aucs_eps, ddof=ddof):.3f}, "
+                          f"min={np.min(aucs_eps):.3f}")
 
 # ============================================================
 # ENTRY POINT
 # ============================================================
 if __name__ == '__main__':
-    print("ADS ROC Analysis v2 — Corrected Design")
+    print("ADS ROC Analysis v2 — ImageNet-100 n=6 corrected design")
     print(f"PE types: {PE_TYPES}, Seeds: {SEEDS}")
     print(f"N_BOOTSTRAP: {N_BOOTSTRAP} splits for clean noise floor")
     print()
