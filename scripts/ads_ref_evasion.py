@@ -1,191 +1,129 @@
+#!/usr/bin/env python3
 """
-Reference Set Evasion Experiment — ImageNet-100, n=6 TFS protocol
-==================================================================
-Tests whether an attacker who knows the ADS reference set can craft a PE
-perturbation that:
-    - preserves attention on the 256 reference images, thereby evading ADS
-      on the monitored reference set;
-    - still degrades accuracy on the full validation set;
-    - and whether that evasion transfers to an unseen 256-image holdout set.
+ads_ref_evasion.py — Reference-set ADS evasion experiment (ImageNet-100, n=6).
 
-Default paper configuration:
-    - Dataset: ImageNet-100 validation set
-    - PE types: learned, rope
-    - Seeds: 42, 123, 456, 789, 1011, 1213
-    - Checkpoint: <models_dir>/<pe_type>_seed<seed>/best_model.pth
-    - Reference set: 256 fixed ImageNet-100 validation images
-    - Holdout set: 256 non-reference ImageNet-100 validation images
+This patched version fixes the evasion objective and uses the full 256-image
+ADS reference set for the attack objective by default.
 
-Attack loss:
-    L_evasion = -L_CE(logits_ref, y_ref) + lambda * ADS(delta, ref_images)
+Key conventions
+---------------
+* PGD is implemented as projected *ascent* on
 
-where ref_images are the known monitored reference images.
+      J_evasion = CE(logits_ref, y_ref) - lambda * ADS_L4(delta; D_ref)
 
-We compare:
-    1. Standard PGD (lambda = 0)
-    2. Evasion PGD (lambda > 0), which explicitly minimizes ADS on the
-       known reference set while trying to damage classification accuracy.
+  so lambda=0 is standard CE-ascent PGD, and lambda>0 trades accuracy damage
+  against ADS minimization on the known monitored reference set.
+* The CE term and differentiable ADS term are computed over the full fixed
+  256-image reference set by default, not only over the first 32-image batch.
+* Accuracy is evaluated on the full ImageNet-100 validation set.
+* ADS is reported both on the known reference set and on an unseen 256-image
+  holdout set.
 
-Key question:
-    If the attacker evades ADS on the known reference set, does the evasion
-    generalize to unseen holdout images?
-
-Note:
-    This script is ImageNet-100 only. It defaults to learned and RoPE because
-    the detection-threshold and noise-floor constants below are defined for
-    those PE types.
-
-Calibration constants:
-    The ADS(L4) noise floors and detection thresholds are taken from the
-    final ImageNet-100 n=6 ROC calibration file ads_roc_v2.json.
-    Noise floors are the mean clean ADS(L4) baselines across the six TFS
-    seeds. Detection thresholds are conservative PE-specific multipliers set
-    just above the largest benign-shift/baseline ratio observed across all
-    seeds and benign transforms; the worst benign transform is Gaussian blur
-    with sigma=3.
-
-    learned: noise floor = 0.017010231611008446, threshold = 3.0x baseline
-    RoPE:    noise floor = 0.013948560304318862, threshold = 6.2x baseline
-
-Output:
-    ads_ref_evasion.json
+Output: ads_ref_evasion.json
 """
 
 import argparse
-import os, sys, json, copy
+import copy
+import json
+import os
+import sys
+from typing import Iterable, List, Tuple
+
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
-from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Subset
+from torchvision import datasets, transforms
 
-sys.path.insert(0, '/content')
-from full_scale_experiment import VisionTransformer
+# Colab compatibility: many notebooks copy full_scale_experiment.py to /content.
+sys.path.insert(0, "/content")
+from full_scale_experiment import VisionTransformer  # noqa: E402
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print(f"Device: {device}")
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Device: {DEVICE}")
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="ADS reference-set evasion experiment (ImageNet-100, n=6 default). See module docstring for details.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    parser.add_argument(
-        '--models_dir',
-        type=str,
-        required=True,
-        help='Directory containing trained model checkpoints, organized as '
-             '<models_dir>/<pe_type>_seed<seed>/best_model.pth',
-    )
-    parser.add_argument(
-        '--val_dir',
-        type=str,
-        required=True, help='Path to ImageNet-100 val directory in ImageFolder format',
-    )
-    parser.add_argument(
-        '--output_path',
-        type=str,
-        required=True,
-        help='Output path for the result JSON',
-    )
-    parser.add_argument(
-        '--ref_indices_path',
-        type=str,
-        default=None,
-        help='Path to ads_ref_indices_imagenet100.json. If not specified, defaults to '
-             'a path alongside --output_path. If the file does not exist, '
-             'it will be generated using a fixed seed.',
-    )
-    parser.add_argument(
-        '--pe_types',
-        type=str,
-        nargs='+',
-        default=None,
-        choices=['learned', 'sinusoidal', 'rope', 'alibi'],
-        help='Optional. PE types to evaluate. If omitted, uses the '
-             'hardcoded PE_TYPES list defined in the script (n=6 paper configuration).',
-    )
-    parser.add_argument(
-        '--seeds',
-        type=int,
-        nargs='+',
-        default=None,
-        help='Optional. Random seeds to evaluate. If omitted, uses the '
-             'hardcoded SEEDS list defined in the script (n=6 paper configuration).',
-    )
-    return parser.parse_args()
+DEFAULT_PE_TYPES = ["learned", "rope"]
+DEFAULT_SEEDS = [42, 123, 456, 789, 1011, 1213]
+DEFAULT_EPSILONS = [0.1, 0.2, 0.5]
+DEFAULT_LAMBDAS = [0.0, 1.0, 5.0, 10.0, 50.0]
 
-
-# ============================================================
-# CONFIG
-# ============================================================
-# Parse CLI arguments first; CONFIG constants are derived from them.
-args = parse_args()
-
-RESULTS_DIR      = args.models_dir
-DATA_DIR         = args.val_dir
-SAVE_PATH        = args.output_path
-
-# REF_INDICES_PATH: if user provided, use it; else default alongside output
-if args.ref_indices_path:
-    REF_INDICES_PATH = args.ref_indices_path
-else:
-    REF_INDICES_PATH = os.path.join(
-        os.path.dirname(args.output_path), 'ads_ref_indices_imagenet100.json'
-    )
-
-os.makedirs(os.path.dirname(SAVE_PATH) or '.', exist_ok=True)
-
-PE_TYPES  = ['learned', 'rope']
-SEEDS     = [42, 123, 456, 789, 1011, 1213]
-
-# Apply CLI overrides for PE_TYPES and SEEDS if user provided them
-if args.pe_types is not None:
-    PE_TYPES = args.pe_types
-    print(f"[CLI override] PE_TYPES = {PE_TYPES}")
-if args.seeds is not None:
-    SEEDS = args.seeds
-    print(f"[CLI override] SEEDS = {SEEDS}")
-
-EPSILONS  = [0.1, 0.2, 0.5]
-LAMBDAS   = [0.0, 1.0, 5.0, 10.0, 50.0]  # evasion regularization
-
-PGD_STEPS       = 20
+PGD_STEPS = 20
 PGD_ALPHA_RATIO = 0.1
-N_REF_IMAGES    = 256
+N_REF_IMAGES = 256
+N_HOLDOUT_IMAGES = 256
 
-# Final ImageNet-100 n=6 ROC calibration from ads_roc_v2.json.
-# Noise floors are mean clean ADS(L4) baselines across the six TFS seeds.
-# Thresholds are conservative PE-specific multipliers set just above the
-# maximum benign-shift/baseline ratio across all seeds and benign transforms
-# (worst-case benign transform: Gaussian blur with sigma=3).
 DETECTION_THRESHOLD = {
-    'learned': 3.0,  # max benign/baseline ≈ 2.9493x, rounded up
-    'rope':    6.2,  # max benign/baseline ≈ 6.1669x, rounded up
+    "learned": 3.0,
+    "rope": 6.2,
 }
 NOISE_FLOOR = {
-    'learned': 0.017010231611008446,
-    'rope':    0.013948560304318862,
+    "learned": 0.017010231611008446,
+    "rope": 0.013948560304318862,
 }
 
-unsupported_pe = [pe for pe in PE_TYPES if pe not in DETECTION_THRESHOLD or pe not in NOISE_FLOOR]
-if unsupported_pe:
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(
+        description="ADS reference-set evasion experiment (ImageNet-100, n=6).",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    p.add_argument("--models_dir", required=True,
+                   help="Checkpoint root, containing <pe>_seed<seed>/best_model.pth")
+    p.add_argument("--val_dir", required=True,
+                   help="ImageNet-100 validation directory in ImageFolder format")
+    p.add_argument("--output_path", required=True,
+                   help="Output JSON path")
+    p.add_argument("--ref_indices_path", default=None,
+                   help="Path to ads_ref_indices_imagenet100.json; defaults next to output")
+    p.add_argument("--pe_types", nargs="+", default=None,
+                   choices=["learned", "sinusoidal", "rope", "alibi"],
+                   help="PE types to evaluate")
+    p.add_argument("--seeds", nargs="+", type=int, default=None,
+                   help="Seeds to evaluate")
+    p.add_argument("--epsilons", nargs="+", type=float, default=None,
+                   help="Attack budgets")
+    p.add_argument("--lambdas", nargs="+", type=float, default=None,
+                   help="Evasion regularization strengths")
+    p.add_argument("--attack_ref_batches", type=int, default=None,
+                   help=("Optional smoke/debug mode. If set, uses only the first N "
+                         "reference batches for the attack objective. Default None "
+                         "uses all 256 reference images."))
+    return p.parse_args()
+
+
+ARGS = parse_args()
+RESULTS_DIR = ARGS.models_dir
+DATA_DIR = ARGS.val_dir
+SAVE_PATH = ARGS.output_path
+REF_INDICES_PATH = (
+    ARGS.ref_indices_path
+    if ARGS.ref_indices_path
+    else os.path.join(os.path.dirname(SAVE_PATH), "ads_ref_indices_imagenet100.json")
+)
+os.makedirs(os.path.dirname(SAVE_PATH) or ".", exist_ok=True)
+
+PE_TYPES = ARGS.pe_types if ARGS.pe_types is not None else DEFAULT_PE_TYPES
+SEEDS = ARGS.seeds if ARGS.seeds is not None else DEFAULT_SEEDS
+EPSILONS = ARGS.epsilons if ARGS.epsilons is not None else DEFAULT_EPSILONS
+LAMBDAS = ARGS.lambdas if ARGS.lambdas is not None else DEFAULT_LAMBDAS
+
+unsupported = [pe for pe in PE_TYPES if pe not in DETECTION_THRESHOLD or pe not in NOISE_FLOOR]
+if unsupported:
     raise ValueError(
-        f"Reference-evasion thresholds/noise floors are defined only for "
-        f"{sorted(DETECTION_THRESHOLD)}; unsupported PE types: {unsupported_pe}"
+        f"Thresholds/noise floors are defined only for {sorted(DETECTION_THRESHOLD)}; "
+        f"unsupported PE types: {unsupported}"
     )
 
-# ============================================================
-# DATA
-# ============================================================
-val_transform = transforms.Compose([
+# -----------------------------------------------------------------------------
+# Data
+# -----------------------------------------------------------------------------
+VAL_TRANSFORM = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
 ])
-
-val_dataset = datasets.ImageFolder(DATA_DIR, val_transform)
+val_dataset = datasets.ImageFolder(DATA_DIR, VAL_TRANSFORM)
 
 if os.path.exists(REF_INDICES_PATH):
     with open(REF_INDICES_PATH) as f:
@@ -194,323 +132,347 @@ if os.path.exists(REF_INDICES_PATH):
 else:
     torch.manual_seed(42)
     ref_indices = torch.randperm(len(val_dataset))[:N_REF_IMAGES].tolist()
-    with open(REF_INDICES_PATH, 'w') as f:
+    with open(REF_INDICES_PATH, "w") as f:
         json.dump(ref_indices, f)
     print(f"Generated and saved {N_REF_IMAGES} reference indices to {REF_INDICES_PATH}")
 
+if len(ref_indices) != N_REF_IMAGES:
+    print(f"WARNING: reference index file has {len(ref_indices)} indices, expected {N_REF_IMAGES}")
 if max(ref_indices) >= len(val_dataset):
     raise ValueError(
         f"Reference index file {REF_INDICES_PATH} is incompatible with this dataset: "
         f"max index {max(ref_indices)} >= dataset size {len(val_dataset)}"
     )
 
-# Reference loader (known to attacker)
-ref_loader = DataLoader(
-    Subset(val_dataset, ref_indices),
-    batch_size=32, shuffle=False, num_workers=4, pin_memory=True
-)
-
-# Held-out loader (unseen by attacker — different 256 images)
-all_indices = list(range(len(val_dataset)))
-non_ref = [i for i in all_indices if i not in set(ref_indices)]
+ref_set = set(ref_indices)
+non_ref = [i for i in range(len(val_dataset)) if i not in ref_set]
 torch.manual_seed(999)
-holdout_indices = torch.randperm(len(non_ref))[:256].tolist()
-holdout_indices = [non_ref[i] for i in holdout_indices]
-holdout_loader = DataLoader(
-    Subset(val_dataset, holdout_indices),
-    batch_size=32, shuffle=False, num_workers=4, pin_memory=True
-)
+holdout_perm = torch.randperm(len(non_ref))[:N_HOLDOUT_IMAGES].tolist()
+holdout_indices = [non_ref[i] for i in holdout_perm]
 
-# Full val loader for accuracy
-val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False,
-                        num_workers=4, pin_memory=True)
+ref_loader = DataLoader(Subset(val_dataset, ref_indices), batch_size=32, shuffle=False, num_workers=4, pin_memory=True)
+holdout_loader = DataLoader(Subset(val_dataset, holdout_indices), batch_size=32, shuffle=False, num_workers=4, pin_memory=True)
+val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=4, pin_memory=True)
 
 print(f"Reference set: {len(ref_indices)} images (known to attacker)")
-print(f"Holdout set:   {len(holdout_indices)} images (unseen by attacker)")
+print(f"Holdout set: {len(holdout_indices)} images (unseen by attacker)")
+if ARGS.attack_ref_batches is None:
+    print("Attack objective: full 256-image reference set")
+else:
+    print(f"Attack objective: first {ARGS.attack_ref_batches} reference batch(es) only [debug/smoke]")
 
-# ============================================================
-# MODEL
-# ============================================================
-def load_model(pe_type, seed):
+# -----------------------------------------------------------------------------
+# Model and metrics
+# -----------------------------------------------------------------------------
+
+def load_model(pe_type: str, seed: int) -> VisionTransformer:
     model = VisionTransformer(
-        img_size=224, patch_size=16, num_classes=100,
-        embed_dim=768, depth=12, num_heads=12,
-        mlp_ratio=4.0, dropout=0.1, pe_type=pe_type
+        img_size=224,
+        patch_size=16,
+        num_classes=100,
+        embed_dim=768,
+        depth=12,
+        num_heads=12,
+        mlp_ratio=4.0,
+        dropout=0.1,
+        pe_type=pe_type,
     )
-    ckpt = os.path.join(RESULTS_DIR, f'{pe_type}_seed{seed}', 'best_model.pth')
-    state = torch.load(ckpt, map_location='cpu')
-    model.load_state_dict({k.replace('_orig_mod.', ''): v for k, v in state.items()})
-    model.eval().to(device)
+    ckpt = os.path.join(RESULTS_DIR, f"{pe_type}_seed{seed}", "best_model.pth")
+    state = torch.load(ckpt, map_location="cpu")
+    model.load_state_dict({k.replace("_orig_mod.", ""): v for k, v in state.items()})
+    model.eval().to(DEVICE)
     return model
 
-# ============================================================
-# ATTENTION + ADS
-# ============================================================
+
 @torch.no_grad()
-def get_attn_l4(model, loader):
-    layers = []
+def get_attn_l4(model: nn.Module, loader: DataLoader) -> torch.Tensor:
+    total_attn = None
+    total_images = 0
     for imgs, _ in loader:
-        imgs = imgs.to(device)
+        imgs = imgs.to(DEVICE)
         _, attns = model.forward_with_attention(imgs)
-        layers.append(attns[3].mean(0).cpu())
-    return torch.stack(layers).mean(0)
+        batch_sum = attns[3].sum(dim=0).detach().cpu()
+        total_attn = batch_sum if total_attn is None else total_attn + batch_sum
+        total_images += imgs.size(0)
+    if total_images == 0:
+        raise RuntimeError("Empty loader passed to get_attn_l4")
+    return total_attn / total_images
 
-def compute_ads(clean_attn, perturbed_attn):
+
+def compute_ads(clean_attn: torch.Tensor, perturbed_attn: torch.Tensor) -> float:
     eps = 1e-10
-    P = clean_attn.float() + eps
-    Q = perturbed_attn.float() + eps
-    P = P / P.sum(-1, keepdim=True)
-    Q = Q / Q.sum(-1, keepdim=True)
-    return float((P * torch.log(P / Q)).sum(-1).mean().item())
+    p = clean_attn.float() + eps
+    q = perturbed_attn.float() + eps
+    p = p / p.sum(-1, keepdim=True)
+    q = q / q.sum(-1, keepdim=True)
+    return float((p * torch.log(p / q)).sum(-1).mean().item())
 
-# ============================================================
-# ACCURACY
-# ============================================================
+
 @torch.no_grad()
-def measure_accuracy(model, loader):
+def measure_accuracy(model: nn.Module, loader: DataLoader) -> float:
     correct, total = 0, 0
     for imgs, labels in loader:
-        imgs, labels = imgs.to(device), labels.to(device)
+        imgs, labels = imgs.to(DEVICE), labels.to(DEVICE)
         _, pred = model(imgs).max(1)
         correct += pred.eq(labels).sum().item()
         total += labels.size(0)
     return 100.0 * correct / total
 
-# ============================================================
-# PE PARAMS
-# ============================================================
-def get_pe_params(model, pe_type):
-    pe_params = []
+
+def get_pe_params(model: nn.Module, pe_type: str) -> List[nn.Parameter]:
+    pe_params: List[nn.Parameter] = []
+
     for name, buf in list(model.named_buffers()):
-        clean = name.replace('_orig_mod.', '')
-        if any(k in clean for k in ['.pe', 'cos_cached', 'sin_cached']):
-            if 'rel_dist' not in clean:
-                parts = clean.split('.')
-                obj = model
-                for part in parts[:-1]:
-                    obj = getattr(obj, part)
-                delattr(obj, parts[-1])
-                new_p = nn.Parameter(buf.clone(), requires_grad=True)
-                setattr(obj, parts[-1], new_p)
-                pe_params.append(new_p)
-    for name, mod in model.named_modules():
-        if type(mod).__name__ == 'ALiBi':
-            sd = mod.slopes.clone().to(device)
+        clean = name.replace("_orig_mod.", "")
+        if any(k in clean for k in [".pe", "cos_cached", "sin_cached"]):
+            if "rel_dist" in clean:
+                continue
+            parts = clean.split(".")
+            obj = model
+            for part in parts[:-1]:
+                obj = getattr(obj, part)
+            delattr(obj, parts[-1])
+            new_p = nn.Parameter(buf.clone().to(DEVICE), requires_grad=True)
+            setattr(obj, parts[-1], new_p)
+            pe_params.append(new_p)
+
+    for _, mod in model.named_modules():
+        if type(mod).__name__ == "ALiBi":
+            slopes = mod.slopes.clone().to(DEVICE)
             del mod.slopes
-            mod.slopes = nn.Parameter(sd, requires_grad=True)
+            mod.slopes = nn.Parameter(slopes, requires_grad=True)
             pe_params.append(mod.slopes)
+
     for name, param in model.named_parameters():
-        clean = name.replace('_orig_mod.', '')
-        if any(k in clean for k in ['pos_embed', 'inv_freq']):
-            param.requires_grad_(True)
-            pe_params.append(param)
+        clean = name.replace("_orig_mod.", "")
+        if any(k in clean for k in ["pos_embed", "inv_freq"]):
+            if not param.requires_grad:
+                param.requires_grad_(True)
+            if not any(param is p for p in pe_params):
+                pe_params.append(param)
+
     return pe_params
 
-# ============================================================
-# EVASION PGD
-# ============================================================
-def evasion_pgd(model, clean_ref_attn, pe_type, epsilon, lam):
-    """
-    Reference-set evasion attack.
-    Loss: -L_CE(full_batch) + lambda * ADS(ref_images)
-    
-    The attacker knows ref_indices and tries to minimize ADS on those
-    specific images while maximizing accuracy damage on the full val set.
-    """
-    pm = copy.deepcopy(model).to(device)
+
+def iter_attack_ref_batches() -> Iterable[Tuple[torch.Tensor, torch.Tensor]]:
+    for i, (imgs, labels) in enumerate(ref_loader):
+        if ARGS.attack_ref_batches is not None and i >= ARGS.attack_ref_batches:
+            break
+        yield imgs.to(DEVICE), labels.to(DEVICE)
+
+
+def compute_full_ref_objective(
+    model: nn.Module,
+    clean_ref_attn: torch.Tensor,
+    criterion: nn.Module,
+    lam: float,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Return CE, ADS, and ascent objective CE - lambda*ADS on the reference set."""
+    ce_sum = None
+    attn_sum = None
+    total_images = 0
+
+    for imgs, labels in iter_attack_ref_batches():
+        if lam > 0:
+            logits, attns = model.forward_with_attention(imgs)
+            batch_attn_sum = attns[3].sum(dim=0).float()
+            attn_sum = batch_attn_sum if attn_sum is None else attn_sum + batch_attn_sum
+        else:
+            logits = model(imgs)
+
+        ce = criterion(logits, labels) * imgs.size(0)
+        ce_sum = ce if ce_sum is None else ce_sum + ce
+        total_images += imgs.size(0)
+
+    if total_images == 0:
+        raise RuntimeError("No reference images used for attack objective")
+
+    ce_loss = ce_sum / total_images
+
+    if lam > 0:
+        eps_kl = 1e-10
+        obj_device = ce_loss.device
+        # Keep q differentiable: detaching it would remove the ADS gradient
+        # and make all lambda values reduce to the lambda=0 CE attack.
+        q = (attn_sum / total_images).to(obj_device).float() + eps_kl
+        q = q / q.sum(-1, keepdim=True)
+        p = clean_ref_attn.detach().to(obj_device).float() + eps_kl
+        p = p / p.sum(-1, keepdim=True)
+        ads_loss = (p * torch.log(p / q)).sum(-1).mean()
+    else:
+        ads_loss = torch.zeros((), device=DEVICE, dtype=ce_loss.dtype)
+
+    objective = ce_loss - lam * ads_loss
+    return ce_loss, ads_loss, objective
+
+
+# -----------------------------------------------------------------------------
+# Evasion PGD
+# -----------------------------------------------------------------------------
+
+def evasion_pgd(model: nn.Module, clean_ref_attn: torch.Tensor, pe_type: str, epsilon: float, lam: float) -> nn.Module:
+    """Projected ascent on CE - lambda*ADS over the PE state."""
+    pm = copy.deepcopy(model).to(DEVICE)
     criterion = nn.CrossEntropyLoss()
     alpha = epsilon * PGD_ALPHA_RATIO
 
-    # Attack batch: use ref images for gradient (attacker knows these)
-    images, labels = next(iter(ref_loader))
-    images, labels = images.to(device), labels.to(device)
-
     pe_params = get_pe_params(pm, pe_type)
     if not pe_params:
+        print(f"WARNING: no PE params for {pe_type}")
         return pm
 
+    base_params = [p.detach().clone() for p in pe_params]
     deltas = [torch.zeros_like(p) for p in pe_params]
-    pm.train()
 
-    for step in range(PGD_STEPS):
+    pm.train()
+    for _ in range(PGD_STEPS):
         with torch.no_grad():
-            for p, d in zip(pe_params, deltas):
-                p.data = p.data - (d if step > 0 else 0) + d
+            for p, base, d in zip(pe_params, base_params, deltas):
+                p.copy_(base + d)
 
         for p in pe_params:
             if p.grad is not None:
                 p.grad.zero_()
 
-        # CE loss on ref batch (damage)
-        ce_loss = criterion(pm(images), labels)
-
-        if lam > 0:
-            # ADS minimization on ref images (evasion)
-            _, attns = pm.forward_with_attention(images)
-            attn_pert = attns[3].mean(0).float() + 1e-10
-            attn_pert = attn_pert / attn_pert.sum(-1, keepdim=True)
-            attn_pert = attn_pert.to(device)
-
-            P = clean_ref_attn.detach().to(device).float() + 1e-10
-            P = P / P.sum(-1, keepdim=True)
-
-            ads_loss = (P * torch.log(P / attn_pert)).sum(-1).mean()
-            total_loss = -ce_loss + lam * ads_loss
-        else:
-            total_loss = -ce_loss
-
-        total_loss.backward()
+        _, _, objective = compute_full_ref_objective(pm, clean_ref_attn, criterion, lam)
+        objective.backward()
 
         with torch.no_grad():
-            new_d = []
-            for p, d in zip(pe_params, deltas):
+            for j, p in enumerate(pe_params):
                 if p.grad is not None:
-                    nd = (d + alpha * p.grad.sign()).clamp(-epsilon, epsilon)
-                    new_d.append(nd)
-                else:
-                    new_d.append(d)
-            deltas = new_d
+                    deltas[j] = (deltas[j] + alpha * p.grad.sign()).clamp(-epsilon, epsilon)
 
     with torch.no_grad():
-        for p, d in zip(pe_params, deltas):
-            p.data += d
-
+        for p, base, d in zip(pe_params, base_params, deltas):
+            p.copy_(base + d)
     pm.eval()
     return pm
 
-# ============================================================
-# MAIN
-# ============================================================
-def run():
-    results = {}
-    
-    # Clean noise floors
-    noise_floor = NOISE_FLOOR
 
+# -----------------------------------------------------------------------------
+# Main run and analysis
+# -----------------------------------------------------------------------------
+
+def run() -> dict:
+    results = {}
     for pe_type in PE_TYPES:
         results[pe_type] = {}
-        print(f"\n{'='*60}")
-        print(f"PE TYPE: {pe_type.upper()}")
-        print(f"{'='*60}")
+        nf = NOISE_FLOOR[pe_type]
+        tau = DETECTION_THRESHOLD[pe_type]
+
+        print("\n" + "=" * 60)
+        print(f"PE TYPE: {pe_type.upper()} | detection threshold: {tau}x")
+        print("=" * 60)
 
         for seed in SEEDS:
-            print(f"\n  Seed {seed}:")
+            print(f"\n Seed {seed}:")
             model = load_model(pe_type, seed)
-
-            # Baseline attention on both sets
-            clean_ref_attn  = get_attn_l4(model, ref_loader)
+            clean_ref_attn = get_attn_l4(model, ref_loader)
             clean_hold_attn = get_attn_l4(model, holdout_loader)
             clean_acc = measure_accuracy(model, val_loader)
-            nf = noise_floor[pe_type]
+            print(f" Clean accuracy: {clean_acc:.2f}%")
 
             results[pe_type][str(seed)] = {}
-
             for eps in EPSILONS:
                 results[pe_type][str(seed)][str(eps)] = {}
-                print(f"\n    ε={eps}:")
-                print(f"    {'λ':>6}  {'Acc drop':>10}  {'ADS(ref)':>10}  {'ADS(hold)':>10}  {'Evasion?':>10}  {'Generalized?':>13}")
+                print(f"\n ε={eps}:")
+                print(f" {'λ':>6} {'Acc drop':>10} {'ADS(ref)':>10} {'ADS(hold)':>10} {'Evasion?':>10} {'Generalized?':>13}")
 
                 for lam in LAMBDAS:
                     pm = evasion_pgd(model, clean_ref_attn, pe_type, eps, lam)
 
-                    # ADS on reference set (what attacker is evading)
-                    pm_ref_attn  = get_attn_l4(pm, ref_loader)
+                    pm_ref_attn = get_attn_l4(pm, ref_loader)
                     ads_ref = compute_ads(clean_ref_attn, pm_ref_attn)
 
-                    # ADS on held-out set (unseen by attacker)
                     pm_hold_attn = get_attn_l4(pm, holdout_loader)
                     ads_hold = compute_ads(clean_hold_attn, pm_hold_attn)
 
-                    # Accuracy
                     acc = measure_accuracy(pm, val_loader)
                     acc_drop = clean_acc - acc
 
-                    # Detection threshold (from benign analysis)
-                    det_thresh = DETECTION_THRESHOLD[pe_type]
-                    evades_ref  = (ads_ref  / nf) < det_thresh
-                    evades_hold = (ads_hold / nf) < det_thresh
+                    ref_ratio = ads_ref / nf
+                    hold_ratio = ads_hold / nf
+                    evades_ref = ref_ratio < tau
+                    evades_hold = hold_ratio < tau
 
                     results[pe_type][str(seed)][str(eps)][str(lam)] = {
-                        'lambda': lam,
-                        'acc_drop': float(acc_drop),
-                        'ads_ref':  float(ads_ref),
-                        'ads_hold': float(ads_hold),
-                        'ads_ref_ratio':  float(ads_ref / nf),
-                        'ads_hold_ratio': float(ads_hold / nf),
-                        'evades_ref':  bool(evades_ref),
-                        'evades_hold': bool(evades_hold),
+                        "lambda": float(lam),
+                        "acc_drop": float(acc_drop),
+                        "accuracy": float(acc),
+                        "ads_ref": float(ads_ref),
+                        "ads_hold": float(ads_hold),
+                        "ads_ref_ratio": float(ref_ratio),
+                        "ads_hold_ratio": float(hold_ratio),
+                        "evades_ref": bool(evades_ref),
+                        "evades_hold": bool(evades_hold),
+                        "attack_objective": "full_reference_ce_minus_lambda_ads",
+                        "attack_ref_images": int(len(ref_indices) if ARGS.attack_ref_batches is None else min(len(ref_indices), 32 * ARGS.attack_ref_batches)),
                     }
 
-                    print(f"    {lam:>6.0f}  {acc_drop:>10.2f}pp  "
-                          f"{ads_ref/nf:>8.2f}x  {ads_hold/nf:>9.2f}x  "
-                          f"{'YES' if evades_ref else 'NO':>10}  "
-                          f"{'YES' if evades_hold else 'NO':>13}")
-
+                    print(
+                        f" {lam:>6.1f} {acc_drop:>10.2f}pp "
+                        f"{ref_ratio:>8.2f}x {hold_ratio:>9.2f}x "
+                        f"{'YES' if evades_ref else 'NO':>10} "
+                        f"{'YES' if evades_hold else 'NO':>13}"
+                    )
                     del pm
                     torch.cuda.empty_cache()
 
             del model
             torch.cuda.empty_cache()
 
-        with open(SAVE_PATH, 'w') as f:
-            json.dump(results, f, indent=2)
-        print(f"\n  Saved to {SAVE_PATH}")
-
+    with open(SAVE_PATH, "w") as f:
+        json.dump(results, f, indent=2)
+    print(f"\nSaved to {SAVE_PATH}")
     return results
 
-# ============================================================
-# ANALYSIS
-# ============================================================
-def analyze(results):
-    seeds = [str(s) for s in SEEDS]
+
+def analyze(results: dict) -> None:
     print("\n" + "=" * 75)
     print("REFERENCE SET EVASION ANALYSIS")
     print("=" * 75)
-    print("Key question: If attacker evades ref set ADS, does it generalize?")
+    print("Question: if attacker evades the reference set, does evasion transfer to holdout?")
 
     for pe_type in PE_TYPES:
         if pe_type not in results:
             continue
-        available_seeds = [s for s in seeds if s in results[pe_type]]
-        if not available_seeds:
-            print(f"\n{pe_type.upper()}: no available seeds")
-            continue
-
-        print(f"\n{pe_type.upper()} (n={len(available_seeds)} seeds):")
+        available = [str(s) for s in SEEDS if str(s) in results[pe_type]]
+        print(f"\n{pe_type.upper()} (n={len(available)} seeds, τ={DETECTION_THRESHOLD[pe_type]}x):")
         for eps in EPSILONS:
             eps_key = str(eps)
-            print(f"\n  ε={eps}:")
+            print(f"\n ε={eps}:")
+            print(f" {'λ':>7} {'drop mean':>10} {'drop sd':>9} {'ref ratio':>10} {'hold ratio':>11} {'ref':>8} {'hold':>8} {'both':>8}")
+            print(" " + "-" * 83)
             for lam in LAMBDAS:
                 lam_key = str(lam)
-                drops, ev_ref, ev_hold, r_ref, r_hold = [], [], [], [], []
-                for s in available_seeds:
-                    if eps_key not in results[pe_type][s] or lam_key not in results[pe_type][s][eps_key]:
-                        continue
-                    r = results[pe_type][s][eps_key][lam_key]
-                    drops.append(r['acc_drop'])
-                    ev_ref.append(r['evades_ref'])
-                    ev_hold.append(r['evades_hold'])
-                    r_ref.append(r['ads_ref_ratio'])
-                    r_hold.append(r['ads_hold_ratio'])
+                drops, ref_ratios, hold_ratios, ev_ref, ev_hold = [], [], [], [], []
+                for s in available:
+                    if eps_key in results[pe_type][s] and lam_key in results[pe_type][s][eps_key]:
+                        r = results[pe_type][s][eps_key][lam_key]
+                        drops.append(r["acc_drop"])
+                        ref_ratios.append(r["ads_ref_ratio"])
+                        hold_ratios.append(r["ads_hold_ratio"])
+                        ev_ref.append(r["evades_ref"])
+                        ev_hold.append(r["evades_hold"])
                 if not drops:
                     continue
+                both = [a and b for a, b in zip(ev_ref, ev_hold)]
+                print(
+                    f" {lam:7.1f} {np.mean(drops):10.2f} {np.std(drops, ddof=1) if len(drops)>1 else 0:9.2f} "
+                    f"{np.mean(ref_ratios):10.2f} {np.mean(hold_ratios):11.2f} "
+                    f"{sum(ev_ref)}/{len(ev_ref):<4} {sum(ev_hold)}/{len(ev_hold):<4} {sum(both)}/{len(both):<4}"
+                )
 
-                evades = all(ev_ref)
-                generalizes = all(ev_hold)
-                print(f"    λ={lam:4.0f}: drop={np.mean(drops):.1f}pp, "
-                      f"ref={np.mean(r_ref):.2f}x ({'evades' if evades else 'detected'}), "
-                      f"hold={np.mean(r_hold):.2f}x ({'evades' if generalizes else 'detected'})")
 
-
-if __name__ == '__main__':
-    print("Reference Set Evasion Experiment")
+if __name__ == "__main__":
+    print("Reference Set Evasion Experiment — patched full-reference CE - lambda*ADS")
     print(f"PE types: {PE_TYPES}, Seeds: {SEEDS}")
     print(f"Epsilons: {EPSILONS}, Lambdas: {LAMBDAS}")
-    print(f"Reference: 256 known images, Holdout: 256 unseen images")
+    print(f"Reference: {N_REF_IMAGES} known images, Holdout: {N_HOLDOUT_IMAGES} unseen images")
+    print(f"PGD steps: {PGD_STEPS}, alpha ratio: {PGD_ALPHA_RATIO}")
     print(f"Noise floors: {NOISE_FLOOR}")
     print(f"Detection thresholds: {DETECTION_THRESHOLD}")
     print()
-
-    results = run()
-    analyze(results)
-    print("\n✅ Done!")
+    res = run()
+    analyze(res)
+    print("\nDone.")
