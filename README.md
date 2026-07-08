@@ -79,8 +79,12 @@ ads-vit-forensics/
 ├── requirements.txt
 ├── colab_quickstart.ipynb
 ├── colab_quickstart_README.md
+├── 00_setup_imagenet.py
+├── 00_setup_cifar100.py
 │
 ├── data/
+│   ├── val_labels.txt
+│   ├── imagenet100_classes.txt
 │   ├── ads_results.json
 │   ├── ads_results_cifar100.json
 │   ├── ads_specificity.json
@@ -240,6 +244,153 @@ regenerating figures, running `reproduce.py`, and zipping final artifacts.
 The README intentionally keeps CLI examples short; the notebook is the
 recommended place for the full step-by-step pipeline.
 
+The CLI examples below assume that commands are executed from the repository
+root. This works both locally and in Colab after cloning the repository and
+changing into it:
+
+```bash
+cd /content
+git clone https://github.com/djokobandjur/ads-vit-forensics.git
+cd /content/ads-vit-forensics
+```
+
+If the repository is not the current working directory, prefix script and output
+paths with the repository root, for example
+`/content/ads-vit-forensics/scripts/ads_experiment.py` and
+`/content/ads-vit-forensics/data/ads_results.json`. Keeping the working
+directory at the repo root is the recommended convention because it makes the
+same `python scripts/...` commands usable in local shells and Colab notebooks.
+
+---
+
+## ImageNet-100 validation data in Colab
+
+ImageNet-100 images are not redistributed in this repository. The repository
+ships only the split metadata files needed to reconstruct the validation set:
+
+```text
+data/val_labels.txt
+data/imagenet100_classes.txt
+```
+
+The paper runs used the validation directory
+
+```text
+/content/imagenet100_resized/val
+```
+
+as the `--val_dir` for all ImageNet-100 scripts. In Colab this directory can be
+prepared in either of two equivalent ways.
+
+**Option A: extract the prepared ImageNet-100 tarball from Google Drive.** This
+is the fastest path when the curated archive is already available on Drive:
+
+```bash
+ls -lh "/content/drive/MyDrive/pe_experiment/imagenet/imagenet100_resized.tar"
+rm -rf /content/imagenet100_resized
+tar -C /content -xf \
+  "/content/drive/MyDrive/pe_experiment/imagenet/imagenet100_resized.tar"
+
+echo "Train classes:"
+find /content/imagenet100_resized/train -mindepth 1 -maxdepth 1 -type d | wc -l
+
+echo "Val classes:"
+find /content/imagenet100_resized/val -mindepth 1 -maxdepth 1 -type d | wc -l
+
+du -sh /content/imagenet100_resized
+```
+
+**Option B: build the validation split from the original ILSVRC2012 validation
+tar.** The helper script extracts the 100 selected classes and writes them to
+`<output_dir>/val/`, with 50 validation images per class:
+
+```bash
+python 00_setup_imagenet.py \
+  --tar_path "/content/drive/MyDrive/pe_experiment/imagenet/ILSVRC2012_img_val.tar" \
+  --labels_path "data/val_labels.txt" \
+  --classes_path "data/imagenet100_classes.txt" \
+  --output_dir "/content/imagenet100_resized"
+```
+
+After either option, use:
+
+```bash
+--val_dir "/content/imagenet100_resized/val"
+```
+
+for ImageNet-100 runs.
+
+---
+
+## CIFAR-100 test data in Colab and offline fallback
+
+The CIFAR-100 experiment scripts use `torchvision.datasets.CIFAR100`. When the
+standard torchvision hosting endpoint is reachable, the scripts can download the
+dataset automatically. If that endpoint is unavailable, pre-stage the extracted
+`cifar-100-python` folder on Colab local storage and pass its parent directory as
+`--val_dir`.
+
+The paper runs used:
+
+```bash
+--val_dir "/tmp/cifar100"
+```
+
+with the following layout:
+
+```text
+/tmp/cifar100/
+└── cifar-100-python/
+    ├── meta
+    ├── test
+    └── train
+```
+
+If a cached copy is available on Google Drive, prepare the local root with:
+
+```bash
+rm -rf /tmp/cifar100
+mkdir -p /tmp/cifar100
+cp -r "/content/drive/MyDrive/cifar100_data/cifar-100-python" /tmp/cifar100/
+ls -lh /tmp/cifar100
+ls -lh /tmp/cifar100/cifar-100-python
+```
+
+Verify that torchvision recognizes the cached dataset without downloading:
+
+```bash
+python -u - <<'PY'
+from torchvision.datasets import CIFAR100
+root = "/tmp/cifar100"
+ds = CIFAR100(root=root, train=False, download=False)
+print("CIFAR-100 test size:", len(ds))
+print("OK root:", root)
+PY
+```
+
+The helper script provides the same cache-copy workflow:
+
+```bash
+python 00_setup_cifar100.py \
+  --source_dir "/content/drive/MyDrive/cifar100_data/cifar-100-python" \
+  --output_root "/tmp/cifar100"
+```
+
+Once the local root is prepared, the CIFAR scripts can still use their normal
+interface:
+
+```bash
+python scripts/ads_experiment_cifar.py \
+  --models_dir "/path/to/CIFAR100_checkpoints" \
+  --val_dir "/tmp/cifar100" \
+  --output_path "data/ads_results_cifar100.json"
+```
+
+`--val_dir` is the parent directory containing `cifar-100-python`, not the
+`cifar-100-python` directory itself. If the folder is already present and passes
+torchvision's integrity check, `download=True` in the experiment scripts will not
+contact the remote server.
+
 ---
 
 ## Minimal CLI examples
@@ -249,7 +400,7 @@ All experiment scripts use the same path-oriented interface:
 ```bash
 python scripts/ads_experiment.py \
   --models_dir "/path/to/ImageNet100_checkpoints" \
-  --val_dir "/path/to/imagenet100/val" \
+  --val_dir "/content/imagenet100_resized/val" \
   --output_path "data/ads_results.json"
 ```
 
@@ -265,7 +416,7 @@ The optional `--pe_types` and `--seeds` arguments can restrict a run to a subset
 ```bash
 python scripts/ads_experiment.py \
   --models_dir "/path/to/ImageNet100_checkpoints" \
-  --val_dir "/path/to/imagenet100/val" \
+  --val_dir "/content/imagenet100_resized/val" \
   --output_path "output/smoke_test.json" \
   --pe_types learned \
   --seeds 42
@@ -288,7 +439,7 @@ control is regenerated by:
 ```bash
 python scripts/ads_shared_delta_attack_convention.py \
   --models_dir "/path/to/ImageNet100_checkpoints" \
-  --val_dir "/path/to/imagenet100/val" \
+  --val_dir "/content/imagenet100_resized/val" \
   --dataset imagenet \
   --output_path "data/ads_shared_delta_imagenet100.json"
 ```
@@ -405,8 +556,11 @@ A few protocol distinctions are important for interpreting the paper:
 ## Data and checkpoint notes
 
 - ImageNet-100 validation images are not redistributed and remain subject to the
-  ImageNet terms of access.
-- CIFAR-100 is downloaded by the CIFAR scripts through `torchvision` when needed.
+  ImageNet terms of access. The repository ships `data/val_labels.txt` and
+  `data/imagenet100_classes.txt` as split metadata for reconstructing the
+  5,000-image ImageNet-100 validation directory from the original ILSVRC2012
+  validation archive.
+- CIFAR-100 can be downloaded by the CIFAR scripts through `torchvision` when the upstream endpoint is available. For Colab runs or outages, use the offline-cache workflow above and pass `--val_dir /tmp/cifar100`; this points torchvision at a local parent directory containing `cifar-100-python`.
 - Fixed reference-set indices are shipped under `data/` for exact reproduction of
   ADS reference measurements. The reference/adaptive evasion experiments are stress tests
   on the 256-image reference protocol; they do not implement the stronger split-objective
