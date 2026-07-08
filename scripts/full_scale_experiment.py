@@ -293,7 +293,15 @@ class VisionTransformer(nn.Module):
         return self.head(x[:, 0])  # CLS token
 
     def forward_with_attention(self, x):
-        """Forward pass returning attention weights from all layers."""
+        """Forward pass returning attention weights from all layers.
+
+        NOTE: attentions are detached and moved to CPU. This is correct and
+        memory-efficient for MEASUREMENT/visualization (ADS evaluation, MI, etc.)
+        but MUST NOT be used to build a differentiable loss: the detach() here
+        severs the autograd path, so any ADS term computed from these tensors has
+        ZERO gradient w.r.t. the PE parameters. For attacks that optimize an ADS
+        objective (adaptive / evasion PGD), use forward_with_attention_grad below.
+        """
         B = x.shape[0]
         x = self.patch_embed(x)
         cls = self.cls_token.expand(B, -1, -1)
@@ -304,6 +312,34 @@ class VisionTransformer(nn.Module):
         for block in self.blocks:
             x, attn = block(x, return_attention=True)
             attentions.append(attn.detach().cpu())
+
+        x = self.norm(x)
+        return self.head(x[:, 0]), attentions
+
+    def forward_with_attention_grad(self, x, layers=None):
+        """Differentiable variant of forward_with_attention for ADS-based attacks.
+
+        Attention weights are kept on-device and ON the autograd graph (no
+        detach, no .cpu()), so a loss built from them backpropagates into the
+        PE parameters. Only the requested `layers` are retained to bound memory;
+        pass e.g. layers=(3,) when the objective only needs Layer-4 ADS.
+
+        Returns (logits, {layer_index: attn_weights}).
+        """
+        B = x.shape[0]
+        x = self.patch_embed(x)
+        cls = self.cls_token.expand(B, -1, -1)
+        x = torch.cat([cls, x], dim=1)
+        x = self.pos_encoding(x)
+
+        want = set(range(len(self.blocks))) if layers is None else set(layers)
+        attentions = {}
+        for i, block in enumerate(self.blocks):
+            if i in want:
+                x, attn = block(x, return_attention=True)
+                attentions[i] = attn  # keep grad, keep on device
+            else:
+                x = block(x)  # no attention needed -> uses fast SDPA path
 
         x = self.norm(x)
         return self.head(x[:, 0]), attentions

@@ -265,6 +265,11 @@ def iter_attack_ref_batches() -> Iterable[Tuple[torch.Tensor, torch.Tensor]]:
         yield imgs.to(DEVICE), labels.to(DEVICE)
 
 
+# Sum-reduction CE so that dividing by total_images gives the exact mean
+# regardless of how images split into batches (guards the last partial batch).
+_ce_sum_reduction = nn.CrossEntropyLoss(reduction="sum")
+
+
 def compute_full_ref_objective(
     model: nn.Module,
     clean_attn: torch.Tensor,
@@ -278,13 +283,18 @@ def compute_full_ref_objective(
 
     for imgs, labels in iter_attack_ref_batches():
         if lam > 0:
-            logits, attns = model.forward_with_attention(imgs)
+            # forward_with_attention_grad keeps L4 attention on the autograd graph
+            # so the ADS term backpropagates into the PE delta. The old
+            # forward_with_attention detaches attention -> zero ADS gradient.
+            logits, attns = model.forward_with_attention_grad(imgs, layers=(3,))
             batch_attn_sum = attns[3].sum(dim=0).float()
             attn_sum = batch_attn_sum if attn_sum is None else attn_sum + batch_attn_sum
         else:
             logits = model(imgs)
 
-        ce = criterion(logits, labels) * imgs.size(0)
+        # reduction='sum' so multi-batch averaging is exact for any batch
+        # sizes (previous mean*batch_size only matched when all batches were equal).
+        ce = _ce_sum_reduction(logits, labels)
         ce_sum = ce if ce_sum is None else ce_sum + ce
         total_images += imgs.size(0)
 
@@ -328,7 +338,10 @@ def adaptive_pgd(model: nn.Module, clean_attn: torch.Tensor, pe_type: str, epsil
     base_params = [p.detach().clone() for p in pe_params]
     deltas = [torch.zeros_like(p) for p in pe_params]
 
-    pm.train()
+    # Attack in eval() mode: dropout during PGD is stochastic and was shown to
+    # create spurious high-damage/low-ADS "evasions" (seeds 789/1213) that vanish
+    # once dropout is disabled. eval() gives a deterministic, stronger attack.
+    pm.eval()
     for _ in range(PGD_STEPS):
         with torch.no_grad():
             for p, base, d in zip(pe_params, base_params, deltas):
