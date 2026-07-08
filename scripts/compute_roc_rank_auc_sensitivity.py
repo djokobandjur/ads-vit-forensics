@@ -2,22 +2,23 @@
 """
 compute_roc_rank_auc_sensitivity.py
 
-Post-processing verification script for the ADS ROC artifact.
+CPU-only post-processing script for the ADS benign-aware ROC artifact.
 
 Purpose
 -------
-The primary ROC artifact (ads_roc_v2.json) stores an operating-threshold AUC
-computed over a fixed ADS-ratio threshold grid. This script computes a
-rank-based sensitivity check from the same archived scores. For each
-(PE type, seed, epsilon), the positive side is the single attacked ADS score
-for that epsilon and the negative side is the archived clean/benign score set.
+The main manuscript reports standard rank-based AUC values for the benign-aware
+ROC table. This script derives those rank-based values from the archived
+ads_roc_v2.json scores. For each (PE type, seed, epsilon), the positive side is
+one attacked ADS score and the negative side is the archived clean/benign score
+set.
 
-Exact single-positive rank AUC is computed as:
+The same output also records the archived threshold-grid trapezoidal values from
+ads_roc_v2.json -> roc_by_eps[eps].auc as provenance. Those archived values are
+not used as the main AUC estimator.
+
+Rank-based single-positive AUC is computed as:
 
     AUC = P(negative < positive) + 0.5 * P(negative == positive)
-
-The script writes a compact JSON summary and prints a table comparing the
-rank-based sensitivity AUC to the stored threshold-grid operating AUC.
 
 Typical usage
 -------------
@@ -25,7 +26,16 @@ Typical usage
         --roc-path data/ads_roc_v2.json \
         --output-path data/ads_roc_rank_auc_sensitivity.json
 
-The script is CPU-only and does not require PyTorch or model checkpoints.
+The default output contains the compact fields consumed by reproduce.py:
+
+    pe, epsilon, exact_mean, exact_std, stored_mean, stored_std, n_seeds
+
+plus descriptive documentation fields (exact_estimator,
+stored_provenance_quantity, stored_provenance_field, n_positive_per_seed,
+n_negative_per_seed). reproduce.py reads only the compact fields.
+
+where exact_* are rank-based AUC summaries and stored_* are the archived
+threshold-grid trapezoidal provenance summaries.
 """
 
 from __future__ import annotations
@@ -50,10 +60,6 @@ def _sample_std(values: Sequence[float]) -> float:
     return float(stdev(values)) if len(values) > 1 else 0.0
 
 
-def _fmt_mean_std(values: Sequence[float]) -> str:
-    return f"{mean(values):.3f} ± {_sample_std(values):.3f}"
-
-
 def rank_auc_single_positive(positive: float, negatives: Sequence[float]) -> float:
     """Return exact rank-based AUC for one positive score vs many negatives."""
     if not negatives:
@@ -68,7 +74,7 @@ def sorted_seed_keys(pe_block: Mapping[str, Any]) -> List[str]:
 
 
 def normalize_eps_key(eps: str, available: Mapping[str, Any]) -> str:
-    """Find an epsilon key robustly across JSON string formatting variants."""
+    """Find an epsilon key robustly across JSON string-format variants."""
     eps_float = float(eps)
     for key in available.keys():
         if math.isclose(float(key), eps_float, rel_tol=0.0, abs_tol=1e-12):
@@ -80,6 +86,7 @@ def compute_rows(
     roc: Mapping[str, Any],
     pe_types: Sequence[str],
     epsilons: Sequence[str],
+    include_per_seed: bool = False,
 ) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
 
@@ -89,8 +96,8 @@ def compute_rows(
 
         seeds = sorted_seed_keys(roc[pe])
         for eps in epsilons:
-            exact_values: List[float] = []
-            stored_values: List[float] = []
+            rank_values: List[float] = []
+            threshold_grid_values: List[float] = []
             per_seed: List[Dict[str, Any]] = []
 
             for seed in seeds:
@@ -102,59 +109,63 @@ def compute_rows(
 
                 positive = float(attack_ads[eps_attack])
                 negatives = _as_float_list(seed_block["all_negative_scores"])
-                exact_auc = rank_auc_single_positive(positive, negatives)
-                stored_auc = float(roc_by_eps[eps_roc]["auc"])
+                rank_auc = rank_auc_single_positive(positive, negatives)
+                threshold_grid_value = float(roc_by_eps[eps_roc]["auc"])
 
-                exact_values.append(exact_auc)
-                stored_values.append(stored_auc)
-                per_seed.append(
-                    {
-                        "seed": seed,
-                        "epsilon": float(eps_attack),
-                        "positive_attack_score": positive,
-                        "n_positive": 1,
-                        "n_negative": len(negatives),
-                        "exact_rank_auc": exact_auc,
-                        "stored_threshold_auc": stored_auc,
-                    }
-                )
+                rank_values.append(rank_auc)
+                threshold_grid_values.append(threshold_grid_value)
 
-            # Negative-set composition is normally constant across seeds, but keep
-            # it explicit to document the protocol.
-            n_negatives = sorted({item["n_negative"] for item in per_seed})
+                if include_per_seed:
+                    per_seed.append(
+                        {
+                            "seed": seed,
+                            "epsilon": str(eps_attack),
+                            "positive_attack_score": positive,
+                            "n_positive": 1,
+                            "n_negative": len(negatives),
+                            "rank_based_auc": rank_auc,
+                            "threshold_grid_trapezoidal_value": threshold_grid_value,
+                            "threshold_grid_source_field": "roc_by_eps[eps].auc",
+                        }
+                    )
 
-            rows.append(
-                {
-                    "pe": pe,
-                    "epsilon": float(eps),
-                    "n_seeds": len(seeds),
-                    "n_positive_per_seed": 1,
-                    "n_negative_per_seed": n_negatives[0] if len(n_negatives) == 1 else n_negatives,
-                    "exact_rank_auc_mean": float(mean(exact_values)),
-                    "exact_rank_auc_std": _sample_std(exact_values),
-                    "stored_threshold_auc_mean": float(mean(stored_values)),
-                    "stored_threshold_auc_std": _sample_std(stored_values),
-                    "per_seed": per_seed,
-                }
-            )
+            row: Dict[str, Any] = {
+                "pe": pe,
+                "epsilon": str(eps),
+                # FINAL13 compact schema consumed by reproduce.py.
+                "exact_mean": float(mean(rank_values)),
+                "exact_std": _sample_std(rank_values),
+                "stored_mean": float(mean(threshold_grid_values)),
+                "stored_std": _sample_std(threshold_grid_values),
+                "n_seeds": len(seeds),
+                # Descriptive aliases/documentation for human readers.
+                "exact_estimator": "rank_based_auc",
+                "stored_provenance_quantity": "threshold_grid_trapezoidal_value",
+                "stored_provenance_field": "roc_by_eps[eps].auc",
+                "n_positive_per_seed": 1,
+                "n_negative_per_seed": len(_as_float_list(roc[pe][seeds[0]]["all_negative_scores"])),
+            }
+            if include_per_seed:
+                row["per_seed"] = per_seed
+            rows.append(row)
 
     return rows
 
 
 def print_table(rows: Sequence[Mapping[str, Any]]) -> None:
-    print("PE        eps    exact rank AUC      stored threshold AUC")
-    print("---------------------------------------------------------")
+    print("PE        eps    rank-based AUC     threshold-grid trapezoidal value")
+    print("------------------------------------------------------------------")
     for row in rows:
-        exact = f"{row['exact_rank_auc_mean']:.3f} ± {row['exact_rank_auc_std']:.3f}"
-        stored = f"{row['stored_threshold_auc_mean']:.3f} ± {row['stored_threshold_auc_std']:.3f}"
-        print(f"{row['pe']:<9} {row['epsilon']:<5g} {exact:<18} {stored}")
+        rank = f"{float(row['exact_mean']):.3f} ± {float(row['exact_std']):.3f}"
+        grid = f"{float(row['stored_mean']):.3f} ± {float(row['stored_std']):.3f}"
+        print(f"{row['pe']:<9} {str(row['epsilon']):<5} {rank:<18} {grid}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
-            "Compute exact single-positive rank-AUC sensitivity values from "
-            "ads_roc_v2.json and compare them to stored threshold-grid AUCs."
+            "Compute standard rank-based ROC AUC values from ads_roc_v2.json "
+            "and retain archived threshold-grid trapezoidal values as provenance."
         )
     )
     parser.add_argument(
@@ -165,10 +176,7 @@ def main() -> None:
     parser.add_argument(
         "--output-path",
         default="data/ads_roc_rank_auc_sensitivity.json",
-        help=(
-            "Path for the derived sensitivity-check JSON. "
-            "Default: data/ads_roc_rank_auc_sensitivity.json"
-        ),
+        help="Path for the derived rank-AUC/provenance JSON. Default: data/ads_roc_rank_auc_sensitivity.json",
     )
     parser.add_argument(
         "--pe-types",
@@ -182,6 +190,11 @@ def main() -> None:
         default=DEFAULT_EPSILONS,
         help="Attack budgets to process. Default: 0.05 0.1 0.2",
     )
+    parser.add_argument(
+        "--include-per-seed",
+        action="store_true",
+        help="Include per-seed rank-AUC/provenance rows in the output JSON.",
+    )
     args = parser.parse_args()
 
     roc_path = Path(args.roc_path)
@@ -190,28 +203,17 @@ def main() -> None:
     with roc_path.open("r", encoding="utf-8") as f:
         roc = json.load(f)
 
-    rows = compute_rows(roc, pe_types=args.pe_types, epsilons=args.epsilons)
-
-    payload = {
-        "metadata": {
-            "source_artifact": str(roc_path),
-            "description": (
-                "Rank-based single-positive ROC-AUC sensitivity check derived "
-                "from the archived ADS ROC scores. The stored ROC table uses a "
-                "coarse operating-threshold grid; this file reports exact rank "
-                "AUC for one attacked ADS score versus the archived negative "
-                "clean/benign scores for each seed and epsilon."
-            ),
-            "auc_formula": "P(negative < positive) + 0.5 * P(negative == positive)",
-            "pe_types": list(args.pe_types),
-            "epsilons": [float(e) for e in args.epsilons],
-        },
-        "results": rows,
-    }
+    rows = compute_rows(
+        roc,
+        pe_types=args.pe_types,
+        epsilons=args.epsilons,
+        include_per_seed=args.include_per_seed,
+    )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
+        json.dump(rows, f, indent=2)
+        f.write("\n")
 
     print_table(rows)
     print(f"\nSaved: {output_path}")
