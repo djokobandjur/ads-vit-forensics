@@ -1,0 +1,3564 @@
+{
+  "metadata": {
+    "experiment": "shared-delta / tied-buffer PGD-PE attack-convention accuracy control",
+    "script": "ads_shared_delta_attack_convention.py",
+    "timestamp": "2026-07-08T07:29:39.482926",
+    "dataset": "cifar",
+    "dataset_display": "CIFAR-100",
+    "n_val_images": 10000,
+    "device": "cuda",
+    "batch_size": 128,
+    "pe_types": [
+      "learned",
+      "sinusoidal",
+      "rope",
+      "alibi"
+    ],
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      1011,
+      1213
+    ],
+    "epsilons": [
+      0.05,
+      0.1,
+      0.2,
+      0.5,
+      1.0
+    ],
+    "attack": {
+      "name": "pgd_pe_shared_delta",
+      "pattern": "shared_delta_all_12_blocks",
+      "description": "Gradients are aggregated across transformer blocks for each PE buffer name; one delta tensor per buffer name is applied to all blocks.",
+      "pgd_steps": 20,
+      "alpha_ratio": 0.1,
+      "num_grad_batches": 20,
+      "objective": "maximize_cross_entropy",
+      "delta_init": "uniform(-epsilon, epsilon)",
+      "constraint": "L_inf per shared delta tensor"
+    },
+    "model_kwargs_base": {
+      "embed_dim": 768,
+      "depth": 12,
+      "num_heads": 12,
+      "mlp_ratio": 4.0,
+      "dropout": 0.0
+    },
+    "completed_at": "2026-07-08T08:57:48.052435",
+    "total_elapsed_sec": 5288.569496870041
+  },
+  "results": {
+    "learned": {
+      "42": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/learned_seed42/best_model.pth",
+        "clean_acc": 68.7,
+        "clean_correct": 6870,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          4.5,
+          1.34,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 4.5,
+            "acc_drop_pp": 64.2,
+            "correct": 450,
+            "total": 10000,
+            "elapsed_sec": 41.06084609031677,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 1.34,
+            "acc_drop_pp": 67.36,
+            "correct": 134,
+            "total": 10000,
+            "elapsed_sec": 40.999229431152344,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.0,
+            "acc_drop_pp": 67.7,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.005943298339844,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 67.7,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 40.991328716278076,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 67.7,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 40.98649215698242,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "123": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/learned_seed123/best_model.pth",
+        "clean_acc": 68.08,
+        "clean_correct": 6808,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          6.64,
+          1.33,
+          1.06,
+          1.0,
+          1.06
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 6.64,
+            "acc_drop_pp": 61.44,
+            "correct": 664,
+            "total": 10000,
+            "elapsed_sec": 41.56985259056091,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 1.33,
+            "acc_drop_pp": 66.75,
+            "correct": 133,
+            "total": 10000,
+            "elapsed_sec": 41.009145736694336,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.06,
+            "acc_drop_pp": 67.02,
+            "correct": 106,
+            "total": 10000,
+            "elapsed_sec": 41.01955223083496,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 67.08,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.00330209732056,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.06,
+            "acc_drop_pp": 67.02,
+            "correct": 106,
+            "total": 10000,
+            "elapsed_sec": 40.99944305419922,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "456": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/learned_seed456/best_model.pth",
+        "clean_acc": 68.03,
+        "clean_correct": 6803,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          10.79,
+          1.91,
+          1.1,
+          1.0,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 10.79,
+            "acc_drop_pp": 57.24,
+            "correct": 1079,
+            "total": 10000,
+            "elapsed_sec": 41.03095269203186,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 1.91,
+            "acc_drop_pp": 66.12,
+            "correct": 191,
+            "total": 10000,
+            "elapsed_sec": 41.00476551055908,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.1,
+            "acc_drop_pp": 66.93,
+            "correct": 110,
+            "total": 10000,
+            "elapsed_sec": 41.00420594215393,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 67.03,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 40.99817156791687,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 67.03,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.002089738845825,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "789": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/learned_seed789/best_model.pth",
+        "clean_acc": 67.63,
+        "clean_correct": 6763,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          6.39,
+          1.13,
+          1.01,
+          1.0,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 6.39,
+            "acc_drop_pp": 61.239999999999995,
+            "correct": 639,
+            "total": 10000,
+            "elapsed_sec": 41.02932572364807,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 1.13,
+            "acc_drop_pp": 66.5,
+            "correct": 113,
+            "total": 10000,
+            "elapsed_sec": 41.00227999687195,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.01,
+            "acc_drop_pp": 66.61999999999999,
+            "correct": 101,
+            "total": 10000,
+            "elapsed_sec": 40.99585723876953,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.63,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 40.999245166778564,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.63,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.00292992591858,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "1011": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/learned_seed1011/best_model.pth",
+        "clean_acc": 67.64,
+        "clean_correct": 6764,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          7.07,
+          1.03,
+          1.03,
+          1.01,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 7.07,
+            "acc_drop_pp": 60.57,
+            "correct": 707,
+            "total": 10000,
+            "elapsed_sec": 41.02815914154053,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 1.03,
+            "acc_drop_pp": 66.61,
+            "correct": 103,
+            "total": 10000,
+            "elapsed_sec": 41.027684926986694,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.03,
+            "acc_drop_pp": 66.61,
+            "correct": 103,
+            "total": 10000,
+            "elapsed_sec": 41.020339488983154,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.01,
+            "acc_drop_pp": 66.63,
+            "correct": 101,
+            "total": 10000,
+            "elapsed_sec": 41.022273540496826,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.64,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.016627073287964,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "1213": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/learned_seed1213/best_model.pth",
+        "clean_acc": 67.44,
+        "clean_correct": 6744,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          6.04,
+          1.15,
+          1.08,
+          1.0,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 6.04,
+            "acc_drop_pp": 61.4,
+            "correct": 604,
+            "total": 10000,
+            "elapsed_sec": 41.03515672683716,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 1.15,
+            "acc_drop_pp": 66.28999999999999,
+            "correct": 115,
+            "total": 10000,
+            "elapsed_sec": 41.02057886123657,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.08,
+            "acc_drop_pp": 66.36,
+            "correct": 108,
+            "total": 10000,
+            "elapsed_sec": 41.01279950141907,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.44,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.00974678993225,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.44,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.00831580162048,
+            "norm_sanity": {
+              "pos_embed": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "sinusoidal": {
+      "42": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/sinusoidal_seed42/best_model.pth",
+        "clean_acc": 67.4,
+        "clean_correct": 6740,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          58.89,
+          31.96,
+          1.27,
+          1.0,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 58.89,
+            "acc_drop_pp": 8.510000000000005,
+            "correct": 5889,
+            "total": 10000,
+            "elapsed_sec": 41.02194094657898,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 31.96,
+            "acc_drop_pp": 35.440000000000005,
+            "correct": 3196,
+            "total": 10000,
+            "elapsed_sec": 41.04433631896973,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.27,
+            "acc_drop_pp": 66.13000000000001,
+            "correct": 127,
+            "total": 10000,
+            "elapsed_sec": 41.01778745651245,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.4,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.027259349823,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.4,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.03033447265625,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "123": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/sinusoidal_seed123/best_model.pth",
+        "clean_acc": 66.42,
+        "clean_correct": 6642,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          58.19,
+          27.34,
+          1.29,
+          1.05,
+          1.01
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 58.19,
+            "acc_drop_pp": 8.230000000000004,
+            "correct": 5819,
+            "total": 10000,
+            "elapsed_sec": 41.02503848075867,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 27.34,
+            "acc_drop_pp": 39.08,
+            "correct": 2734,
+            "total": 10000,
+            "elapsed_sec": 41.03924226760864,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.29,
+            "acc_drop_pp": 65.13,
+            "correct": 129,
+            "total": 10000,
+            "elapsed_sec": 41.01378774642944,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.05,
+            "acc_drop_pp": 65.37,
+            "correct": 105,
+            "total": 10000,
+            "elapsed_sec": 41.0096914768219,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.01,
+            "acc_drop_pp": 65.41,
+            "correct": 101,
+            "total": 10000,
+            "elapsed_sec": 41.0118989944458,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "456": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/sinusoidal_seed456/best_model.pth",
+        "clean_acc": 66.93,
+        "clean_correct": 6693,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          57.68,
+          28.9,
+          1.2,
+          1.02,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 57.68,
+            "acc_drop_pp": 9.250000000000007,
+            "correct": 5768,
+            "total": 10000,
+            "elapsed_sec": 41.04266095161438,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 28.9,
+            "acc_drop_pp": 38.03000000000001,
+            "correct": 2890,
+            "total": 10000,
+            "elapsed_sec": 41.026124238967896,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.2,
+            "acc_drop_pp": 65.73,
+            "correct": 120,
+            "total": 10000,
+            "elapsed_sec": 41.01019740104675,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.02,
+            "acc_drop_pp": 65.91000000000001,
+            "correct": 102,
+            "total": 10000,
+            "elapsed_sec": 41.024922370910645,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 65.93,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.01604652404785,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "789": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/sinusoidal_seed789/best_model.pth",
+        "clean_acc": 67.72,
+        "clean_correct": 6772,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          58.53,
+          30.12,
+          1.24,
+          1.0,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 58.53,
+            "acc_drop_pp": 9.189999999999998,
+            "correct": 5853,
+            "total": 10000,
+            "elapsed_sec": 41.04369068145752,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 30.12,
+            "acc_drop_pp": 37.599999999999994,
+            "correct": 3012,
+            "total": 10000,
+            "elapsed_sec": 41.025761127471924,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.24,
+            "acc_drop_pp": 66.48,
+            "correct": 124,
+            "total": 10000,
+            "elapsed_sec": 41.016433238983154,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.72,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.01837420463562,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.72,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.011712074279785,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "1011": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/sinusoidal_seed1011/best_model.pth",
+        "clean_acc": 67.47,
+        "clean_correct": 6747,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          57.8,
+          30.3,
+          1.1,
+          1.07,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 57.8,
+            "acc_drop_pp": 9.670000000000002,
+            "correct": 5780,
+            "total": 10000,
+            "elapsed_sec": 41.051231384277344,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 30.3,
+            "acc_drop_pp": 37.17,
+            "correct": 3030,
+            "total": 10000,
+            "elapsed_sec": 41.029099225997925,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.1,
+            "acc_drop_pp": 66.37,
+            "correct": 110,
+            "total": 10000,
+            "elapsed_sec": 41.02519989013672,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.07,
+            "acc_drop_pp": 66.4,
+            "correct": 107,
+            "total": 10000,
+            "elapsed_sec": 41.020747423172,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.47,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.04649353027344,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "1213": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/sinusoidal_seed1213/best_model.pth",
+        "clean_acc": 67.35,
+        "clean_correct": 6735,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          58.13,
+          31.24,
+          1.08,
+          1.01,
+          1.0
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 58.13,
+            "acc_drop_pp": 9.219999999999992,
+            "correct": 5813,
+            "total": 10000,
+            "elapsed_sec": 41.05517530441284,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 31.24,
+            "acc_drop_pp": 36.11,
+            "correct": 3124,
+            "total": 10000,
+            "elapsed_sec": 41.03365468978882,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 1.08,
+            "acc_drop_pp": 66.27,
+            "correct": 108,
+            "total": 10000,
+            "elapsed_sec": 41.02555465698242,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 1.01,
+            "acc_drop_pp": 66.33999999999999,
+            "correct": 101,
+            "total": 10000,
+            "elapsed_sec": 41.02675724029541,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.0,
+            "acc_drop_pp": 66.35,
+            "correct": 100,
+            "total": 10000,
+            "elapsed_sec": 41.02412986755371,
+            "norm_sanity": {
+              "pe": {
+                "shape": [
+                  1,
+                  65,
+                  768
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "rope": {
+      "42": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/rope_seed42/best_model.pth",
+        "clean_acc": 73.08,
+        "clean_correct": 7308,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          71.88,
+          69.71,
+          59.57,
+          8.95,
+          1.9
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 71.88,
+            "acc_drop_pp": 1.2000000000000028,
+            "correct": 7188,
+            "total": 10000,
+            "elapsed_sec": 44.42280387878418,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.04974529892206192,
+                "delta_inf_to_eps": 0.9949059784412384
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 69.71,
+            "acc_drop_pp": 3.3700000000000045,
+            "correct": 6971,
+            "total": 10000,
+            "elapsed_sec": 44.431458950042725,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.09949059784412384,
+                "delta_inf_to_eps": 0.9949059784412384
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 59.57,
+            "acc_drop_pp": 13.509999999999998,
+            "correct": 5957,
+            "total": 10000,
+            "elapsed_sec": 44.41866707801819,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.19898119568824768,
+                "delta_inf_to_eps": 0.9949059784412384
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 8.95,
+            "acc_drop_pp": 64.13,
+            "correct": 895,
+            "total": 10000,
+            "elapsed_sec": 44.42383909225464,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.497452974319458,
+                "delta_inf_to_eps": 0.994905948638916
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.9,
+            "acc_drop_pp": 71.17999999999999,
+            "correct": 190,
+            "total": 10000,
+            "elapsed_sec": 44.450110912323,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.994905948638916,
+                "delta_inf_to_eps": 0.994905948638916
+              }
+            }
+          }
+        }
+      },
+      "123": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/rope_seed123/best_model.pth",
+        "clean_acc": 73.34,
+        "clean_correct": 7334,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          72.1,
+          69.53,
+          55.57,
+          9.91,
+          2.26
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 72.1,
+            "acc_drop_pp": 1.240000000000009,
+            "correct": 7210,
+            "total": 10000,
+            "elapsed_sec": 44.77745318412781,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.049241263419389725,
+                "delta_inf_to_eps": 0.9848252683877945
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 69.53,
+            "acc_drop_pp": 3.8100000000000023,
+            "correct": 6953,
+            "total": 10000,
+            "elapsed_sec": 44.74884057044983,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.09848252683877945,
+                "delta_inf_to_eps": 0.9848252683877945
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 55.57,
+            "acc_drop_pp": 17.770000000000003,
+            "correct": 5557,
+            "total": 10000,
+            "elapsed_sec": 44.66134595870972,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.1969650536775589,
+                "delta_inf_to_eps": 0.9848252683877945
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 9.91,
+            "acc_drop_pp": 63.43000000000001,
+            "correct": 991,
+            "total": 10000,
+            "elapsed_sec": 44.71328353881836,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.49241262674331665,
+                "delta_inf_to_eps": 0.9848252534866333
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.26,
+            "acc_drop_pp": 71.08,
+            "correct": 226,
+            "total": 10000,
+            "elapsed_sec": 44.709999799728394,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.9848252534866333,
+                "delta_inf_to_eps": 0.9848252534866333
+              }
+            }
+          }
+        }
+      },
+      "456": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/rope_seed456/best_model.pth",
+        "clean_acc": 73.47,
+        "clean_correct": 7347,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          72.36,
+          69.81,
+          56.42,
+          11.17,
+          2.51
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 72.36,
+            "acc_drop_pp": 1.1099999999999994,
+            "correct": 7236,
+            "total": 10000,
+            "elapsed_sec": 44.636117458343506,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.04944843053817749,
+                "delta_inf_to_eps": 0.9889686107635498
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 69.81,
+            "acc_drop_pp": 3.6599999999999966,
+            "correct": 6981,
+            "total": 10000,
+            "elapsed_sec": 44.65894651412964,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.09889686107635498,
+                "delta_inf_to_eps": 0.9889686107635498
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 56.42,
+            "acc_drop_pp": 17.049999999999997,
+            "correct": 5642,
+            "total": 10000,
+            "elapsed_sec": 44.674431562423706,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.19779372215270996,
+                "delta_inf_to_eps": 0.9889686107635498
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 11.17,
+            "acc_drop_pp": 62.3,
+            "correct": 1117,
+            "total": 10000,
+            "elapsed_sec": 44.72715449333191,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.4944843053817749,
+                "delta_inf_to_eps": 0.9889686107635498
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.51,
+            "acc_drop_pp": 70.96,
+            "correct": 251,
+            "total": 10000,
+            "elapsed_sec": 44.69260764122009,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.9889686107635498,
+                "delta_inf_to_eps": 0.9889686107635498
+              }
+            }
+          }
+        }
+      },
+      "789": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/rope_seed789/best_model.pth",
+        "clean_acc": 73.0,
+        "clean_correct": 7300,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          71.44,
+          68.33,
+          52.0,
+          8.65,
+          2.44
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 71.44,
+            "acc_drop_pp": 1.5600000000000023,
+            "correct": 7144,
+            "total": 10000,
+            "elapsed_sec": 44.72385358810425,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.04854731634259224,
+                "delta_inf_to_eps": 0.9709463268518448
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 68.33,
+            "acc_drop_pp": 4.670000000000002,
+            "correct": 6833,
+            "total": 10000,
+            "elapsed_sec": 44.71781778335571,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.09709463268518448,
+                "delta_inf_to_eps": 0.9709463268518448
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 52.0,
+            "acc_drop_pp": 21.0,
+            "correct": 5200,
+            "total": 10000,
+            "elapsed_sec": 44.699894428253174,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.19418926537036896,
+                "delta_inf_to_eps": 0.9709463268518448
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 8.65,
+            "acc_drop_pp": 64.35,
+            "correct": 865,
+            "total": 10000,
+            "elapsed_sec": 44.71831679344177,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.4854731559753418,
+                "delta_inf_to_eps": 0.9709463119506836
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.44,
+            "acc_drop_pp": 70.56,
+            "correct": 244,
+            "total": 10000,
+            "elapsed_sec": 44.64611196517944,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.9709463119506836,
+                "delta_inf_to_eps": 0.9709463119506836
+              }
+            }
+          }
+        }
+      },
+      "1011": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/rope_seed1011/best_model.pth",
+        "clean_acc": 73.05,
+        "clean_correct": 7305,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          72.01,
+          70.06,
+          58.77,
+          10.18,
+          2.15
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 72.01,
+            "acc_drop_pp": 1.039999999999992,
+            "correct": 7201,
+            "total": 10000,
+            "elapsed_sec": 44.681262254714966,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.04972316697239876,
+                "delta_inf_to_eps": 0.9944633394479752
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 70.06,
+            "acc_drop_pp": 2.989999999999995,
+            "correct": 7006,
+            "total": 10000,
+            "elapsed_sec": 44.69021248817444,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.09944633394479752,
+                "delta_inf_to_eps": 0.9944633394479752
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 58.77,
+            "acc_drop_pp": 14.279999999999994,
+            "correct": 5877,
+            "total": 10000,
+            "elapsed_sec": 44.717205286026,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.19889266788959503,
+                "delta_inf_to_eps": 0.9944633394479752
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 10.18,
+            "acc_drop_pp": 62.87,
+            "correct": 1018,
+            "total": 10000,
+            "elapsed_sec": 44.67698287963867,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.497231662273407,
+                "delta_inf_to_eps": 0.994463324546814
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.15,
+            "acc_drop_pp": 70.89999999999999,
+            "correct": 215,
+            "total": 10000,
+            "elapsed_sec": 44.678778886795044,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.994463324546814,
+                "delta_inf_to_eps": 0.994463324546814
+              }
+            }
+          }
+        }
+      },
+      "1213": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/rope_seed1213/best_model.pth",
+        "clean_acc": 73.13,
+        "clean_correct": 7313,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          71.75,
+          68.85,
+          53.55,
+          8.29,
+          2.2
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 71.75,
+            "acc_drop_pp": 1.3799999999999955,
+            "correct": 7175,
+            "total": 10000,
+            "elapsed_sec": 44.743513345718384,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.048488616943359375,
+                "delta_inf_to_eps": 0.9697723388671875
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 68.85,
+            "acc_drop_pp": 4.280000000000001,
+            "correct": 6885,
+            "total": 10000,
+            "elapsed_sec": 44.721362590789795,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.09697723388671875,
+                "delta_inf_to_eps": 0.9697723388671875
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 53.55,
+            "acc_drop_pp": 19.58,
+            "correct": 5355,
+            "total": 10000,
+            "elapsed_sec": 44.6658821105957,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.1939544677734375,
+                "delta_inf_to_eps": 0.9697723388671875
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 8.29,
+            "acc_drop_pp": 64.84,
+            "correct": 829,
+            "total": 10000,
+            "elapsed_sec": 44.67355942726135,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.48488613963127136,
+                "delta_inf_to_eps": 0.9697722792625427
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.2,
+            "acc_drop_pp": 70.92999999999999,
+            "correct": 220,
+            "total": 10000,
+            "elapsed_sec": 44.707406997680664,
+            "norm_sanity": {
+              "cos_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "sin_cached": {
+                "shape": [
+                  1,
+                  1,
+                  65,
+                  32
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              },
+              "inv_freq": {
+                "shape": [
+                  32
+                ],
+                "delta_inf": 0.9697722792625427,
+                "delta_inf_to_eps": 0.9697722792625427
+              }
+            }
+          }
+        }
+      }
+    },
+    "alibi": {
+      "42": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/alibi_seed42/best_model.pth",
+        "clean_acc": 67.4,
+        "clean_correct": 6740,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          55.64,
+          26.12,
+          8.14,
+          2.91,
+          2.09
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 55.64,
+            "acc_drop_pp": 11.760000000000005,
+            "correct": 5564,
+            "total": 10000,
+            "elapsed_sec": 41.51657462120056,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 26.12,
+            "acc_drop_pp": 41.28,
+            "correct": 2612,
+            "total": 10000,
+            "elapsed_sec": 41.50025701522827,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 8.14,
+            "acc_drop_pp": 59.260000000000005,
+            "correct": 814,
+            "total": 10000,
+            "elapsed_sec": 41.49682068824768,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 2.91,
+            "acc_drop_pp": 64.49000000000001,
+            "correct": 291,
+            "total": 10000,
+            "elapsed_sec": 41.497403621673584,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.09,
+            "acc_drop_pp": 65.31,
+            "correct": 209,
+            "total": 10000,
+            "elapsed_sec": 41.498318910598755,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "123": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/alibi_seed123/best_model.pth",
+        "clean_acc": 68.16,
+        "clean_correct": 6816,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          52.75,
+          27.5,
+          15.07,
+          3.3,
+          2.1
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 52.75,
+            "acc_drop_pp": 15.409999999999997,
+            "correct": 5275,
+            "total": 10000,
+            "elapsed_sec": 41.52942514419556,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 27.5,
+            "acc_drop_pp": 40.66,
+            "correct": 2750,
+            "total": 10000,
+            "elapsed_sec": 41.50814700126648,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 15.07,
+            "acc_drop_pp": 53.089999999999996,
+            "correct": 1507,
+            "total": 10000,
+            "elapsed_sec": 41.50622534751892,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 3.3,
+            "acc_drop_pp": 64.86,
+            "correct": 330,
+            "total": 10000,
+            "elapsed_sec": 41.496540546417236,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.1,
+            "acc_drop_pp": 66.06,
+            "correct": 210,
+            "total": 10000,
+            "elapsed_sec": 41.48587965965271,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "456": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/alibi_seed456/best_model.pth",
+        "clean_acc": 67.43,
+        "clean_correct": 6743,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          46.78,
+          26.35,
+          11.81,
+          4.02,
+          1.94
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 46.78,
+            "acc_drop_pp": 20.650000000000006,
+            "correct": 4678,
+            "total": 10000,
+            "elapsed_sec": 41.50793266296387,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 26.35,
+            "acc_drop_pp": 41.080000000000005,
+            "correct": 2635,
+            "total": 10000,
+            "elapsed_sec": 41.51705503463745,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 11.81,
+            "acc_drop_pp": 55.620000000000005,
+            "correct": 1181,
+            "total": 10000,
+            "elapsed_sec": 41.53146839141846,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 4.02,
+            "acc_drop_pp": 63.41000000000001,
+            "correct": 402,
+            "total": 10000,
+            "elapsed_sec": 41.51744198799133,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 1.94,
+            "acc_drop_pp": 65.49000000000001,
+            "correct": 194,
+            "total": 10000,
+            "elapsed_sec": 41.531914710998535,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "789": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/alibi_seed789/best_model.pth",
+        "clean_acc": 67.72,
+        "clean_correct": 6772,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          58.29,
+          37.97,
+          14.25,
+          5.31,
+          3.19
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 58.29,
+            "acc_drop_pp": 9.43,
+            "correct": 5829,
+            "total": 10000,
+            "elapsed_sec": 41.508365631103516,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 37.97,
+            "acc_drop_pp": 29.75,
+            "correct": 3797,
+            "total": 10000,
+            "elapsed_sec": 41.5054247379303,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 14.25,
+            "acc_drop_pp": 53.47,
+            "correct": 1425,
+            "total": 10000,
+            "elapsed_sec": 41.5035982131958,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 5.31,
+            "acc_drop_pp": 62.41,
+            "correct": 531,
+            "total": 10000,
+            "elapsed_sec": 41.50510096549988,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 3.19,
+            "acc_drop_pp": 64.53,
+            "correct": 319,
+            "total": 10000,
+            "elapsed_sec": 41.50121784210205,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "1011": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/alibi_seed1011/best_model.pth",
+        "clean_acc": 67.99,
+        "clean_correct": 6799,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          50.49,
+          24.72,
+          9.69,
+          4.41,
+          2.93
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 50.49,
+            "acc_drop_pp": 17.499999999999993,
+            "correct": 5049,
+            "total": 10000,
+            "elapsed_sec": 41.531408071517944,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 24.72,
+            "acc_drop_pp": 43.269999999999996,
+            "correct": 2472,
+            "total": 10000,
+            "elapsed_sec": 41.53076124191284,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 9.69,
+            "acc_drop_pp": 58.3,
+            "correct": 969,
+            "total": 10000,
+            "elapsed_sec": 41.49930667877197,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 4.41,
+            "acc_drop_pp": 63.58,
+            "correct": 441,
+            "total": 10000,
+            "elapsed_sec": 41.50516319274902,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 2.93,
+            "acc_drop_pp": 65.05999999999999,
+            "correct": 293,
+            "total": 10000,
+            "elapsed_sec": 41.498119831085205,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      },
+      "1213": {
+        "status": "ok",
+        "checkpoint": "/content/drive/MyDrive/Trained models_CIFAR100/alibi_seed1213/best_model.pth",
+        "clean_acc": 67.86,
+        "clean_correct": 6786,
+        "clean_total": 10000,
+        "epsilons": [
+          0.05,
+          0.1,
+          0.2,
+          0.5,
+          1.0
+        ],
+        "accuracies": [
+          51.69,
+          32.92,
+          11.65,
+          4.68,
+          3.57
+        ],
+        "attacks": {
+          "0.05": {
+            "epsilon": 0.05,
+            "accuracy": 51.69,
+            "acc_drop_pp": 16.17,
+            "correct": 5169,
+            "total": 10000,
+            "elapsed_sec": 41.50172972679138,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.05000000074505806,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.1": {
+            "epsilon": 0.1,
+            "accuracy": 32.92,
+            "acc_drop_pp": 34.94,
+            "correct": 3292,
+            "total": 10000,
+            "elapsed_sec": 41.520204067230225,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.10000000149011612,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.2": {
+            "epsilon": 0.2,
+            "accuracy": 11.65,
+            "acc_drop_pp": 56.21,
+            "correct": 1165,
+            "total": 10000,
+            "elapsed_sec": 41.49670886993408,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.20000000298023224,
+                "delta_inf_to_eps": 1.0000000149011612
+              }
+            }
+          },
+          "0.5": {
+            "epsilon": 0.5,
+            "accuracy": 4.68,
+            "acc_drop_pp": 63.18,
+            "correct": 468,
+            "total": 10000,
+            "elapsed_sec": 41.50566625595093,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 0.5,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          },
+          "1.0": {
+            "epsilon": 1.0,
+            "accuracy": 3.57,
+            "acc_drop_pp": 64.29,
+            "correct": 357,
+            "total": 10000,
+            "elapsed_sec": 41.4852249622345,
+            "norm_sanity": {
+              "slopes": {
+                "shape": [
+                  1,
+                  12,
+                  1,
+                  1
+                ],
+                "delta_inf": 1.0,
+                "delta_inf_to_eps": 1.0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "summary": {
+    "epsilons": [
+      0.05,
+      0.1,
+      0.2,
+      0.5,
+      1.0
+    ],
+    "mean_accuracy_by_pe": {
+      "learned": [
+        6.905,
+        1.315,
+        1.0466666666666666,
+        1.0016666666666667,
+        1.01
+      ],
+      "sinusoidal": [
+        58.20333333333334,
+        29.97666666666667,
+        1.1966666666666668,
+        1.0250000000000001,
+        1.0016666666666667
+      ],
+      "rope": [
+        71.92333333333333,
+        69.38166666666666,
+        55.98,
+        9.525,
+        2.243333333333333
+      ],
+      "alibi": [
+        52.606666666666676,
+        29.263333333333335,
+        11.768333333333333,
+        4.1049999999999995,
+        2.6366666666666663
+      ]
+    },
+    "std_accuracy_by_pe": {
+      "learned": [
+        2.09705269366318,
+        0.3154520565791258,
+        0.03983298465677245,
+        0.004082482904638634,
+        0.024494897427831803
+      ],
+      "sinusoidal": [
+        0.451737386837383,
+        1.6592729331447154,
+        0.08824209124146289,
+        0.028809720581775892,
+        0.004082482904638634
+      ],
+      "rope": [
+        0.31462146568005633,
+        0.6575839616860107,
+        2.925036751905864,
+        1.0867152340884894,
+        0.21841855843006255
+      ],
+      "alibi": [
+        4.019764503881622,
+        5.124383540160383,
+        2.6290562311724464,
+        0.8898258256535376,
+        0.6834520222127276
+      ]
+    },
+    "n_by_pe": {
+      "learned": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "sinusoidal": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "rope": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "alibi": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    }
+  }
+}
