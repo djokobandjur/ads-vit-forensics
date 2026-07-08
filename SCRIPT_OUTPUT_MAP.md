@@ -48,7 +48,7 @@ python /content/ads-vit-forensics/scripts/<script_name>.py ...
 |---|---|---|---|---:|---|
 | `scripts/compute_roc_rank_auc_sensitivity.py` | CPU-only sensitivity check for ROC protocol. | `data/ads_roc_v2.json` | `data/ads_roc_rank_auc_sensitivity.json` | No | Compares exact single-positive rank AUC against stored 11-threshold operating AUC. |
 | `scripts/generate_ads_figures.py` | Regenerate paper figures from archived JSON files. | Primary JSON files in `data/` | `figures/ads_fig1_l4_vs_epsilon.{png,pdf}`, `figures/ads_fig2_per_layer_heatmap.{png,pdf}`, `figures/ads_fig3_layer_profile.{png,pdf}`, `figures/ads_fig4_early_warning_combined.{png,pdf}` | No | Figure-generation only; does not rerun model attacks. |
-| `scripts/reproduce.py` | CPU-only verification of paper tables, statistics, shared-δ control, ROC sensitivity, and optional figures. | Archived JSON files in `data/` | `output/reproduce_log.txt`, `output/tables/*.txt`, optional regenerated figures | No | Preferred final release check: `python scripts/reproduce.py --data-dir data --output-dir output --no-figures`. |
+| `reproduce.py` | CPU-only verification of paper tables, statistics, shared-δ control, ROC sensitivity, optional robustness cohort, and optional figures. | Archived JSON files in `data/` and `data/robustness/` | `output/reproduce_log.txt`, `output/tables/*.txt`, optional regenerated figures | No | Preferred final release check: `python reproduce.py --data-dir data --output-dir output --no-figures`. |
 
 ## Protocol-robustness scripts
 
@@ -72,9 +72,9 @@ python /content/ads-vit-forensics/scripts/<script_name>.py ...
 
 ```bash
 # From repository root
-python scripts/reproduce.py --data-dir data --output-dir output --section attack_convention --no-figures
-python scripts/reproduce.py --data-dir data --output-dir output --section roc_sensitivity --no-figures
-python scripts/reproduce.py --data-dir data --output-dir output --no-figures
+python reproduce.py --data-dir data --output-dir output --section attack_convention --no-figures
+python reproduce.py --data-dir data --output-dir output --section roc_sensitivity --no-figures
+python reproduce.py --data-dir data --output-dir output --no-figures
 python scripts/generate_ads_figures.py --data-dir data --output-dir .
 ```
 

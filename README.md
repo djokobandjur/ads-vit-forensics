@@ -213,7 +213,7 @@ The fastest reproducibility check does not require GPU or checkpoint files. It v
 
 ```bash
 pip install -r requirements.txt
-python scripts/reproduce.py --data-dir data --output-dir output --no-figures
+python reproduce.py --data-dir data --output-dir output --no-figures
 ```
 
 To regenerate the paper figures from the archived JSON files:

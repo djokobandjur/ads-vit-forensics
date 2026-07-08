@@ -33,9 +33,12 @@ Optional, verified when present:
     ads_comparison.json
     ads_adaptive.json
     ads_ref_evasion.json
-    ads_results_cifar100_canonical_n12.json
-    ads_specificity_cifar100_canonical_n12.json
-    ads_probing_residual_cifar100_canonical_n12.json
+    ads_shared_delta_imagenet100.json
+    ads_shared_delta_cifar100.json
+    ads_roc_rank_auc_sensitivity.json
+    robustness/ads_results_cifar100_canonical_n12.json
+    robustness/ads_specificity_cifar100_canonical_n12.json
+    robustness/ads_probing_residual_cifar100_canonical_n12.json
 
 Outputs
 -------
@@ -199,9 +202,12 @@ FALLBACK_FILENAMES = {
     "ref_indices": ["ads_ref_indices.json", "ads_ref_indices (1).json"],
     "imn_probe": ["ads_probing_residual.json"],
     "cif_probe": ["ads_probing_residual_cifar.json"],
-    "canonical_main": ["ads_results_cifar100_canonical_n12.json"],
-    "canonical_spec": ["ads_specificity_cifar100_canonical_n12.json", "ads_specificity_cifar100_canonical_n12(1).json"],
-    "canonical_probe": ["ads_probing_residual_cifar100_canonical_n12.json", "ads_probing_residual_cifar100_canonical_n12(1).json"],
+    "shared_delta_imn": ["ads_shared_delta_imagenet100.json"],
+    "shared_delta_cif": ["ads_shared_delta_cifar100.json"],
+    "roc_rank_auc": ["ads_roc_rank_auc_sensitivity.json"],
+    "canonical_main": ["robustness/ads_results_cifar100_canonical_n12.json", "ads_results_cifar100_canonical_n12.json"],
+    "canonical_spec": ["robustness/ads_specificity_cifar100_canonical_n12.json", "ads_specificity_cifar100_canonical_n12.json", "ads_specificity_cifar100_canonical_n12(1).json"],
+    "canonical_probe": ["robustness/ads_probing_residual_cifar100_canonical_n12.json", "ads_probing_residual_cifar100_canonical_n12.json", "ads_probing_residual_cifar100_canonical_n12(1).json"],
 }
 
 
@@ -765,6 +771,100 @@ def probing_table(data: Mapping[str, Any], log: Logger, output_dir: Path) -> Non
     write_table(output_dir / "tables" / "table_residual_probing.txt", lines)
 
 
+
+def shared_delta_attack_convention_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    """Verify the shared-delta/tied-buffer attack-convention artifacts."""
+    log.section("Shared-delta / tied-buffer attack-convention check")
+    entries = [
+        ("ImageNet-100", data.get("shared_delta_imn")),
+        ("CIFAR-100", data.get("shared_delta_cif")),
+    ]
+    lines: List[str] = []
+    for dataset_name, obj in entries:
+        if obj is None:
+            log.warn(f"Shared-delta artifact missing for {dataset_name}; skipping.")
+            continue
+        meta = obj.get("metadata", {}) if isinstance(obj, Mapping) else {}
+        summary = obj.get("summary", {}) if isinstance(obj, Mapping) else {}
+        results = obj.get("results", {}) if isinstance(obj, Mapping) else {}
+        eps = [float(x) for x in summary.get("epsilons", [])]
+        means = summary.get("mean_accuracy_by_pe", {})
+        ns = summary.get("n_by_pe", {})
+        if set(results.keys()) >= set(PE_TYPES) and all(set(get_seeds(results[pe])) == set(PRIMARY_SEEDS) for pe in PE_TYPES):
+            log.pass_check(f"{dataset_name}: shared-delta artifact has final n=6 seed coverage.")
+        else:
+            log.fail(f"{dataset_name}: shared-delta artifact does not have complete final n=6 PE/seed coverage.")
+        pattern = meta.get("attack", {}).get("pattern") if isinstance(meta.get("attack"), Mapping) else None
+        if pattern == "shared_delta_all_12_blocks":
+            log.pass_check(f"{dataset_name}: attack metadata is consistent with shared_delta_all_12_blocks.")
+        else:
+            log.warn(f"{dataset_name}: attack metadata pattern is {pattern!r}, expected shared_delta_all_12_blocks.")
+        from decimal import Decimal, ROUND_HALF_UP
+        def one_decimal_half_up(value: float) -> str:
+            return str(Decimal(f"{value:.6f}").quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
+
+        header = f"{dataset_name} mean attacked accuracy (%) under shared-delta PE attack"
+        log.log(header)
+        lines += [header]
+        colhdr = f"{'PE':<12}" + "".join(f" eps={e:g}".rjust(10) for e in eps) + "     n"
+        log.log(colhdr)
+        lines += [colhdr, "-" * len(colhdr)]
+        for pe in PE_TYPES:
+            vals = [float(v) for v in means.get(pe, [])]
+            nvals = ns.get(pe, [])
+            n_label = ",".join(str(x) for x in sorted(set(nvals))) if isinstance(nvals, list) else str(nvals)
+            line = f"{PE_DISPLAY[pe]:<12}" + "".join(f"{one_decimal_half_up(v):>10}" for v in vals) + f" {n_label:>5}"
+            log.log(line)
+            lines.append(line)
+        lines.append("")
+        expected_meta = set(str(s) for s in meta.get("seeds", []))
+        if expected_meta == set(PRIMARY_SEEDS):
+            log.pass_check(f"{dataset_name}: metadata seed list matches final n=6 set.")
+        else:
+            log.warn(f"{dataset_name}: metadata seed list {sorted(expected_meta)} differs from expected {PRIMARY_SEEDS}.")
+    if lines:
+        write_table(output_dir / "tables" / "table_shared_delta_attack_convention.txt", lines)
+
+
+def roc_rank_auc_sensitivity_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
+    """Verify the derived exact-rank-AUC sensitivity artifact."""
+    log.section("ROC rank-AUC sensitivity check")
+    rows = data.get("roc_rank_auc")
+    if rows is None:
+        log.warn("ROC rank-AUC sensitivity artifact not found; skipping.")
+        return
+    if not isinstance(rows, list):
+        log.fail("ROC rank-AUC sensitivity artifact has unexpected non-list format.")
+        return
+    expected = {("learned", "0.05"), ("learned", "0.1"), ("learned", "0.2"),
+                ("rope", "0.05"), ("rope", "0.1"), ("rope", "0.2")}
+    observed = {(str(r.get("pe")), str(r.get("epsilon"))) for r in rows}
+    if observed == expected and all(int(r.get("n_seeds", 0)) == len(PRIMARY_SEEDS) for r in rows):
+        log.pass_check("ROC rank-AUC sensitivity artifact has expected PE/epsilon rows and n=6 coverage.")
+    else:
+        log.fail(f"ROC rank-AUC sensitivity rows/coverage differ from expectation: {sorted(observed)}")
+    header = f"{'PE':<10} {'epsilon':>8} {'exact rank AUC':>18} {'stored operating AUC':>22} {'n':>4}"
+    lines = [header, "-" * len(header)]
+    log.log(header)
+    log.log("-" * len(header))
+    for r in rows:
+        line = (f"{PE_DISPLAY.get(str(r.get('pe')), str(r.get('pe'))):<10} "
+                f"{str(r.get('epsilon')):>8} "
+                f"{float(r.get('exact_mean')):7.3f} ± {float(r.get('exact_std')):.3f} "
+                f"{float(r.get('stored_mean')):10.3f} ± {float(r.get('stored_std')):.3f} "
+                f"{int(r.get('n_seeds')):4d}")
+        log.log(line)
+        lines.append(line)
+    lookup = {(str(r.get("pe")), str(r.get("epsilon"))): r for r in rows}
+    for key in [("learned", "0.1"), ("rope", "0.2")]:
+        r = lookup.get(key)
+        if r and abs(float(r.get("exact_mean", -1)) - 1.0) < 1e-12 and abs(float(r.get("stored_mean", -1)) - 1.0) < 1e-12:
+            log.pass_check(f"{PE_DISPLAY[key[0]]} eps={key[1]} boundary remains AUC=1.000 under both definitions.")
+        else:
+            log.warn(f"{key[0]} eps={key[1]} boundary is not exactly AUC=1.000 in one definition.")
+    write_table(output_dir / "tables" / "table_roc_rank_auc_sensitivity.txt", lines)
+
+
 def canonical_protocol_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
     log.section("Optional protocol-robustness cohort")
     main = data.get("canonical_main")
@@ -806,10 +906,11 @@ def canonical_protocol_stats(data: Mapping[str, Any], log: Logger, output_dir: P
 
 def maybe_generate_figures(data_dir: Path, output_dir: Path, log: Logger) -> None:
     log.section("Figure generation")
-    script = Path("generate_ads_figures.py")
-    if not script.exists():
-        log.warn("generate_ads_figures.py not found in current working directory; skipping figure generation.")
-        log.log("Run manually: python generate_ads_figures.py --data-dir data --output-dir output")
+    candidates = [Path("generate_ads_figures.py"), Path("scripts/generate_ads_figures.py")]
+    script = next((candidate for candidate in candidates if candidate.exists()), None)
+    if script is None:
+        log.warn("generate_ads_figures.py not found in current working directory or scripts/; skipping figure generation.")
+        log.log("Run manually: python scripts/generate_ads_figures.py --data-dir data --output-dir output")
         return
     cmd = [sys.executable, str(script), "--data-dir", str(data_dir), "--output-dir", str(output_dir)]
     log.log("Running: " + " ".join(cmd))
@@ -830,7 +931,7 @@ def main() -> None:
     parser.add_argument("--data-dir", default="data", help="Directory containing JSON artifacts.")
     parser.add_argument("--output-dir", default="output", help="Directory for generated tables/logs.")
     parser.add_argument("--section", default=None,
-                        help="Optional section filter: ref, clean, 4.4, 5, 6.2, 6.3, 6.6, 6.7, 7.1, protocol")
+                        help="Optional section filter: ref, clean, 4.4, 5, 6.2, 6.3, 6.6, 6.7, 7.1, attack_convention, roc_sensitivity, protocol")
     parser.add_argument("--no-figures", action="store_true", help="Do not call generate_ads_figures.py.")
     args = parser.parse_args()
 
@@ -871,6 +972,10 @@ def main() -> None:
         evasion_stats(None, data.get("adaptive"), log, output_dir)
     if section is None or section == "7.1":
         probing_table(data, log, output_dir)
+    if section is None or section == "attack_convention":
+        shared_delta_attack_convention_stats(data, log, output_dir)
+    if section is None or section == "roc_sensitivity":
+        roc_rank_auc_sensitivity_stats(data, log, output_dir)
     if section is None or section == "protocol":
         canonical_protocol_stats(data, log, output_dir)
 

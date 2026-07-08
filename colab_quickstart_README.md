@@ -26,7 +26,7 @@ Main updates in this version:
 - Adds the ROC rank-AUC sensitivity post-processing step:
   - `scripts/compute_roc_rank_auc_sensitivity.py`
   - `ads_roc_rank_auc_sensitivity.json`
-- Runs the patched `scripts/reproduce.py`, which now verifies the primary n=6 tables, shared-δ artifacts, and ROC sensitivity artifact.
+- Runs the patched root-level `reproduce.py`, which now verifies the primary n=6 tables, shared-δ artifacts, and ROC sensitivity artifact.
 - Keeps the final artifact inventory/zip cells and optional sync-back-to-repo cells.
 - Clears outputs and execution counts for clean GitHub display.
 
@@ -39,7 +39,7 @@ data/imagenet100_classes.txt
 00_setup_cifar100.py
 scripts/compute_roc_rank_auc_sensitivity.py
 scripts/ads_shared_delta_attack_convention.py
-scripts/reproduce.py
+reproduce.py
 ```
 
 ImageNet images and the official ILSVRC2012 validation tar are not redistributed in the public repository. CIFAR-100 is normally downloaded by `torchvision`, but the notebook supports a local Drive cache when the upstream endpoint is unavailable.
