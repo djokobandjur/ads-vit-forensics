@@ -12,9 +12,9 @@ What this script does:
 Prerequisites:
   - ILSVRC2012_img_val.tar must be on your Google Drive
     (obtain from https://image-net.org, requires academic registration)
-  - val_labels.txt must be on your Google Drive
+  - data/val_labels.txt must be present in the repository
     (maps each val image to its synset ID, 50,000 lines)
-  - imagenet100_classes.txt must be on your Google Drive
+  - data/imagenet100_classes.txt must be present in the repository
     (100 synset IDs from Tian et al., ECCV 2020)
 
 Dataset split:
@@ -26,14 +26,15 @@ Output:
   /content/imagenet100_resized/val/{synset_id}/*.JPEG
   (100 folders, 50 images each = 5,000 images total)
 
-Usage in Colab:
-  %run /content/00_setup_imagenet.py
+Usage in Colab after cloning the repository:
+  %cd /content/ads-vit-forensics
+  %run 00_setup_imagenet.py
 
   # Or with custom paths:
-  %run /content/00_setup_imagenet.py \
+  %run 00_setup_imagenet.py \
       --tar_path "/content/drive/MyDrive/pe_experiment/imagenet/ILSVRC2012_img_val.tar" \
-      --labels_path "/content/drive/MyDrive/pe_experiment/val_labels.txt" \
-      --classes_path "/content/drive/MyDrive/pe_experiment/imagenet100_classes.txt" \
+      --labels_path "data/val_labels.txt" \
+      --classes_path "data/imagenet100_classes.txt" \
       --output_dir "/content/imagenet100_resized"
 """
 
@@ -44,11 +45,12 @@ from pathlib import Path
 from tqdm import tqdm
 
 
-#  Default paths (adjust if your Drive structure differs) 
-DRIVE_ROOT     = '/content/drive/MyDrive/pe_experiment'
-DEFAULT_TAR    = '/content/drive/MyDrive/pe_experiment/imagenet/ILSVRC2012_img_val.tar'
-DEFAULT_LABELS = os.path.join(DRIVE_ROOT, 'val_labels.txt')
-DEFAULT_CLASSES= os.path.join(DRIVE_ROOT, 'imagenet100_classes.txt')
+# Default paths. The split metadata files are expected to live in the repository
+# under data/, while the original ImageNet validation tar remains external.
+REPO_ROOT = Path(__file__).resolve().parent
+DEFAULT_TAR = '/content/drive/MyDrive/pe_experiment/imagenet/ILSVRC2012_img_val.tar'
+DEFAULT_LABELS = str(REPO_ROOT / 'data' / 'val_labels.txt')
+DEFAULT_CLASSES = str(REPO_ROOT / 'data' / 'imagenet100_classes.txt')
 DEFAULT_OUTPUT = '/content/imagenet100_resized'
 
 # Argument parser 
