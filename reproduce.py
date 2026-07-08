@@ -24,15 +24,15 @@ Required for the primary verification:
     ads_specificity.json
     ads_specificity_cifar.json
     ads_threshold_fine.json
-    ads_ref_indices.json
+    ads_ref_indices.json  (or ads_ref_indices_imagenet100.json)
     ads_probing_residual.json
     ads_probing_residual_cifar.json
 
 Optional, verified when present:
     ads_roc_v2.json
     ads_comparison.json
-    ads_adaptive.json
-    ads_ref_evasion.json
+    ads_adaptive.json  (or ads_adaptive_eval.json)
+    ads_ref_evasion.json  (or ads_ref_evasion_eval.json)
     ads_shared_delta_imagenet100.json
     ads_shared_delta_cifar100.json
     ads_roc_rank_auc_sensitivity.json
@@ -197,9 +197,9 @@ FALLBACK_FILENAMES = {
     "threshold": ["ads_threshold_fine.json"],
     "roc": ["ads_roc_v2.json", "ads_roc_v2(1).json"],
     "comparison": ["ads_comparison.json", "ads_comparison(1).json"],
-    "adaptive": ["ads_adaptive.json", "ads_adaptive(1).json", "ads_adaptive(2).json"],
-    "evasion": ["ads_ref_evasion.json", "ads_ref_evasion(1).json", "ads_ref_evasion(2).json"],
-    "ref_indices": ["ads_ref_indices.json", "ads_ref_indices (1).json"],
+    "adaptive": ["ads_adaptive.json", "ads_adaptive_eval.json", "ads_adaptive(1).json", "ads_adaptive(2).json"],
+    "evasion": ["ads_ref_evasion.json", "ads_ref_evasion_eval.json", "ads_ref_evasion(1).json", "ads_ref_evasion(2).json"],
+    "ref_indices": ["ads_ref_indices.json", "ads_ref_indices_imagenet100.json", "ads_ref_indices (1).json"],
     "imn_probe": ["ads_probing_residual.json"],
     "cif_probe": ["ads_probing_residual_cifar.json"],
     "shared_delta_imn": ["ads_shared_delta_imagenet100.json"],
@@ -632,31 +632,81 @@ def fingerprint_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) ->
     write_table(output_dir / "tables" / "table_fingerprint_loo.txt", lines_loo)
 
 
-def roc_stats(roc_data: Optional[Mapping[str, Any]], log: Logger, output_dir: Path) -> None:
-    log.section("ROC detection boundary")
-    if roc_data is None:
+def _rank_auc_from_raw(roc_data: Optional[Mapping[str, Any]], pe: str, eps: str) -> Optional[float]:
+    """Compute the seed-mean rank-based AUC directly from archived raw scores."""
+    if roc_data is None or pe not in roc_data:
+        return None
+    values = []
+    for seed in PRIMARY_SEEDS:
+        seed_block = roc_data[pe].get(seed)
+        if seed_block is None:
+            return None
+        attack_ads = seed_block.get("attack_ads", {})
+        key = next((k for k in attack_ads if abs(float(k) - float(eps)) < 1e-12), None)
+        if key is None:
+            return None
+        pos = float(attack_ads[key])
+        neg = [float(x) for x in seed_block.get("all_negative_scores", [])]
+        if not neg:
+            return None
+        values.append((sum(1 for x in neg if x < pos) + 0.5 * sum(1 for x in neg if x == pos)) / len(neg))
+    return float(np.mean(values))
+
+
+def roc_stats(roc_data: Optional[Mapping[str, Any]], roc_rank_rows: Optional[Any], log: Logger, output_dir: Path) -> None:
+    log.section("Benign-aware ROC detection boundary")
+    lines: List[str] = []
+    # The main manuscript table uses the derived rank-based AUC values.
+    rows = roc_rank_rows if isinstance(roc_rank_rows, list) else None
+    if rows:
+        lookup = {(str(r.get("pe")), str(r.get("epsilon"))): r for r in rows}
+        eps_keys = ["0.05", "0.1", "0.2", "0.5"]
+        for pe in ["learned", "rope"]:
+            header = f"{PE_DISPLAY[pe]} rank-based AUC: " + " ".join([f"ε={e}" for e in eps_keys])
+            log.log(header)
+            lines.append(header)
+            aucs_line = []
+            for eps in eps_keys:
+                r = lookup.get((pe, eps))
+                if r is not None:
+                    aucs_line.append(f"{float(r.get('exact_mean')):.3f}")
+                else:
+                    # Budget not present in the derived artifact (e.g., eps=0.5):
+                    # compute the rank-based AUC directly from the archived raw scores.
+                    raw = _rank_auc_from_raw(roc_data, pe, eps)
+                    aucs_line.append(f"{raw:.3f}" if raw is not None else "n/a")
+            line = "Rank AUC: " + " ".join(aucs_line)
+            log.log(line)
+            lines.append(line)
+        for key in [("learned", "0.1"), ("rope", "0.2")]:
+            r = lookup.get(key)
+            if r and abs(float(r.get("exact_mean", -1)) - 1.0) < 1e-12:
+                log.pass_check(f"{PE_DISPLAY[key[0]]} ε={key[1]} rank-based AUC=1.000 (main ROC boundary; manuscript claims AUC ≥ 0.99).")
+            else:
+                log.warn(f"{key[0]} ε={key[1]} rank-based AUC boundary value is not available or not exactly 1.000.")
+        write_table(output_dir / "tables" / "stats_roc_rank_auc_main.txt", lines)
         return
+
+    # Fallback: if the derived rank-AUC artifact is absent, document the archived
+    # threshold-grid trapezoidal values without treating them as the main AUC table.
+    if roc_data is None:
+        log.warn("Neither rank-based ROC artifact nor archived ROC data found; skipping ROC check.")
+        return
+    log.warn("Rank-based ROC artifact missing; reporting archived threshold-grid trapezoidal values only.")
     pe_list = [pe for pe in ["learned", "rope"] if pe in roc_data]
-    lines = []
     for pe in pe_list:
         eps_keys = sorted(roc_data[pe][PRIMARY_SEEDS[0]]["roc_by_eps"].keys(), key=float)
-        header = f"{PE_DISPLAY[pe]}: " + " ".join([f"ε={e}" for e in eps_keys])
+        header = f"{PE_DISPLAY[pe]} threshold-grid trapezoidal values: " + " ".join([f"ε={e}" for e in eps_keys])
         log.log(header)
         lines.append(header)
-        aucs_line = []
+        vals_line = []
         for eps in eps_keys:
             values = [float(roc_data[pe][seed]["roc_by_eps"][eps]["auc"]) for seed in PRIMARY_SEEDS]
-            aucs_line.append(f"{mean(values):.3f}")
-        line = "AUC: " + " ".join(aucs_line)
+            vals_line.append(f"{mean(values):.3f}")
+        line = "Threshold-grid value: " + " ".join(vals_line)
         log.log(line)
         lines.append(line)
-    if "learned" in roc_data:
-        vals = [float(roc_data["learned"][seed]["roc_by_eps"].get("0.1", {}).get("auc", float("nan"))) for seed in PRIMARY_SEEDS]
-        log.pass_check(f"Learned ε=0.1 mean AUC={mean(vals):.3f} (operational boundary; manuscript claims AUC ≥ 0.99).")
-    if "rope" in roc_data:
-        vals = [float(roc_data["rope"][seed]["roc_by_eps"].get("0.2", {}).get("auc", float("nan"))) for seed in PRIMARY_SEEDS]
-        log.pass_check(f"RoPE ε=0.2 mean AUC={mean(vals):.3f} (operational boundary; manuscript claims AUC ≥ 0.99).")
-    write_table(output_dir / "tables" / "stats_roc.txt", lines)
+    write_table(output_dir / "tables" / "stats_roc_threshold_grid_provenance.txt", lines)
 
 
 def comparison_stats(comparison_data: Optional[Mapping[str, Any]], log: Logger, output_dir: Path) -> None:
@@ -688,54 +738,73 @@ def evasion_stats(evasion_data: Optional[Mapping[str, Any]], adaptive_data: Opti
     log.section("Reference-set and adaptive evasion summaries")
     lines = []
     if evasion_data is not None:
-        lines.append("Reference-set evasion")
+        lines.append("Reference-set evasion (manuscript-format rows)")
         for pe in [pe for pe in ["learned", "rope"] if pe in evasion_data]:
             eps_keys = sorted(evasion_data[pe][PRIMARY_SEEDS[0]].keys(), key=float)
             for eps in eps_keys:
                 lam_keys = sorted(evasion_data[pe][PRIMARY_SEEDS[0]][eps].keys(), key=float)
-                acc, ref, hold, ev_ref, ev_hold, ev_both = [], [], [], 0, 0, 0
-                denom = 0
+                zero = [k for k in lam_keys if abs(float(k)) < 1e-12]
+                pos = [k for k in lam_keys if float(k) > 0]
+                # λ=0 within-protocol control (per-seed, as in the manuscript table).
+                acc0, ref0, hold0, both0 = [], [], [], 0
                 for seed in PRIMARY_SEEDS:
-                    for lam in lam_keys:
+                    for lam in zero:
                         d = evasion_data[pe][seed][eps][lam]
-                        acc.append(float(d["acc_drop"]))
-                        ref.append(float(d.get("ads_ref_ratio", d.get("ads_ref"))))
-                        hold.append(float(d.get("ads_hold_ratio", d.get("ads_hold"))))
-                        r = bool(d.get("evades_ref", False))
-                        h = bool(d.get("evades_hold", False))
-                        ev_ref += int(r)
-                        ev_hold += int(h)
-                        ev_both += int(r and h)
-                        denom += 1
-                line = (f"{PE_DISPLAY[pe]} ε={eps}: drop={mean(acc):.2f}pp, "
-                        f"ADS(ref)={mean(ref):.2f}x, ADS(hold)={mean(hold):.2f}x, "
-                        f"Ref/Hold/Both={ev_ref}/{denom}, {ev_hold}/{denom}, {ev_both}/{denom}")
+                        acc0.append(float(d["acc_drop"]))
+                        ref0.append(float(d.get("ads_ref_ratio", d.get("ads_ref"))))
+                        hold0.append(float(d.get("ads_hold_ratio", d.get("ads_hold"))))
+                        both0 += int(bool(d.get("evades_ref", False)) and bool(d.get("evades_hold", False)))
+                # Positive-λ both-set evasion counts with damage-aware tallies.
+                n_pos, ev_all, ev5, ev10 = 0, 0, 0, 0
+                for seed in PRIMARY_SEEDS:
+                    for lam in pos:
+                        d = evasion_data[pe][seed][eps][lam]
+                        n_pos += 1
+                        if bool(d.get("evades_ref", False)) and bool(d.get("evades_hold", False)):
+                            ev_all += 1
+                            if float(d["acc_drop"]) >= 5.0:
+                                ev5 += 1
+                            if float(d["acc_drop"]) >= 10.0:
+                                ev10 += 1
+                line = (f"{PE_DISPLAY[pe]} ε={eps}: λ=0 drop={mean(acc0):.2f}pp, "
+                        f"ADS(ref/hold)={mean(ref0):.2f}/{mean(hold0):.2f}x, Both={both0}/{len(PRIMARY_SEEDS)} | "
+                        f"λ>0 Both={ev_all}/{n_pos}, ≥5pp={ev5}/{n_pos}, ≥10pp={ev10}/{n_pos}")
                 log.log(line)
                 lines.append(line)
     elif adaptive_data is None:
         log.warn("Reference-evasion JSON not available.")
 
     if adaptive_data is not None:
-        lines += ["", "Adaptive evasion"]
+        lines += ["", "Adaptive L4-sentinel evasion (manuscript-format rows)"]
         for pe in [pe for pe in ["learned", "rope"] if pe in adaptive_data]:
             eps_keys = sorted(adaptive_data[pe][PRIMARY_SEEDS[0]].keys(), key=float)
             for eps in eps_keys:
-                # Report λ=0 and λ=50 when present, because those are the manuscript rows.
-                for target_lam in [0.0, 50.0]:
-                    lam_keys = sorted(adaptive_data[pe][PRIMARY_SEEDS[0]][eps].keys(), key=float)
-                    matches = [k for k in lam_keys if abs(float(k) - target_lam) < 1e-12]
-                    if not matches:
-                        continue
-                    lam = matches[0]
-                    acc, ratio, evades = [], [], 0
-                    for seed in PRIMARY_SEEDS:
+                lam_keys = sorted(adaptive_data[pe][PRIMARY_SEEDS[0]][eps].keys(), key=float)
+                zero = [k for k in lam_keys if abs(float(k)) < 1e-12]
+                pos = [k for k in lam_keys if float(k) > 0]
+                acc0, ratio0, ev0 = [], [], 0
+                for seed in PRIMARY_SEEDS:
+                    for lam in zero:
                         d = adaptive_data[pe][seed][eps][lam]
-                        acc.append(float(d["acc_drop"]))
-                        ratio.append(float(d["ads_ratio"]))
-                        evades += int(bool(d.get("evades_detection", False)))
-                    line = f"{PE_DISPLAY[pe]} ε={eps}, λ={float(lam):g}: drop={mean(acc):.2f}pp, ADS ratio={mean(ratio):.2f}x, evades={evades}/6"
-                    log.log(line)
-                    lines.append(line)
+                        acc0.append(float(d["acc_drop"]))
+                        ratio0.append(float(d["ads_ratio"]))
+                        ev0 += int(bool(d.get("evades_detection", False)))
+                n_pos, ev_all, ev5, ev10 = 0, 0, 0, 0
+                for seed in PRIMARY_SEEDS:
+                    for lam in pos:
+                        d = adaptive_data[pe][seed][eps][lam]
+                        n_pos += 1
+                        if bool(d.get("evades_detection", False)):
+                            ev_all += 1
+                            if float(d["acc_drop"]) >= 5.0:
+                                ev5 += 1
+                            if float(d["acc_drop"]) >= 10.0:
+                                ev10 += 1
+                line = (f"{PE_DISPLAY[pe]} ε={eps}: λ=0 drop={mean(acc0):.2f}pp, ADS ratio={mean(ratio0):.2f}x, "
+                        f"evades={ev0}/{len(PRIMARY_SEEDS)} | "
+                        f"λ>0 evades={ev_all}/{n_pos}, ≥5pp={ev5}/{n_pos}, ≥10pp={ev10}/{n_pos}")
+                log.log(line)
+                lines.append(line)
     elif evasion_data is None:
         log.warn("Adaptive JSON not available.")
 
@@ -827,23 +896,23 @@ def shared_delta_attack_convention_stats(data: Mapping[str, Any], log: Logger, o
 
 
 def roc_rank_auc_sensitivity_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
-    """Verify the derived exact-rank-AUC sensitivity artifact."""
-    log.section("ROC rank-AUC sensitivity check")
+    """Verify the derived rank-AUC artifact and archived threshold-grid provenance values."""
+    log.section("ROC rank-AUC and threshold-grid provenance check")
     rows = data.get("roc_rank_auc")
     if rows is None:
-        log.warn("ROC rank-AUC sensitivity artifact not found; skipping.")
+        log.warn("ROC rank-AUC/provenance artifact not found; skipping.")
         return
     if not isinstance(rows, list):
-        log.fail("ROC rank-AUC sensitivity artifact has unexpected non-list format.")
+        log.fail("ROC rank-AUC/provenance artifact has unexpected non-list format.")
         return
     expected = {("learned", "0.05"), ("learned", "0.1"), ("learned", "0.2"),
                 ("rope", "0.05"), ("rope", "0.1"), ("rope", "0.2")}
     observed = {(str(r.get("pe")), str(r.get("epsilon"))) for r in rows}
     if observed == expected and all(int(r.get("n_seeds", 0)) == len(PRIMARY_SEEDS) for r in rows):
-        log.pass_check("ROC rank-AUC sensitivity artifact has expected PE/epsilon rows and n=6 coverage.")
+        log.pass_check("ROC rank-AUC/provenance artifact has expected PE/epsilon rows and n=6 coverage.")
     else:
-        log.fail(f"ROC rank-AUC sensitivity rows/coverage differ from expectation: {sorted(observed)}")
-    header = f"{'PE':<10} {'epsilon':>8} {'exact rank AUC':>18} {'stored operating AUC':>22} {'n':>4}"
+        log.fail(f"ROC rank-AUC/provenance rows/coverage differ from expectation: {sorted(observed)}")
+    header = f"{'PE':<10} {'epsilon':>8} {'rank-based AUC':>18} {'threshold-grid value':>22} {'n':>4}"
     lines = [header, "-" * len(header)]
     log.log(header)
     log.log("-" * len(header))
@@ -856,13 +925,27 @@ def roc_rank_auc_sensitivity_stats(data: Mapping[str, Any], log: Logger, output_
         log.log(line)
         lines.append(line)
     lookup = {(str(r.get("pe")), str(r.get("epsilon"))): r for r in rows}
+    roc_raw = data.get("roc")
+    if roc_raw is not None:
+        mismatches = []
+        for (pe, eps), r in lookup.items():
+            recomputed = _rank_auc_from_raw(roc_raw, pe, eps)
+            if recomputed is None:
+                continue
+            if abs(recomputed - float(r.get("exact_mean", float("nan")))) > 1e-9:
+                mismatches.append(f"{pe} eps={eps}: artifact {float(r.get('exact_mean')):.6f} vs recomputed {recomputed:.6f}")
+        if mismatches:
+            for m in mismatches:
+                log.fail("Rank-AUC artifact does not match recomputation from ads_roc_v2.json raw scores: " + m)
+        else:
+            log.pass_check("Derived rank-AUC values match recomputation from ads_roc_v2.json raw scores (tol 1e-9).")
     for key in [("learned", "0.1"), ("rope", "0.2")]:
         r = lookup.get(key)
         if r and abs(float(r.get("exact_mean", -1)) - 1.0) < 1e-12 and abs(float(r.get("stored_mean", -1)) - 1.0) < 1e-12:
-            log.pass_check(f"{PE_DISPLAY[key[0]]} eps={key[1]} boundary remains AUC=1.000 under both definitions.")
+            log.pass_check(f"{PE_DISPLAY[key[0]]} eps={key[1]} boundary remains rank-based AUC=1.000; archived threshold-grid value is also 1.000.")
         else:
-            log.warn(f"{key[0]} eps={key[1]} boundary is not exactly AUC=1.000 in one definition.")
-    write_table(output_dir / "tables" / "table_roc_rank_auc_sensitivity.txt", lines)
+            log.warn(f"{key[0]} eps={key[1]} boundary is not exactly 1.000 in one of the archived checks.")
+    write_table(output_dir / "tables" / "table_roc_rank_auc_and_threshold_grid_provenance.txt", lines)
 
 
 def canonical_protocol_stats(data: Mapping[str, Any], log: Logger, output_dir: Path) -> None:
@@ -892,7 +975,9 @@ def canonical_protocol_stats(data: Mapping[str, Any], log: Logger, output_dir: P
             profiles.append((arr[valid] / ads_mean[valid, None]).mean(axis=0))
         slopes = [float(np.polyfit(x, p, 1)[0]) for p in profiles]
         slopes_by_pe[pe] = slopes
-        profile_std = float(np.mean(np.std(np.asarray(profiles), axis=1)))
+        # Paper convention: population std (ddof=0) across the 12 entries of the
+        # displayed cohort-mean profile, matching Table/Sec. protocol wording.
+        profile_std = float(np.asarray(profiles).mean(axis=0).std(ddof=0))
         line = f"{PE_DISPLAY[pe]:<20} {mean(slopes):+7.3f} ± {t_ci(slopes):.3f} {profile_std:>12.3f}"
         log.log(line)
         lines.append(line)
@@ -931,7 +1016,7 @@ def main() -> None:
     parser.add_argument("--data-dir", default="data", help="Directory containing JSON artifacts.")
     parser.add_argument("--output-dir", default="output", help="Directory for generated tables/logs.")
     parser.add_argument("--section", default=None,
-                        help="Optional section filter: ref, clean, 4.4, 5, 6.2, 6.3, 6.6, 6.7, 7.1, attack_convention, roc_sensitivity, protocol")
+                        help="Optional section filter: ref, clean, 4.4, 5, 6.2, 6.3, 6.6, 6.7, 7.1, attack_convention, roc_auc, roc_sensitivity, protocol")
     parser.add_argument("--no-figures", action="store_true", help="Do not call generate_ads_figures.py.")
     args = parser.parse_args()
 
@@ -959,7 +1044,7 @@ def main() -> None:
     if section is None or section == "4.4":
         threshold_calibration(data["threshold"], log, output_dir)
     if section is None or section == "5":
-        roc_stats(data.get("roc"), log, output_dir)
+        roc_stats(data.get("roc"), data.get("roc_rank_auc"), log, output_dir)
     if section is None or section == "6.2":
         specificity_table(data, log, output_dir)
         early_warning_table(data, log, output_dir)
@@ -974,7 +1059,7 @@ def main() -> None:
         probing_table(data, log, output_dir)
     if section is None or section == "attack_convention":
         shared_delta_attack_convention_stats(data, log, output_dir)
-    if section is None or section == "roc_sensitivity":
+    if section is None or section in {"roc_auc", "roc_sensitivity"}:
         roc_rank_auc_sensitivity_stats(data, log, output_dir)
     if section is None or section == "protocol":
         canonical_protocol_stats(data, log, output_dir)
