@@ -32,25 +32,31 @@ Central findings:
 
 1. **Differentiated forensic signature.** PE-only attacks require
    **20×–200× larger perturbation budgets** than MLP-only weight-level
-   attacks to reach the 50%-of-clean accuracy criterion. The ADS-per-damage
-   ratio bifurcates by PE operation space: it is comparable to weight-attack
-   baselines for embedding-space PE (Learned, Sinusoidal), but roughly an
-   order of magnitude above the corresponding MLP-only baselines for
-   attention-space PE (RoPE, ALiBi) on ImageNet-100. The same qualitative
-   bifurcation appears on CIFAR-100 with dataset- and PE-dependent ratios.
+   attacks to reach the 50%-of-clean accuracy criterion. This is a
+   grid-limited operational saturation summary: PE-only collapse points come
+   from the primary PE sweep, while the MLP-only collapse point comes from the
+   specificity sweep. The ADS-per-damage ratio bifurcates by PE operation space:
+   embedding-space PE (Learned, Sinusoidal) stays in the low weight-attack range,
+   with Learned modestly above its MLP-only baseline, whereas attention-space PE
+   (RoPE, ALiBi) is roughly an order of magnitude above the corresponding MLP-only
+   baselines on ImageNet-100. The same qualitative bifurcation appears on CIFAR-100
+   with dataset- and PE-dependent ratios.
 
 2. **Operational detection boundary.** The low-budget ADS self-baseline
    trigger is an absolute-budget sensitivity diagnostic, not a deployment
    threshold. Against realistic benign distribution shifts (JPEG, blur,
-   noise), the operational ADS boundary is **ε ≥ 0.1 for Learned PE** and
-   **ε ≥ 0.2 for RoPE**, where ROC AUC is at least 0.99.
+   noise) on the ImageNet-100 calibration cohort, the operational ADS
+   boundary is **ε ≥ 0.1 for Learned PE** and **ε ≥ 0.2 for RoPE**, where
+   the threshold-grid operating AUC is at least 0.99 under that protocol; a
+   rank-based sensitivity check gives the same perfect-separation boundary.
 
 3. **Hierarchical PE fingerprint.** A layer-profile attenuation dichotomy
-   separates input-injected/rotary PE (average slope ≈ −0.22 per layer)
-   from ALiBi (slope ≈ +0.01). The full 12-layer ADS profile classifies PE
-   types via 1-NN leave-one-out at up to **95.8%** accuracy (chance = 25%).
-   Single-layer L4 is useful as an operational sentinel, but the full
-   profile is the stronger fingerprint.
+   separates input-injected/rotary PE (slopes roughly −0.15 to −0.26 per layer)
+   from ALiBi (slope ≈ +0.01). The 12-layer ADS profile classifies PE
+   types via 1-NN leave-one-out at **79.2%–95.8%** accuracy (chance = 25%).
+   Single-layer L4 is useful as an operational sentinel; individual layers can also be
+   highly discriminative in dataset-specific settings, so the profile should be read as a
+   compact multi-layer fingerprint rather than a pointwise optimal classifier.
 
 4. **Protocol robustness.** The ALiBi separator is validated on an
    independent CIFAR-100 canonical n=12 cohort and under grid-aware 2D
@@ -84,11 +90,14 @@ ads-vit-forensics/
 │   ├── ads_threshold_fine.json
 │   ├── ads_ref_evasion.json
 │   ├── ads_roc_v2.json
+│   ├── ads_roc_rank_auc_sensitivity.json
 │   ├── ads_probing_residual.json
 │   ├── ads_probing_residual_cifar.json
 │   ├── ads_ref_indices.json
 │   ├── ads_ref_indices_imagenet100.json
 │   ├── ads_ref_indices_cifar100.json
+│   ├── ads_shared_delta_imagenet100.json
+│   ├── ads_shared_delta_cifar100.json
 │   └── robustness/
 │       ├── ads_results_cifar100_canonical_n12.json
 │       ├── ads_specificity_cifar100_canonical_n12.json
@@ -116,8 +125,10 @@ ads-vit-forensics/
     ├── ads_threshold_fine.py
     ├── ads_ref_evasion.py
     ├── ads_roc_analysis.py
+    ├── compute_roc_rank_auc_sensitivity.py
     ├── ads_probing_residual.py
     ├── ads_probing_residual_cifar.py
+    ├── ads_shared_delta_attack_convention.py
     ├── generate_ads_figures.py
     ├── reproduce.py
     └── robustness/
@@ -130,9 +141,11 @@ ads-vit-forensics/
 
 `data/` contains archived JSON outputs used by the paper. `scripts/` contains
 GPU experiment scripts plus CPU-only verification and figure generation. The
-`data/robustness/` and `scripts/robustness/` folders are auxiliary: they support
-the independent CIFAR-100 canonical n=12 protocol-robustness analysis and are
-not part of the primary n=6 ImageNet-100/CIFAR-100 sweep.
+`ads_shared_delta_imagenet100.json` and `ads_shared_delta_cifar100.json`
+reproduce the tied-buffer shared-δ control columns in the attack-convention
+table. `ads_roc_rank_auc_sensitivity.json` is a derived post-processing artifact from `ads_roc_v2.json` that compares exact single-positive rank AUCs with the stored threshold-grid operating AUCs. The `data/robustness/` and `scripts/robustness/` folders are auxiliary:
+they support the independent CIFAR-100 canonical n=12 protocol-robustness
+analysis and are not part of the primary n=6 ImageNet-100/CIFAR-100 sweep.
 
 ---
 
@@ -186,7 +199,7 @@ Do **not** pass the parent folder that contains all three checkpoint groups as
 
 ## Quick verification and figure regeneration
 
-The fastest reproducibility check does not require GPU or checkpoint files:
+The fastest reproducibility check does not require GPU or checkpoint files. It verifies the primary numerical tables, figure inputs, and statistical tests; the shared-δ attack-convention columns are backed by the archived shared-δ JSON files and can be regenerated with the GPU script below:
 
 ```bash
 pip install -r requirements.txt
@@ -197,6 +210,14 @@ To regenerate the paper figures from the archived JSON files:
 
 ```bash
 python scripts/generate_ads_figures.py --data-dir data --output-dir .
+```
+
+To regenerate the ROC rank-AUC sensitivity artifact from the archived ROC JSON:
+
+```bash
+python scripts/compute_roc_rank_auc_sensitivity.py \
+  --roc-path data/ads_roc_v2.json \
+  --output-path data/ads_roc_rank_auc_sensitivity.json
 ```
 
 The figure script writes Fig. 1–4 files to `figures/`. The Fig. 2 heatmap uses
@@ -258,6 +279,45 @@ Primary n=6 seeds are:
 
 ---
 
+## Shared-δ attack-convention control
+
+The attack-convention table in the paper compares the primary independent
+per-buffer PGD-PE sweep with a tied-buffer **shared-δ** control. The shared-δ
+control is regenerated by:
+
+```bash
+python scripts/ads_shared_delta_attack_convention.py \
+  --models_dir "/path/to/ImageNet100_checkpoints" \
+  --val_dir "/path/to/imagenet100/val" \
+  --dataset imagenet \
+  --output_path "data/ads_shared_delta_imagenet100.json"
+```
+
+```bash
+python scripts/ads_shared_delta_attack_convention.py \
+  --models_dir "/path/to/CIFAR100_checkpoints" \
+  --val_dir "/tmp/cifar100" \
+  --dataset cifar \
+  --output_path "data/ads_shared_delta_cifar100.json"
+```
+
+These two JSON files contain seed-level clean and attacked accuracies for the
+same six seeds and budget grid used in the paper:
+
+```text
+ε = 0.05, 0.1, 0.2, 0.5, 1.0
+```
+
+The attack metadata records the pattern as `shared_delta_all_12_blocks`:
+gradients are aggregated across transformer blocks for each PE buffer name and
+one shared perturbation tensor is applied to all replicated buffers. For RoPE, this ties
+the replicated `cos_cached` and `sin_cached` cache perturbations; implementations that expose
+`inv_freq` tie it by the same per-buffer-name rule and record it in the sanity fields. These
+results are a tied-buffer control only; the main forensic analysis and
+ADS-per-damage ratios use the independent per-buffer convention.
+
+---
+
 ## Protocol-robustness cohort
 
 The independent canonical CIFAR-100 n=12 analysis is stored separately from the
@@ -314,15 +374,26 @@ A few protocol distinctions are important for interpreting the paper:
   For RoPE and ALiBi, the attacked objects are non-trainable positional buffers
   or slopes rather than ordinary learned weights.
 
+- **ROC operating AUC.** The ROC table reports a threshold-grid operating
+  AUC from `ads_roc_v2.json`. For each seed and attack budget, the positive
+  side is one attacked ADS score and the negative side contains 29 clean/benign
+  scores. The derived `ads_roc_rank_auc_sensitivity.json` file compares this
+  stored operating AUC with exact single-positive rank AUC. The high-confidence
+  boundary is unchanged: Learned reaches AUC = 1.0 at ε = 0.1 and RoPE at
+  ε = 0.2 by both estimators.
+
 - **Self-baseline ADS trigger vs operational detection.** The 10× self-baseline
   ADS trigger is useful for sensitivity analysis, but it is not a
-  deployment-ready threshold. Operational detection is evaluated against benign
-  shifts through the ROC analysis.
+  deployment-ready threshold. The interpolated trigger comes from
+  `ads_threshold_fine.json`, whereas operational detection is evaluated against benign
+  shifts through the ImageNet-100 ROC analysis for Learned PE and RoPE.
 
 - **Shared-δ vs per-buffer.** Shared-δ is a tied-buffer control and can be
-  stronger for some PE types and ε ranges. The primary forensic comparison uses
-  independent per-buffer perturbations to match the granularity of weight-level
-  attacks.
+  stronger for some PE types and ε ranges. The archived files
+  `ads_shared_delta_imagenet100.json` and `ads_shared_delta_cifar100.json`
+  reproduce the shared-δ columns in the attack-convention table. The primary
+  forensic comparison uses independent per-buffer perturbations to match the
+  granularity of weight-level attacks.
 
 - **ADS-per-damage ratio.** The ratio `ADS(L4) / accuracy-drop` is useful for
   comparing attack surfaces at the same budget, but it becomes less informative
@@ -337,7 +408,23 @@ A few protocol distinctions are important for interpreting the paper:
   ImageNet terms of access.
 - CIFAR-100 is downloaded by the CIFAR scripts through `torchvision` when needed.
 - Fixed reference-set indices are shipped under `data/` for exact reproduction of
-  ADS reference measurements.
+  ADS reference measurements. The reference/adaptive evasion experiments are stress tests
+  on the 256-image reference protocol; they do not implement the stronger split-objective
+  attacker that optimizes CE on the validation complement while regularizing ADS only on
+  the reference set.
+- LaTeX sources reference PDF figures; regenerated figures should include the PDF versions
+  alongside the PNG previews.
+- Shared-δ tied-buffer controls are shipped under `data/` as
+  `ads_shared_delta_imagenet100.json` and `ads_shared_delta_cifar100.json`;
+  they are not replacements for the primary per-buffer PE-only sweep.
+- `ads_roc_rank_auc_sensitivity.json` is a derived verification artifact, not a
+  new model experiment. It is regenerated from `ads_roc_v2.json` by
+  `scripts/compute_roc_rank_auc_sensitivity.py`.
+- A whole-checkpoint hash that includes PE tensors would detect Learned-PE
+  `pos_embed` tampering. The PE-only threat model concerns settings where
+  PE/adapters are supplied separately, excluded from a main-weight hash,
+  legitimately updated after hashing, or controlled by the same supply-chain
+  actor that controls verification metadata.
 - Checkpoint files are external artifacts and are intentionally not committed to
   this repository.
 
