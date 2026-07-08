@@ -77,6 +77,7 @@ ads-vit-forensics/
 ├── CHANGELOG.md
 ├── LICENSE
 ├── requirements.txt
+├── SCRIPT_OUTPUT_MAP.md
 ├── colab_quickstart.ipynb
 ├── colab_quickstart_README.md
 ├── 00_setup_imagenet.py
@@ -144,12 +145,17 @@ ads-vit-forensics/
 ```
 
 `data/` contains archived JSON outputs used by the paper. `scripts/` contains
-GPU experiment scripts plus CPU-only verification and figure generation. The
+GPU experiment scripts plus CPU-only verification and figure generation. For a
+script-by-script map of purpose, inputs, outputs, and GPU/CPU requirements, see
+[`SCRIPT_OUTPUT_MAP.md`](SCRIPT_OUTPUT_MAP.md). The
 `ads_shared_delta_imagenet100.json` and `ads_shared_delta_cifar100.json`
 reproduce the tied-buffer shared-δ control columns in the attack-convention
-table. `ads_roc_rank_auc_sensitivity.json` is a derived post-processing artifact from `ads_roc_v2.json` that compares exact single-positive rank AUCs with the stored threshold-grid operating AUCs. The `data/robustness/` and `scripts/robustness/` folders are auxiliary:
-they support the independent CIFAR-100 canonical n=12 protocol-robustness
-analysis and are not part of the primary n=6 ImageNet-100/CIFAR-100 sweep.
+table. `ads_roc_rank_auc_sensitivity.json` is a derived post-processing artifact
+from `ads_roc_v2.json` that compares exact single-positive rank AUCs with the
+stored threshold-grid operating AUCs. The `data/robustness/` and
+`scripts/robustness/` folders are auxiliary: they support the independent
+CIFAR-100 canonical n=12 protocol-robustness analysis and are not part of the
+primary n=6 ImageNet-100/CIFAR-100 sweep.
 
 ---
 
