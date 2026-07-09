@@ -42,6 +42,20 @@
     "n_negative_per_seed": 29
   },
   {
+    "pe": "learned",
+    "epsilon": "0.5",
+    "exact_mean": 1.0,
+    "exact_std": 0.0,
+    "stored_mean": 1.0,
+    "stored_std": 0.0,
+    "n_seeds": 6,
+    "exact_estimator": "rank_based_auc",
+    "stored_provenance_quantity": "threshold_grid_trapezoidal_value",
+    "stored_provenance_field": "roc_by_eps[eps].auc",
+    "n_positive_per_seed": 1,
+    "n_negative_per_seed": 29
+  },
+  {
     "pe": "rope",
     "epsilon": "0.05",
     "exact_mean": 0.21839080459770116,
@@ -72,6 +86,20 @@
   {
     "pe": "rope",
     "epsilon": "0.2",
+    "exact_mean": 1.0,
+    "exact_std": 0.0,
+    "stored_mean": 1.0,
+    "stored_std": 0.0,
+    "n_seeds": 6,
+    "exact_estimator": "rank_based_auc",
+    "stored_provenance_quantity": "threshold_grid_trapezoidal_value",
+    "stored_provenance_field": "roc_by_eps[eps].auc",
+    "n_positive_per_seed": 1,
+    "n_negative_per_seed": 29
+  },
+  {
+    "pe": "rope",
+    "epsilon": "0.5",
     "exact_mean": 1.0,
     "exact_std": 0.0,
     "stored_mean": 1.0,

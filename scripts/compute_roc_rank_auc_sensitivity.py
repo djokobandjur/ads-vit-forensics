@@ -49,7 +49,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 
 DEFAULT_PE_TYPES = ["learned", "rope"]
-DEFAULT_EPSILONS = ["0.05", "0.1", "0.2"]
+DEFAULT_EPSILONS = ["0.05", "0.1", "0.2", "0.5"]
 
 
 def _as_float_list(values: Iterable[Any]) -> List[float]:

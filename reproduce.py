@@ -905,8 +905,10 @@ def roc_rank_auc_sensitivity_stats(data: Mapping[str, Any], log: Logger, output_
     if not isinstance(rows, list):
         log.fail("ROC rank-AUC/provenance artifact has unexpected non-list format.")
         return
-    expected = {("learned", "0.05"), ("learned", "0.1"), ("learned", "0.2"),
-                ("rope", "0.05"), ("rope", "0.1"), ("rope", "0.2")}
+    expected = {
+        ("learned", "0.05"), ("learned", "0.1"), ("learned", "0.2"), ("learned", "0.5"),
+        ("rope", "0.05"), ("rope", "0.1"), ("rope", "0.2"), ("rope", "0.5"),
+    }
     observed = {(str(r.get("pe")), str(r.get("epsilon"))) for r in rows}
     if observed == expected and all(int(r.get("n_seeds", 0)) == len(PRIMARY_SEEDS) for r in rows):
         log.pass_check("ROC rank-AUC/provenance artifact has expected PE/epsilon rows and n=6 coverage.")
