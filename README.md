@@ -166,9 +166,6 @@ separately on Google Drive and should be passed to scripts via `--models_dir`.
 
 - **Checkpoint root:** [Google Drive — `ads-vit-forensics` checkpoints](https://drive.google.com/drive/folders/1UojvGk3oeoQui7jy8DSFM_0U6Xkwx-IB?usp=drive_link)
 
-Each script expects the checkpoint folders directly inside the corresponding
-`--models_dir`, so use the dataset-specific subfolder rather than the parent
-checkpoint root.
 
 The Google Drive root is a **shared checkpoint archive used by related ViT
 projects**. For reproducing the ADS/TIFS paper, use only the ADS-specific
