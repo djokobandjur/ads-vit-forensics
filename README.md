@@ -170,29 +170,42 @@ Each script expects the checkpoint folders directly inside the corresponding
 `--models_dir`, so use the dataset-specific subfolder rather than the parent
 checkpoint root.
 
-Example Google Drive layout used for the paper runs:
+The Google Drive root is a **shared checkpoint archive used by related ViT
+projects**. For reproducing the ADS/TIFS paper, use only the ADS-specific
+`ImageNet100/`, `CIFAR100/`, and `CIFAR100_canonical/` folders described below.
+The additional `ImageNet100_ViTS_FP32/` and `ImageNet100_ViTS_AMP_FP16/`
+folders belong to the separate `vit-pe-decoupling` study and are **not required
+for ADS/TIFS reproduction**.
+
+Each ADS script expects the checkpoint folders directly inside the corresponding
+`--models_dir`, so use the dataset-specific ADS subfolder rather than the parent
+checkpoint root.
+
+Current shared Google Drive layout:
 
 ```text
-ads-vit-forensics/                    # Drive folder with checkpoints, not the GitHub repo clone
-├── ImageNet100/
+ads-vit-forensics/                    # shared Drive checkpoint archive, not the GitHub repo clone
+├── ImageNet100/                      # ADS/TIFS: ViT-B/16 ImageNet-100
 │   ├── learned_seed42/best_model.pth
 │   ├── learned_seed123/best_model.pth
 │   ├── ...
 │   └── alibi_seed1213/best_model.pth
 │
-├── CIFAR100/
+├── CIFAR100/                         # ADS/TIFS: ViT-B/16 CIFAR-100
 │   ├── learned_seed42/best_model.pth
 │   ├── learned_seed123/best_model.pth
 │   ├── ...
 │   └── alibi_seed1213/best_model.pth
 │
-└── CIFAR100_canonical/
-    ├── alibi_seed1/best_model.pth
-    ├── alibi_seed5/best_model.pth
-    ├── ...
-    ├── alibi_2d_seed31337/best_model.pth
-    └── alibi_2d_matched_seed31337/best_model.pth
-```
+├── CIFAR100_canonical/               # ADS/TIFS: canonical n=12 robustness cohort
+│   ├── alibi_seed1/best_model.pth
+│   ├── alibi_seed5/best_model.pth
+│   ├── ...
+│   ├── alibi_2d_seed31337/best_model.pth
+│   └── alibi_2d_matched_seed31337/best_model.pth
+│
+├── ImageNet100_ViTS_FP32/            # vit-pe-decoupling; not used by ADS/TIFS
+└── ImageNet100_ViTS_AMP_FP16/        # vit-pe-decoupling; not used by ADS/TIFS
 
 Therefore, use paths such as:
 
@@ -202,8 +215,8 @@ Therefore, use paths such as:
 /path/to/CIFAR100_canonical_checkpoints
 ```
 
-Do **not** pass the parent folder that contains all three checkpoint groups as
-`--models_dir`; pass the dataset-specific checkpoint folder.
+Do **not** pass the shared parent folder as `--models_dir`; pass the appropriate
+ADS dataset-specific checkpoint folder.
 
 ---
 
