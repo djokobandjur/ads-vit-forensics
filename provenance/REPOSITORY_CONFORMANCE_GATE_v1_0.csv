@@ -1,0 +1,16 @@
+gate_id,description,status
+R001,Correct public repository is djokobandjur/ads-vit-forensics,PASS
+R002,Audited source snapshot is descendant of historical main cb0709a78c88602a5a8fed314508d369f9849fcd without history rewrite,PASS
+R003,All 8 synchronized canonical/pilot-lineage source files have remote Git blob IDs identical to local canonical bytes,PASS
+R004,Core primary source SHA-256 identities match canonical execution/source manifests,PASS
+R005,Stage-B exact executed source is preserved unchanged and metadata-only finalization recovery is disclosed,PASS
+R006,Adaptive engine/runner are explicitly labeled PILOT lineage; no confirmatory v2.7.2 byte identity is inferred,PASS
+R007,Protocol restore workflow run 34637439733 completed SUCCESS,PASS
+R008,Protocol archive bundle SHA-256 21325d92...740d1 verified before extraction,PASS
+R009,All 17 protocol files individually SHA-256 verified before commit,PASS
+R010,Historical scripts/data remain preserved and explicitly non-authoritative for corrected claims,PASS
+R011,"Wrong vit-positional-adversarial@952ff... provenance is explicitly retired, not silently overwritten",PASS
+R012,Scientific authority points to ledger v1.20 SHA-256 0c232f...21e7,PASS
+R013,GitHub URL is correct and Zenodo concept DOI 10.5281/zenodo.19844729 is recorded with correct concept-DOI semantics,PASS
+R014,"Exact confirmatory adaptive v2.7.2 runner, specificity v2.6 runner, and original LOCK-002 JSON remain explicit archival gaps",PASS
+R015,No version-specific Zenodo DOI is invented before publication,PASS
