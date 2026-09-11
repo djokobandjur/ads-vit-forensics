@@ -1,0 +1,5 @@
+Primary 5-pp status: PASS_ALL_24
+damage_5pp: 24/24; common=True
+damage_10pp: 24/24; common=True
+damage_20pp: 24/24; common=True
+severe_50pct_clean: 18/24; common=False

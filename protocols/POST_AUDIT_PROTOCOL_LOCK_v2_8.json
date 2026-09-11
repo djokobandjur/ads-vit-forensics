@@ -1,0 +1,54 @@
+{
+  "protocol_id": "ADS_TIFS_POST_AUDIT_CORRECTION_PROTOCOL_LOCK_v2_8_20260911",
+  "date": "2026-09-11",
+  "status": "LOCKED_BEFORE_STAGE_A_REANALYSIS",
+  "trigger_audit_sha256": "5a37bae5c0a631c49ecfeb4acac5d9f4d8f45892d4b7954a72165a2dc936d856",
+  "input_ledger_sha256": "928957751194eb1d69d9876f7f240d067849e352a31a0f65c58f0d03c8fdf6be",
+  "canonical_ads": {
+    "spec_hash": "093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362",
+    "implementation_file_sha256": "14d3c110c7a6219ae8b486c1e8a56360815d0b3d7069ce703ebbc726e25b4fd6"
+  },
+  "stage_A": {
+    "comparison": {
+      "auc_interpolation": "forbidden",
+      "boundary": "first tested epsilon with all six seed AUC>=0.99; exact cells only",
+      "estimators": [
+        "primary identity+9 benign conditions",
+        "benign-only 9 conditions"
+      ],
+      "five_pp_context": "first adjacent EXP-014 damage crossing; exact lower/upper ADS-L4 AUC cells only"
+    },
+    "adaptive": {
+      "baseline": "same PE/seed CE-only EXP-014 curve plus clean anchor",
+      "crossing": "first adjacent crossing in ascending epsilon; exact hit direct; linear in damage; no extrapolation",
+      "profile": "same interpolation weight for all 12 ADS layers",
+      "l4_target": "interpolated L4 ADS",
+      "profile_target": "T*logsumexp(interpolated layer ADS/T), T=0.01, raw additive constant retained",
+      "ratio": "adaptive reference target / damage-matched CE target",
+      "marker": "exists positive-lambda state with damage>=D and ratio<=0.5, D in {5,10}; no lambda/epsilon interpolation"
+    },
+    "reference_sensitivity": {
+      "source": "EXP-015 5pp per-image 256x12 ADS",
+      "scalar": "per-image mean over 12 layers",
+      "leave_one_out": "paired by image index",
+      "bootstrap": {
+        "B": 20000,
+        "rng_seed": 27152,
+        "paired_indices": true
+      },
+      "status": "cohort-sensitivity diagnostic; seed remains model-level replicate"
+    }
+  },
+  "stage_B": {
+    "B1": "saved-delta accuracy on exactly 4744 non-reference validation images",
+    "B2": "saved-delta four-score benign-aware evaluation on prespecified disjoint 256-image holdout for all four PE families",
+    "attack_reoptimization": false,
+    "required_before_final_manuscript_freeze": true
+  },
+  "stage_C": {
+    "targeted_5pp_PGD_refinement": "defer until Stage B",
+    "QK_only": "optional",
+    "benign_model_state_null": "optional"
+  },
+  "draft_state": "v0.7 preserved as historical pre-post-audit draft; not submission-final"
+}

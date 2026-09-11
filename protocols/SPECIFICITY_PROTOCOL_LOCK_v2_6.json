@@ -1,0 +1,118 @@
+{
+  "attack_generator": {
+    "alpha_ratio": 0.1,
+    "budget_mode": "absolute coordinatewise L_inf on selected parameter tensors",
+    "delta_init": "zero",
+    "model_mode": "eval",
+    "objective": "full 256-reference-image mean cross-entropy ascent",
+    "qkv_mlp_biases_included": false,
+    "reference_batch_size": 32,
+    "restarts": 1,
+    "selected_state": "raw final step-20 iterate",
+    "steps": 20
+  },
+  "canonical_ads": {
+    "arithmetic": "float64 log_softmax",
+    "input": "native pre-softmax attention logits",
+    "kl_direction": "clean || attacked",
+    "operator_hash": "093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362",
+    "probability_floor": null,
+    "sample_aggregation": "mean of per-image divergences"
+  },
+  "dataset": "ImageNet-100",
+  "date": "2026-09-10",
+  "delta_provenance": {
+    "gzip_level": 1,
+    "storage": "lossless gzip of float32 torch delta artifact; raw SHA-256 recorded before compression; gzip SHA-256 recorded after compression"
+  },
+  "fixed_epsilon_role": ".05/.1/.2 are retained as secondary implementation-space stress points only; fixed-epsilon ADS/Drop must not be used as intrinsic specificity or robustness ranking.",
+  "interpretation_lock": [
+    "Specificity claims are damage-matched within PE family/seed across attack surfaces.",
+    "Fixed absolute epsilon is an implementation-space coordinate, not an intrinsic cross-surface fairness scale.",
+    "all_non_pe_weights is the canonical symmetric replacement for historical all_weights.",
+    "Historical specificity numbers are provenance only."
+  ],
+  "lock_id": "ADS_TIFS_CANONICAL_SPECIFICITY_N6_PROTOCOL_LOCK_v2_6_20260910",
+  "new_attack_cell_count": 864,
+  "new_attack_surfaces": {
+    "all_non_pe_weights": {
+      "biases_included": "as ordinary trainable non-PE parameters",
+      "coordinate_count": 85724260,
+      "definition": "all trainable model parameters except semantic PE objects; includes biases/norms/cls token/head/patch embedding/etc., excludes pos_embed/.pe/cos_cached/sin_cached/inv_freq/slope-like PE state",
+      "group_count": 151
+    },
+    "mlp_only": {
+      "biases_included": false,
+      "coordinate_count": 56623104,
+      "definition": "all MLP weight matrices only (two per block); biases excluded",
+      "group_count": 24
+    },
+    "qkv_only": {
+      "biases_included": false,
+      "coordinate_count": 21233664,
+      "definition": "all 12 attn.qkv.weight matrices only",
+      "group_count": 12
+    }
+  },
+  "new_non_pe_epsilon_grid": [
+    5e-05,
+    0.0001,
+    0.0002,
+    0.0005,
+    0.001,
+    0.002,
+    0.005,
+    0.01,
+    0.02,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "pe_types": [
+    "learned",
+    "sinusoidal",
+    "rope",
+    "alibi"
+  ],
+  "primary_estimands": {
+    "damage_targets_pp": [
+      5.0,
+      10.0,
+      20.0
+    ],
+    "gate": "5/10/20 pp must be estimable for all 4 PE x 6 seeds x 4 surfaces = 96 units per target; otherwise targeted refinement required before manuscript use",
+    "matching_rule": "within each PE x seed x surface: first adjacent crossing in ascending epsilon; exact hit direct; otherwise linear interpolation in task damage; identical interpolation weight for epsilon, 12-layer ADS profile, and per-image [256,12] ADS; no extrapolation",
+    "primary_target_pp": 5.0
+  },
+  "reference": {
+    "full_validation_n": 5000,
+    "full_validation_transformed_sha256": "90d47ea5212f5d06b9e8d12fa80ccb20cc722a46d79d2c926ef41be2917f0f71",
+    "indices_sha256": "1dda480be595238fdbb1fb3d07898251862ab96fa72c235e5061a28c69981509",
+    "n_images": 256,
+    "transformed_reference_sha256": "01bfd5a5d6e5e2f452e31e737550b9591d25a01c7979c1f82cb3483585537dc4"
+  },
+  "runtime": {
+    "deterministic_math_only_sdpa": true,
+    "full_validation_gpu_cache": true,
+    "num_workers": 0,
+    "uid_bootstrap_first_notebook_cell": true
+  },
+  "scientific_question": "Does canonical ADS characterize PE-only tampering differently from QKV-only, MLP-only, and a symmetric all-non-PE trainable-parameter control when comparisons are made at matched task damage?",
+  "secondary_estimand": {
+    "severe_50pct_clean": "first bracket where attacked accuracy <= 50% of that checkpoint clean accuracy; no extrapolation; not a common cross-surface gate"
+  },
+  "seeds": [
+    42,
+    123,
+    456,
+    789,
+    1011,
+    1213
+  ],
+  "source_pe_only": {
+    "aggregate_json": "ads_tifs_canonical_primary_full_grid_v2_1.json",
+    "aggregate_sha256": "dcd2fa22d27a9a983dfadca3d49b56f776d316add01d201a2fe5563d757203d1",
+    "execution": "ADS_TIFS_CANONICAL_PRIMARY_FULL_GRID_v2_1_20260909",
+    "reuse_rule": "No new PE-only PGD. Reuse exact EXP-014 cell results and per-image canonical ADS artifacts."
+  }
+}

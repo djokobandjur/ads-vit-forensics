@@ -1,0 +1,256 @@
+{
+  "attack_common": {
+    "alpha_ratio": 0.1,
+    "ce_reduction": "mean over all 256 reference images",
+    "constraint": "absolute_L_inf_per_buffer_group",
+    "current_delta_applied_before_each_gradient_evaluation": true,
+    "delta_convention": "per_buffer",
+    "delta_init": "zero",
+    "explicit_projection": true,
+    "fail_closed_on_missing_attacked_gradient": true,
+    "model_mode": "eval",
+    "objective_reference": "full fixed 256-image canonical reference cohort",
+    "pgd_steps": 20,
+    "reuse_historical_positive_lambda_states": false,
+    "save_deltas": true,
+    "state_selection": "raw_final_step20"
+  },
+  "canonical_ads_objective": {
+    "dtype_divergence": "float64",
+    "epsilon_floor": null,
+    "inputs": "native pre-softmax attention logits",
+    "layer_ads": "mean of per-image layer ADS over reference images",
+    "logprob": "torch.log_softmax",
+    "per_image_layer_ads": "mean over heads and query rows of KL(clean||attacked)",
+    "probability_renormalization": false
+  },
+  "canonical_locks": {
+    "ads_operator_sha256": "093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362",
+    "full_validation_cache_sha256": "90d47ea5212f5d06b9e8d12fa80ccb20cc722a46d79d2c926ef41be2917f0f71",
+    "holdout_count": 256,
+    "holdout_indices_sha256": "835af1a98d05ac4f99cbb697f36d456b0a24bdd6905ada0ebac5da4eec0916a7",
+    "reference_cache_sha256": "01bfd5a5d6e5e2f452e31e737550b9591d25a01c7979c1f82cb3483585537dc4",
+    "reference_count": 256,
+    "reference_holdout_overlap": 0,
+    "reference_indices_sha256": "1dda480be595238fdbb1fb3d07898251862ab96fa72c235e5061a28c69981509",
+    "source_primary_full_grid_aggregate_sha256": "dcd2fa22d27a9a983dfadca3d49b56f776d316add01d201a2fe5563d757203d1",
+    "source_primary_full_grid_lock_sha256": "2b242559d0ec523683ee05a33238c819790d17ebef919745cab3b426f161021f",
+    "source_primary_full_grid_results_zip_sha256": "ac40ded10f58d02d7b2b0eab7627f58b26c29569b330364a89d94aac31e0988b"
+  },
+  "completion_gate": {
+    "all_artifact_hashes_required": true,
+    "delta_integrity_required": true,
+    "expected_new_attack_states": 588,
+    "expected_unique_final_states_including_source_controls": 636,
+    "operator_reference_holdout_protocol_hashes_required": true,
+    "per_image_ref_holdout_integrity_required": true,
+    "scientific_interpretation_only_after_n6_confirmatory_and_ledger_update": true
+  },
+  "confirmatory_counts": {
+    "logical_result_rows_across_two_objectives": 672,
+    "new_positive_lambda_attack_states_total": 588,
+    "unique_attacked_states_total": 636,
+    "unique_lambda0_source_states": 48
+  },
+  "date": "2026-09-10",
+  "holdout_selection": {
+    "artifact": "ADS_TIFS_CANONICAL_ADAPTIVE_HOLDOUT_INDICES_v2_7.json",
+    "exclude": "all canonical reference indices",
+    "historical_seed999_identity_reproduced": false,
+    "ranking_key": "SHA256(UTF8('ADS_TIFS_CANONICAL_ADAPTIVE_HOLDOUT_v2_7::<index>')) as binary digest ascending",
+    "serialization": "compact JSON array, no trailing newline",
+    "sha256": "835af1a98d05ac4f99cbb697f36d456b0a24bdd6905ada0ebac5da4eec0916a7",
+    "status": "NEW_BRANCH_SPECIFIC_FIXED_COHORT",
+    "take": 256,
+    "universe": "integer validation indices 0..4999"
+  },
+  "implementation_pilot": {
+    "lambdas": [
+      0.0,
+      1.0,
+      10.0,
+      50.0
+    ],
+    "logical_cells": 16,
+    "objectives": [
+      "l4",
+      "profile_lse"
+    ],
+    "pass_gates": [
+      "lambda0 regenerated implementation-check state matches the exact EXP-014 delta tensor within bitwise equality or the run fails",
+      "every attacked PE group has a gradient at every step",
+      "all deltas satisfy the locked L_inf budget",
+      "canonical objective ADS target and independent post-attack canonical measurement agree within abs tolerance 1e-9",
+      "positive lambda produces a delta different from lambda0 in at least one attacked coordinate for each PE/objective pair",
+      "all ref/holdout per-image ADS outputs have shape 256x12 and finite values",
+      "no scientific effect-size criterion is used for pilot PASS"
+    ],
+    "pe_seed_epsilon": [
+      {
+        "epsilon": 0.2,
+        "pe": "learned",
+        "seed": 42
+      },
+      {
+        "epsilon": 0.5,
+        "pe": "rope",
+        "seed": 42
+      }
+    ],
+    "positive_lambda_cells_new": 12,
+    "reuse_pilot_positive_states_in_confirmatory": false,
+    "status": "REQUIRED_NOT_MANUSCRIPT_EVIDENCE"
+  },
+  "l4_branch": {
+    "epsilons": [
+      0.05,
+      0.1,
+      0.2,
+      0.5
+    ],
+    "evaluate_each_state": [
+      "full_validation_accuracy",
+      "reference_per_image_ads_256x12",
+      "holdout_per_image_ads_256x12",
+      "reference_profile_mean_l4_argmax_nonl4max",
+      "holdout_profile_mean_l4_argmax_nonl4max"
+    ],
+    "lambda0_unique_source_states": 48,
+    "lambdas": [
+      0.0,
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0,
+      50.0
+    ],
+    "logical_rows": 384,
+    "new_positive_lambda_attack_states": 336,
+    "objective": "maximize CE_ref - lambda * ADS_L4_ref",
+    "target_layer_1based": 4
+  },
+  "ledger_label": "LOCK-003",
+  "pe_surfaces": {
+    "learned": [
+      "pos_embed"
+    ],
+    "rope": [
+      "cos_cached",
+      "sin_cached"
+    ],
+    "rope_excluded": [
+      "inv_freq"
+    ]
+  },
+  "primary_estimands": {
+    "cross_layer_redistribution": "under L4 objective, compare per-layer lambda/lambda0 suppression factors and report whether L4 is suppressed more strongly than non-L4 coordinates",
+    "damage_pp": "clean_full_validation_accuracy - attacked_full_validation_accuracy",
+    "damage_stealth": "discrete observed Pareto characterization over prespecified epsilon/lambda grid; no interpolation or extrapolation",
+    "reference_generalization": "compare ref and holdout suppression for the same reoptimized state",
+    "target_suppression_l4": "ADS_L4(lambda)/ADS_L4(lambda0) at same PE, seed, epsilon",
+    "target_suppression_profile": "report layerwise ADS plus profile mean/max/LSE relative to lambda0 at same PE, seed, epsilon",
+    "threshold_free": true
+  },
+  "profile_branch": {
+    "epsilons": [
+      0.1,
+      0.2,
+      0.5
+    ],
+    "evaluate_each_state": [
+      "full_validation_accuracy",
+      "reference_per_image_ads_256x12",
+      "holdout_per_image_ads_256x12",
+      "reference_profile_mean_l4_max_lse_argmax",
+      "holdout_profile_mean_l4_max_lse_argmax"
+    ],
+    "lambda0_rows_are_source_reuse": true,
+    "lambdas": [
+      0.0,
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0,
+      50.0
+    ],
+    "logical_rows": 288,
+    "lse_definition": "T * logsumexp(layer_ads / T); additive zero-baseline constant is not removed because it does not affect gradients; report raw layer ADS, mean and max separately",
+    "lse_temperature": 0.01,
+    "new_positive_lambda_attack_states": 252,
+    "objective": "maximize CE_ref - lambda * S_LSE(ADS_L1_ref,...,ADS_L12_ref)",
+    "profile_layers_1based": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "prohibited": [
+    "historical 3.0x/6.2x thresholds",
+    "historical noise-floor ratios as final detection criterion",
+    "reuse or rescaling of historical positive-lambda attack states",
+    "aggregate-first attention KL",
+    "probability epsilon floor or renormalization in canonical ADS",
+    "RoPE inv_freq attack",
+    "pilot findings promoted to manuscript claims",
+    "fixed-epsilon cross-family robustness ranking",
+    "claiming adaptive-proof detection or defense"
+  ],
+  "protocol_id": "ADS_TIFS_CANONICAL_ADAPTIVE_PROTOCOL_LOCK_v2_7_20260910",
+  "runtime": {
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "deterministic_pytorch": true,
+    "num_workers": 0,
+    "sdpa": "math_only",
+    "tf32": false,
+    "uid_environment_bootstrap_before_torch_import": true
+  },
+  "scientific_scope": {
+    "branches": [
+      "l4_targeted_with_ref_holdout_evaluation",
+      "full_profile_lse_targeted"
+    ],
+    "dataset": "ImageNet-100",
+    "interpretation": "targeted adaptive forensic stress test; not exhaustive cross-family robustness ranking",
+    "pe_types": [
+      "learned",
+      "rope"
+    ],
+    "seeds_confirmatory": [
+      42,
+      123,
+      456,
+      789,
+      1011,
+      1213
+    ]
+  },
+  "secondary_descriptive_operating_points": {
+    "damage_aware": [
+      "damage >= 5 pp",
+      "damage >= 10 pp"
+    ],
+    "material_suppression": "target <= 0.5 * corresponding lambda0 target",
+    "status": "secondary descriptive summaries only; not detector thresholds"
+  },
+  "source_reuse": {
+    "historical_positive_lambda_states": "RETIRED_NO_REUSE",
+    "lambda0": "reuse exact EXP-014 canonical CE-only state at same PE, seed, epsilon",
+    "lambda0_rerun_for_final_science": false,
+    "source_delta_sha_verification_required": true,
+    "source_per_image_ref_ads_sha_verification_required": true
+  },
+  "status": "LOCKED_FOR_IMPLEMENTATION_PILOT_THEN_N6_CONFIRMATORY"
+}
