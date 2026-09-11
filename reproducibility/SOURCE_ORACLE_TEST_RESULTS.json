@@ -2,42 +2,186 @@
   "passed": 36,
   "status": "PASS",
   "tests": [
-    {"detail": "093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362", "name": "operator_spec_hash", "pass": true},
-    {"detail": "", "name": "operator_clean_to_test_direction", "pass": true},
-    {"detail": "", "name": "operator_native_pre_softmax", "pass": true},
-    {"detail": "", "name": "operator_float64", "pass": true},
-    {"detail": "", "name": "operator_no_probability_floor", "pass": true},
-    {"detail": "", "name": "operator_reduction_order", "pass": true},
-    {"detail": "expected=0.010305880044699501 got=0.010305880044699366", "name": "canonical_kl_numpy_oracle", "pass": true},
-    {"detail": "0.32781332547273756 vs -1.1102230246251564e-16", "name": "mean_per_image_not_kl_of_mean", "pass": true},
-    {"detail": "final=0.020000001415610313", "name": "pgd_current_delta_before_gradient", "pass": true},
-    {"detail": "", "name": "pgd_metadata_eval_zero_init", "pass": true},
-    {"detail": "", "name": "pgd_projection_bound", "pass": true},
-    {"detail": "", "name": "pgd_missing_gradient_fail_closed", "pass": true},
-    {"detail": "", "name": "rope_surface_cos_sin_only", "pass": true},
-    {"detail": "", "name": "rope_surface_inv_freq_excluded", "pass": true},
-    {"detail": "", "name": "qkv_weights_bias_excluded", "pass": true},
-    {"detail": "", "name": "mlp_weights_bias_excluded", "pass": true},
-    {"detail": "", "name": "all_non_pe_excludes_pe", "pass": true},
-    {"detail": "", "name": "all_non_pe_includes_biases", "pass": true},
-    {"detail": "[('interp', 0, 1, 0.8), ('interp', 1, 2, 0.5), ('interp', 2, 3, 0.25)]", "name": "damage_first_adjacent_crossing", "pass": true},
-    {"detail": "('interp', 0, 1, 0.8)", "name": "damage_linear_weight", "pass": true},
-    {"detail": "[('exact', 1, 1, 0.0)]", "name": "damage_exact_hit_direct", "pass": true},
-    {"detail": "", "name": "damage_no_extrapolation", "pass": true},
-    {"detail": "", "name": "adaptive_profile_lse_formula", "pass": true},
-    {"detail": "tensor([9.3576e-14, 2.0612e-09, 1.0000e+00], dtype=torch.float64) vs tensor([9.3576e-14, 2.0612e-09, 1.0000e+00], dtype=torch.float64)", "name": "adaptive_profile_lse_gradient", "pass": true},
-    {"detail": "", "name": "attn_feature_mean_over_query", "pass": true},
-    {"detail": "", "name": "attn_feature_not_degenerate_mean_over_keys", "pass": true},
-    {"detail": "", "name": "diag_mahalanobis_variance_formula", "pass": true},
-    {"detail": "", "name": "diag_mahalanobis_lambda_formula", "pass": true},
-    {"detail": "0.5833333333333334 vs 0.5833333333333334", "name": "auc_tie_oracle", "pass": true},
-    {"detail": "", "name": "boundary_uses_seedwise_min_gate", "pass": true},
-    {"detail": "", "name": "boundary_exact_tested_epsilon", "pass": true},
-    {"detail": "", "name": "runner_seed_set", "pass": true},
-    {"detail": "", "name": "runner_common_epsilon_grid", "pass": true},
-    {"detail": "", "name": "runner_high_tail_grid", "pass": true},
-    {"detail": "", "name": "runner_num_workers_zero_lock", "pass": true},
-    {"detail": "", "name": "runner_transformed_hash_gates", "pass": true}
+    {
+      "detail": "093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362",
+      "name": "operator_spec_hash",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "operator_clean_to_test_direction",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "operator_native_pre_softmax",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "operator_float64",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "operator_no_probability_floor",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "operator_reduction_order",
+      "pass": true
+    },
+    {
+      "detail": "expected=0.010305880044699501 got=0.010305880044699366",
+      "name": "canonical_kl_numpy_oracle",
+      "pass": true
+    },
+    {
+      "detail": "0.32781332547273756 vs -1.1102230246251564e-16",
+      "name": "mean_per_image_not_kl_of_mean",
+      "pass": true
+    },
+    {
+      "detail": "final=0.020000001415610313",
+      "name": "pgd_current_delta_before_gradient",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "pgd_metadata_eval_zero_init",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "pgd_projection_bound",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "pgd_missing_gradient_fail_closed",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "rope_surface_cos_sin_only",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "rope_surface_inv_freq_excluded",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "qkv_weights_bias_excluded",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mlp_weights_bias_excluded",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "all_non_pe_excludes_pe",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "all_non_pe_includes_biases",
+      "pass": true
+    },
+    {
+      "detail": "[('interp', 0, 1, 0.8), ('interp', 1, 2, 0.5), ('interp', 2, 3, 0.25)]",
+      "name": "damage_first_adjacent_crossing",
+      "pass": true
+    },
+    {
+      "detail": "('interp', 0, 1, 0.8)",
+      "name": "damage_linear_weight",
+      "pass": true
+    },
+    {
+      "detail": "[('exact', 1, 1, 0.0)]",
+      "name": "damage_exact_hit_direct",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "damage_no_extrapolation",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "adaptive_profile_lse_formula",
+      "pass": true
+    },
+    {
+      "detail": "tensor([9.3576e-14, 2.0612e-09, 1.0000e+00], dtype=torch.float64) vs tensor([9.3576e-14, 2.0612e-09, 1.0000e+00], dtype=torch.float64)",
+      "name": "adaptive_profile_lse_gradient",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "attn_feature_mean_over_query",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "attn_feature_not_degenerate_mean_over_keys",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "diag_mahalanobis_variance_formula",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "diag_mahalanobis_lambda_formula",
+      "pass": true
+    },
+    {
+      "detail": "0.5833333333333334 vs 0.5833333333333334",
+      "name": "auc_tie_oracle",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "boundary_uses_seedwise_min_gate",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "boundary_exact_tested_epsilon",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "runner_seed_set",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "runner_common_epsilon_grid",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "runner_high_tail_grid",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "runner_num_workers_zero_lock",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "runner_transformed_hash_gates",
+      "pass": true
+    }
   ],
   "total": 36
 }
