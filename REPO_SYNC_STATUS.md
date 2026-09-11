@@ -8,42 +8,68 @@ Draft PR: #1 — **DO NOT MERGE YET**.
 
 ## Source/protocol synchronization state
 
-The exact canonical source files required for the audited primary/source-conformance chain are now present on the branch and byte-bound to the canonical source package:
+Repository-to-canonical-package conformance is now closed for the synchronized source/protocol snapshot.
 
-- `canonical/ads_canonical_operator_v2_1.py` — SHA-256 `14d3c110c7a6219ae8b486c1e8a56360815d0b3d7069ce703ebbc726e25b4fd6`
-- `canonical/ads_attack_engine_v2_1.py` — SHA-256 `e3c506a34cb27c10556bf62b2fefbf2b324b3ba5fc66f3d953f48ecc3bf2bf77`
-- `canonical/ads_primary_full_grid_v2_1.py` — SHA-256 `d0cc6e0ef1e914b5efea249dd22097d57b5da17a09906226e90a51a082f12c00`
-- `canonical/derive_damage_matched_v2_1.py` — SHA-256 `2d58a57523a3aa51c02de9abc4af9af161addb587dded26bd1afa85ef1ec28b7`
-- `canonical/full_scale_experiment_v1_6.py` — SHA-256 `4aa884cffc0afbb64b9b08c776d2e94173264340b5a92a84c927869c3db7e8ee`
-- `canonical/stage_b_saved_delta_reeval_v2_8_2.py` — SHA-256 `d83219e566ab4829de57ac875d561b8e4f6b47aa19b61531a77ed5b4f00e1add`
-- `canonical/canonical_adaptive_engine_v2_7.py` — SHA-256 `304e0159230520a181d31abcc1f3a9083f410657297ef85b10a0a60e4c7449bc` — pilot implementation lineage
-- `canonical/run_adaptive_pilot_v2_7_1.py` — SHA-256 `e881f02e9a2ea0289e6221cdeb22d3c5e18886641e9410213d8c999d09aac821` — pilot runner only
+Immutable audited source/protocol snapshot:
 
-The exact executed Stage-B source is intentionally preserved unchanged. Its known metadata-only finalization exception is documented in `canonical/STAGE_B_FINALIZATION_RECOVERY_NOTE.md`; recovery performed no new PGD, inference, score, or AUC computation.
+`ac580b9524c287882d97f4660fd7bf7791ea0c73`
 
-The available full-grid, damage-matched, corrected-comparison, specificity, adaptive, and post-audit protocol material has also been restored from an exact archived bundle. The restore workflow verified bundle SHA-256 `21325d92ae1275058d332a53ca4e20be414ab36d9a391d35622df42ed15740d1` and each individual protocol-file SHA-256 before committing the payload.
+Conformance results:
 
-GitHub Actions run `34637439733` completed **SUCCESS** for the repaired exact source+protocol restore/verification flow.
+- source-byte conformance: **8/8 PASS**;
+- exact available protocol conformance: **17/17 PASS**;
+- source-to-manuscript independent oracle/unit checks: **36/36 PASS**;
+- GitHub Actions exact protocol restore/verification run `34637439733`: **SUCCESS**.
+
+The exact canonical source files required for the audited primary/source-conformance chain are present and byte-bound to their canonical SHA-256 identities. The exact executed Stage-B source is preserved unchanged; its known metadata-only finalization exception is documented in `canonical/STAGE_B_FINALIZATION_RECOVERY_NOTE.md`, and recovery performed no new PGD, inference, score, or AUC computation.
+
+Adaptive v2.7 engine/runner files are explicitly retained as **pilot implementation lineage** only. They are not represented as the unrecovered confirmatory adaptive v2.7.2 runner.
+
+Machine-readable public-repository conformance records are under `provenance/`.
 
 ## Current scientific authority
 
-See `provenance/SCIENTIFIC_AUTHORITY.md` for the latest ledger identity:
+See `provenance/SCIENTIFIC_AUTHORITY.md`.
 
-`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_UPDATED_POST_REPO_AUDIT_v1_20_20260911.md`
+Current ledger:
 
-SHA-256 `0c232fb8f4e74e5baa8d13f48482e3ae71c2a795e8cbc189130c9d4d6be421e7`.
+`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_UPDATED_POST_GITHUB_CONFORMANCE_v1_21_20260911.md`
+
+SHA-256:
+
+`916865096723af369d51a81d648a3d19491b76bc598914509f5b3b99db008938`
+
+Status:
+
+`PASS_SOURCE_AND_PROTOCOL_CONFORMANCE / ZENODO_AND_MANUSCRIPT_FINALIZATION_PENDING`
+
+## Persistent archival identifier
+
+Zenodo concept DOI:
+
+`10.5281/zenodo.19844729`
+
+This DOI represents all versions and resolves to the latest published Zenodo release. No new version-specific DOI is claimed until a new-version draft actually reserves/mints it.
 
 ## Explicit archival gaps
 
-The exact confirmatory adaptive v2.7.2 runner/source archive and exact specificity v2.6 execution runner remain unrecovered. They are not reconstructed or inferred. The original comparison LOCK-002 JSON bytes also remain unavailable; the locked Markdown semantics/results are preserved instead.
+The following remain explicit and must not be reconstructed or inferred from downstream artifacts:
 
-## Remaining gates before merge/final citation
+- exact confirmatory adaptive v2.7.2 runner/source archive;
+- exact specificity v2.6 execution runner/notebook;
+- original comparison LOCK-002 JSON bytes.
 
-1. Complete and record repository-to-canonical-package conformance for the synchronized source/protocol snapshot.
-2. Freeze the audited immutable Git source snapshot that the manuscript will cite.
-3. Keep PR #1 draft until that conformance record is committed and reviewed.
-4. Publish the corresponding new Zenodo version; record its version-specific DOI and release-archive SHA-256 while retaining concept DOI `10.5281/zenodo.19844729`.
-5. Update the manuscript/supplement with the exact GitHub URL, audited source-snapshot commit, Zenodo concept DOI, and actual version-specific DOI.
-6. Run the final main+supplement/repository/Zenodo cross-audit before TIFS upload.
+## Remaining gates before final citation / merge
 
-Historical files in `scripts/`, `data/`, and older paper material are intentionally preserved as provenance and explicitly non-authoritative for corrected claims.
+1. Prepare the synchronized Zenodo new-version release payload from the audited source snapshot and current reproducibility authority.
+2. Create a **new version** from the existing Zenodo record and reserve the real version-specific DOI before publication.
+3. Insert the exact public identifiers into main manuscript and supplement:
+   - `https://github.com/djokobandjur/ads-vit-forensics`;
+   - audited source snapshot `ac580b9524c287882d97f4660fd7bf7791ea0c73`;
+   - Zenodo concept DOI `10.5281/zenodo.19844729`;
+   - actual reserved/minted version-specific DOI.
+4. Rebuild the final manuscript/supplement and replace any provisional paper payload in the Zenodo draft with the DOI-complete final files.
+5. Run the final manuscript + supplement + GitHub + Zenodo cross-audit.
+6. Only after that audit passes: publish the Zenodo version, finalize/merge PR #1, and record the published release identities.
+
+Historical files in `scripts/`, `data/`, notebooks, and older paper material are intentionally preserved as provenance and explicitly non-authoritative for corrected claims.
