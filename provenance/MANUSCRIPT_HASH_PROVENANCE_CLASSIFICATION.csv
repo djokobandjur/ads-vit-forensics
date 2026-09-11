@@ -1,0 +1,22 @@
+identity,type,object,status,note
+093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362,SHA-256,canonical ADS semantic specification,VALID,Not derived from either GitHub repository; locked operator-spec identity.
+14d3c110c7a6219ae8b486c1e8a56360815d0b3d7069ce703ebbc726e25b4fd6,SHA-256,ads_canonical_operator_v2_1.py,VALID,Byte-verified against exact canonical execution/source-audit file; not derived from public repo.
+1dda480be595238fdbb1fb3d07898251862ab96fa72c235e5061a28c69981509,SHA-256,fixed 256-image reference-index file,VALID,"Canonical data-cohort identity, independent of repository URL."
+01bfd5a5d6e5e2f452e31e737550b9591d25a01c7979c1f82cb3483585537dc4,SHA-256,transformed 256-image reference stream,VALID,Canonical cache/stream identity independently rechecked by Stage-B audit.
+90d47ea5212f5d06b9e8d12fa80ccb20cc722a46d79d2c926ef41be2917f0f71,SHA-256,transformed 5000-image validation stream,VALID,Canonical full-validation cache/stream identity independently rechecked.
+835af1a98d05ac4f99cbb697f36d456b0a24bdd6905ada0ebac5da4eec0916a7,SHA-256,disjoint adaptive/holdout index file,VALID,Canonical holdout identity; independent of repository URL.
+2b242559d0ec523683ee05a33238c819790d17ebef919745cab3b426f161021f,SHA-256,FULL_GRID_PROTOCOL_LOCK.json,VALID,Directly re-hashed from canonical primary full-grid execution package.
+c3fc549f2a4110e08fe6a12d276195b44d6083cba76f3c33b6d6cd10bbe7565e,SHA-256,SPECIFICITY_PROTOCOL_LOCK_v2_6.json,VALID,Recovered and hash-matched from numerical replication package.
+3ffb2ad0f5217d7a907590d8395150fe5b97846118a4e70d0fc6fca10fa2ba6e,SHA-256,POST_AUDIT_PROTOCOL_LOCK_v2_8.json,VALID,Canonical post-audit protocol-lock identity.
+5488b3bff4ddcd8aac3b03a61909f0976859b20dab37c27b86befabb318baf24,SHA-256,canonical primary full-grid execution package ZIP,VALID,Direct local archive hash; independent of public repo.
+dcd2fa22d27a9a983dfadca3d49b56f776d316add01d201a2fe5563d757203d1,SHA-256,canonical primary full-grid aggregate,VALID,Canonical aggregate identity used by multiple independent audits.
+cd75c958cc44733384f767cb09c4c50f7457b9619a0c5b97887bd5aa797ea314,SHA-256,canonical damage-matched JSON,VALID,Direct local artifact hash; independent of public repo.
+1e85b91ac8542de1cd6a7474d82597b10f64e16287b1790fc8480edf64997e11,SHA-256,canonical damage-matched specificity artifact,VALID,Recorded canonical EXP-019 artifact identity; not a repository hash.
+3da48d5c97c9851ecafc0e43ada060139294e281beac920dbb21b4a6aacd32f0,SHA-256,canonical adaptive n=6 RESULTS ZIP,VALID,Completed-result archive identity; independent of repo URL.
+e8d6a0ace23816f0d32cbc3348f47b54d10b8a76735e0c715b88dde7b88d61cb,SHA-256,Stage-B RESULTS ZIP,VALID,Direct local archive hash; independently audited.
+292de6059a47fa98d00359cff89d6d0a772b83640f233daa8cd02c9269db4d8d,SHA-256,Stage-B external-audit Markdown,VALID,Direct byte hash of final external-audit record.
+b38b94e4d2135877512b89a72c7110046c68972c52e2e2edea3d8281df8d1c3f,SHA-256,5-pp interpolation-shape sensitivity summary,VALID,Post-hoc sensitivity artifact identity; independent of repo URL.
+9e046fd888f88c7da48588ff3016c9e1daac73053511a0e5300096c05a0da9cd,SHA-256,5-pp perturbation-geometry sensitivity summary,VALID,Post-hoc sensitivity artifact identity; independent of repo URL.
+8a71b3469c8080a66eec3e807258c4532214367f78edda1e2b0f6acb2aa73cff,SHA-256,ledger v1.19,SUPERSEDED_AS_AUTHORITY,"File hash is internally valid, but ledger v1.19 contains the now-invalid public-repository provenance statement; authority must advance to v1.20."
+952ff4e7b81a220c40bc63483d332dc4d25277a2,Git commit SHA-1,public repository snapshot cited in manuscript/supplement,RETIRED_INVALID_FOR_THIS_MANUSCRIPT,"This commit belongs to djokobandjur/vit-positional-adversarial, not djokobandjur/ads-vit-forensics."
+cb0709a78c88602a5a8fed314508d369f9849fcd,Git commit SHA-1,current main HEAD of djokobandjur/ads-vit-forensics at audit time,NOT_CANONICAL_YET,"Correct repository identity, but current contents are stale/superseded and must not simply replace 952ff... in the manuscript."
