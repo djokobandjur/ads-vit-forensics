@@ -1,0 +1,29 @@
+[
+  {
+    "file": "full_scale_experiment_v1_6.py",
+    "parts": [
+      "full_scale_experiment_v1_6.py.gz.b64.part01",
+      "full_scale_experiment_v1_6.py.gz.b64.part02",
+      "full_scale_experiment_v1_6.py.gz.b64.part03",
+      "full_scale_experiment_v1_6.py.gz.b64.part04"
+    ],
+    "sha256": "4aa884cffc0afbb64b9b08c776d2e94173264340b5a92a84c927869c3db7e8ee"
+  },
+  {
+    "file": "stage_b_saved_delta_reeval_v2_8_2.py",
+    "parts": [
+      "stage_b_saved_delta_reeval_v2_8_2.py.gz.b64.part01",
+      "stage_b_saved_delta_reeval_v2_8_2.py.gz.b64.part02",
+      "stage_b_saved_delta_reeval_v2_8_2.py.gz.b64.part03"
+    ],
+    "sha256": "d83219e566ab4829de57ac875d561b8e4f6b47aa19b61531a77ed5b4f00e1add"
+  },
+  {
+    "file": "run_adaptive_pilot_v2_7_1.py",
+    "parts": [
+      "run_adaptive_pilot_v2_7_1.py.gz.b64.part01",
+      "run_adaptive_pilot_v2_7_1.py.gz.b64.part02"
+    ],
+    "sha256": "e881f02e9a2ea0289e6221cdeb22d3c5e18886641e9410213d8c999d09aac821"
+  }
+]
