@@ -1,0 +1,53 @@
+name: Restore exact canonical source payloads
+
+on:
+  push:
+    branches:
+      - tifs-canonical-20260911
+    paths:
+      - 'canonical/archive/**'
+      - '.github/workflows/restore-canonical-sources.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tifs-canonical-20260911
+          fetch-depth: 0
+      - name: Restore and verify exact source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib, json
+          root = Path('.')
+          manifest = json.loads((root/'canonical/archive/ARCHIVED_SOURCE_MANIFEST.json').read_text())
+          for item in manifest:
+              b64 = ''.join((root/'canonical/archive'/part).read_text().strip() for part in item['parts'])
+              raw = gzip.decompress(base64.b64decode(b64))
+              got = hashlib.sha256(raw).hexdigest()
+              if got != item['sha256']:
+                  raise SystemExit(f"SHA mismatch for {item['file']}: {got} != {item['sha256']}")
+              out = root/'canonical'/item['file']
+              out.write_bytes(raw)
+              print(item['file'], got)
+          PY
+      - name: Commit restored exact source files if needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- canonical/full_scale_experiment_v1_6.py canonical/stage_b_saved_delta_reeval_v2_8_2.py canonical/run_adaptive_pilot_v2_7_1.py; then
+            echo 'No source changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add canonical/full_scale_experiment_v1_6.py canonical/stage_b_saved_delta_reeval_v2_8_2.py canonical/run_adaptive_pilot_v2_7_1.py
+          git commit -m 'Restore exact canonical source payloads'
+          git push origin HEAD:tifs-canonical-20260911
