@@ -1,4 +1,4 @@
-name: Restore exact canonical source payloads
+name: Restore exact canonical repository payloads
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - tifs-canonical-20260911
     paths:
       - 'canonical/archive/**'
+      - 'protocols/archive/**'
       - '.github/workflows/restore-canonical-sources.yml'
 
 permissions:
@@ -19,6 +20,7 @@ jobs:
         with:
           ref: tifs-canonical-20260911
           fetch-depth: 0
+
       - name: Restore and verify exact source files
         shell: bash
         run: |
@@ -38,21 +40,47 @@ jobs:
               out.write_bytes(raw)
               print(item['file'], got)
           PY
-      - name: Commit restored exact source files if needed
+
+      - name: Restore and verify exact protocol files
         shell: bash
         run: |
           set -euo pipefail
-          files=(
+          python - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, json, tarfile, io
+          root = Path('.')
+          mpath = root/'protocols/archive/PROTOCOL_BUNDLE_MANIFEST.json'
+          manifest = json.loads(mpath.read_text())
+          b64 = ''.join((root/'protocols/archive'/part).read_text().strip() for part in manifest['parts'])
+          bundle = base64.b64decode(b64)
+          got_bundle = hashlib.sha256(bundle).hexdigest()
+          if got_bundle != manifest['bundle_sha256']:
+              raise SystemExit(f"Protocol bundle SHA mismatch: {got_bundle} != {manifest['bundle_sha256']}")
+          with tarfile.open(fileobj=io.BytesIO(bundle), mode='r:gz') as tf:
+              tf.extractall(root)
+          for item in manifest['files']:
+              path = root/'protocols'/item['file']
+              got = hashlib.sha256(path.read_bytes()).hexdigest()
+              if got != item['sha256']:
+                  raise SystemExit(f"Protocol SHA mismatch for {item['file']}: {got} != {item['sha256']}")
+              print(item['file'], got)
+          PY
+
+      - name: Commit restored exact payloads if needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_files=(
             canonical/full_scale_experiment_v1_6.py
             canonical/stage_b_saved_delta_reeval_v2_8_2.py
             canonical/run_adaptive_pilot_v2_7_1.py
           )
-          if [ -z "$(git status --porcelain -- "${files[@]}")" ]; then
-            echo 'No source changes to commit.'
+          if [ -z "$(git status --porcelain -- "${source_files[@]}" protocols/)" ]; then
+            echo 'No restored payload changes to commit.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "${files[@]}"
-          git commit -m 'Restore exact canonical source payloads'
+          git add "${source_files[@]}" protocols/
+          git commit -m 'Restore exact canonical source and protocol payloads'
           git push origin HEAD:tifs-canonical-20260911
