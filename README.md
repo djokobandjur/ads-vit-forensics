@@ -5,6 +5,8 @@
 This repository is being synchronized to the corrected, source-audited IEEE TIFS manuscript lineage prepared on 2026-09-11.
 
 > **Canonical-status note.** The pre-2026-09-11 scripts and result JSON files that remain in the repository are preserved as historical provenance. They must not be treated as the numerical or methodological authority for the corrected manuscript. The canonical source set is under [`canonical/`](canonical/), and the current protocol/provenance material is under [`protocols/`](protocols/), [`reproducibility/`](reproducibility/), and [`provenance/`](provenance/).
+>
+> **Synchronization branch notice.** The branch `tifs-canonical-20260911` and draft PR #1 are intentionally fail-closed and incomplete until every file named in `REPO_SYNC_STATUS.md` has been added and repository-to-package conformance passes. Do not cite a branch commit as the final public-code identity yet.
 
 ## Canonical ADS operator
 
@@ -48,9 +50,11 @@ paper/            current provisional corrected manuscript/supplement source and
 scripts/          historical pre-correction scripts preserved in Git history/current tree
 ```
 
-The files in `canonical/` are the authoritative code entry points for the corrected manuscript lineage. Historical `scripts/` files are retained to preserve provenance; several implement superseded operator/attack semantics and should not be used to reproduce final claims.
+The files in `canonical/` are the authoritative code entry points for the corrected manuscript lineage **once the synchronization checklist is complete**. Historical `scripts/` files are retained to preserve provenance; several implement superseded operator/attack semantics and should not be used to reproduce final claims.
 
-## Current source identities
+## Canonical source identities
+
+The audited canonical identities are:
 
 | Source | SHA-256 |
 |---|---|
@@ -61,11 +65,13 @@ The files in `canonical/` are the authoritative code entry points for the correc
 | `canonical/full_scale_experiment_v1_6.py` | `4aa884cffc0afbb64b9b08c776d2e94173264340b5a92a84c927869c3db7e8ee` |
 | `canonical/stage_b_saved_delta_reeval_v2_8_2.py` | `d83219e566ab4829de57ac875d561b8e4f6b47aa19b61531a77ed5b4f00e1add` |
 
+The table records the audited source identities even while branch synchronization is in progress; `REPO_SYNC_STATUS.md` is the authoritative checklist for which bytes have already been placed on the branch.
+
 The exact confirmatory adaptive v2.7.2 runner/source archive and the exact specificity v2.6 execution runner remain explicitly documented archival source gaps; no byte identity is inferred for them.
 
 ## Paper source status
 
-`paper/` currently contains the **provisional** post-repository-audit manuscript/supplement source. The final paper source will be updated only after this canonical repository branch is audited and the public commit/release identity is frozen.
+`paper/` will contain the **provisional** post-repository-audit manuscript/supplement source after the repository source/protocol layer has been synchronized. The final paper source will be updated only after the canonical branch is audited and the public commit/release identity is frozen.
 
 ## Archival DOI
 
