@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — 2026-09-13 pre-Zenodo freeze
+
+### Added
+
+- Final release/provenance manifest with the frozen manuscript, submission-wrapper, replication-package, and scientific-authority hashes.
+- Final release-freeze status and Zenodo handoff instructions.
+- `CITATION.cff` for GitHub citation support without inventing a version-specific DOI.
+- Recovered EXP-019 canonical artifact identities and final independent numerical-gate results in the public provenance documentation.
+
+### Changed
+
+- Scientific-authority pointer advanced to Ledger v1.31 (`50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`).
+- Repository status advanced from synchronization-in-progress to pre-Zenodo release ready.
+- Historical draft PR #1 classified as superseded rather than a merge target.
+
+### Scientific status
+
+No manuscript number, attack result, interpretation, or attribution decision changes in this repository-release pass.
+
 ## [2.1.0] — 2026-07-06
 
 Final repository update for the 13-page IEEE TIFS resubmission of

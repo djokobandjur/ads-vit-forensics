@@ -1,0 +1,47 @@
+{
+  "status": "PRE_ZENODO_RELEASE_READY",
+  "date": "2026-09-13",
+  "audited_source_snapshot": "ac580b9524c287882d97f4660fd7bf7791ea0c73",
+  "scientific_authority": {
+    "file": "ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_EXP019_RECOVERY_v1_31_20260913.md",
+    "sha256": "50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4",
+    "distribution": "frozen replication archive / Zenodo"
+  },
+  "submission_wrapper": {
+    "file": "ADS_TIFS_SUBMISSION_RC_POST_v1_31_RELEASE_FREEZE_v1_0_20260913.zip",
+    "bytes": 1111289,
+    "sha256": "ef34d7e899bd0c1e05dd528a53de7f52af21779c8b68862ec505b91c3f374f0b"
+  },
+  "replication_package": {
+    "file": "ADS_TIFS_SUBMISSION_REPLICATION_PACKAGE_v1_5_POST_v1_31_FREEZE_20260913.zip",
+    "bytes": 368622268,
+    "sha256": "80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943",
+    "distribution": "Zenodo archival payload; not stored in Git because of size"
+  },
+  "main": {
+    "tex_sha256": "dcd527e41e711aa6a8257e441545e53e2bcbf23a1417ef098136bf03408e6298",
+    "pdf_sha256": "8cf59e194e0f7907d6c515ec88b9b87bb3a4aaed484c442d38065660af22d733",
+    "pages": 12
+  },
+  "supplement": {
+    "tex_sha256": "590b0e930d5331a424fd1c3cb75f6e48beb1be884c2f5a68d56307842b8d10fa",
+    "pdf_sha256": "4384aa7775c6fcdbc4c2efd752a44129c569b3fa5b29f4b349a450c0ebed4468",
+    "pages": 7
+  },
+  "exp019": {
+    "damage_matched_json_sha256": "1e85b91ac8542de1cd6a7474d82597b10f64e16287b1790fc8480edf64997e11",
+    "damage_matched_csv_sha256": "41ff996e3429b3591bf742319d052dc353e5b7d7866a5e852366e0e59e8c8a0d",
+    "cell_level_csv_sha256": "510fbbbecae1770a40039da5c34a7cf74c316eee3e09147e0ba20b5d6ff4aea2"
+  },
+  "zenodo": {
+    "concept_doi": "10.5281/zenodo.19844729",
+    "version_specific_doi": null,
+    "state": "PENDING_NEW_VERSION_PUBLICATION"
+  },
+  "external_payload_exception": {
+    "b1_5_saved_deltas_count": 2387,
+    "approx_bytes": 400887638104,
+    "included_in_compact_package": false,
+    "required_for_archived_array_statistics": false
+  }
+}

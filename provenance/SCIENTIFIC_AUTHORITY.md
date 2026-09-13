@@ -1,19 +1,19 @@
 # Scientific authority and provenance pointer
 
-Current ADS/TIFS scientific authority for the corrected 2026-09-11 lineage:
+Current ADS/TIFS scientific authority:
 
-`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_UPDATED_POST_REPO_AUDIT_v1_20_20260911.md`
+`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_EXP019_RECOVERY_v1_31_20260913.md`
 
 SHA-256:
 
-`0c232fb8f4e74e5baa8d13f48482e3ae71c2a795e8cbc189130c9d4d6be421e7`
+`50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
 
-The full append-only ledger is part of the archival reproducibility payload and the corresponding Zenodo release. This Git repository carries the canonical source, protocol locks, source-conformance records, and repository-provenance records needed to trace the public code state without duplicating every internal historical ledger entry in the source tree.
+Ledger v1.31 closes the EXP-019 headline artifact-availability gap after recovery of the original FMLE result bundle. It does **not** change manuscript numbers, interpretations, attack results, or the attribution decision.
 
-Ledger v1.20 explicitly retires the erroneous ADS/TIFS public-source provenance claim that pointed to `djokobandjur/vit-positional-adversarial@952ff4e7b81a220c40bc63483d332dc4d25277a2`.
+The full append-only ledger is part of the archival reproducibility/Zenodo payload. Git carries this authority pointer plus canonical source/protocol/provenance records.
 
-The correct ADS/TIFS public repository is `https://github.com/djokobandjur/ads-vit-forensics`.
+Correct ADS/TIFS repository: https://github.com/djokobandjur/ads-vit-forensics
 
-The persistent Zenodo concept DOI is `10.5281/zenodo.19844729`; it represents all versions and resolves to the latest published Zenodo release. A version-specific DOI must be recorded only after the new synchronized release is actually deposited.
+Immutable audited source/protocol snapshot cited by the manuscript: `ac580b9524c287882d97f4660fd7bf7791ea0c73`.
 
-The exact confirmatory adaptive v2.7.2 runner/source archive and exact specificity v2.6 execution runner remain explicit archival source gaps unless recovered; no source identity is inferred for them from downstream artifacts.
+Zenodo concept DOI: `10.5281/zenodo.19844729`. A version-specific DOI will be recorded only after the new frozen archival release is actually published.

@@ -1,13 +1,11 @@
 # Latest scientific-results ledger pointer
 
-Current authority as of 2026-09-11:
+Current authority as of 2026-09-13:
 
-`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_UPDATED_POST_REPO_AUDIT_v1_20_20260911.md`
+`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_EXP019_RECOVERY_v1_31_20260913.md`
 
 SHA-256:
 
-`0c232fb8f4e74e5baa8d13f48482e3ae71c2a795e8cbc189130c9d4d6be421e7`
+`50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
 
-The complete ledger is part of the canonical reproducibility/archival package. The repository synchronization branch is still in progress; this pointer exists so no earlier ledger version can be mistaken for current authority.
-
-The v1.20 update explicitly retires the incorrect ADS/TIFS provenance citation to `djokobandjur/vit-positional-adversarial@952ff4e7...` while preserving the historical record, and classifies the pre-synchronization `ads-vit-forensics@cb0709...` state as historical/unsynchronized.
+The full ledger is carried in the frozen replication/archival payload. v1.31 supersedes the previous release-audit authority only for the recovered EXP-019 artifact-availability closure; scientific conclusions remain unchanged.

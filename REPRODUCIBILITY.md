@@ -5,64 +5,46 @@ The corrected ADS/TIFS workflow separates two verification layers.
 1. **Source conformance:** manuscript equation/prose -> exact source function -> source SHA-256 -> locked protocol -> independent oracle/unit test.
 2. **Numerical replication:** canonical stored artifact/per-image arrays -> derived analysis/table -> manuscript number/claim.
 
-Together these form the broader traceability chain
+The immutable audited source/protocol snapshot is `ac580b9524c287882d97f4660fd7bf7791ea0c73`. Source conformance/oracle records already present in this repository report 36/36 passing independent checks for the audited core pipeline.
 
-`manuscript -> source -> source SHA-256 -> protocol -> oracle/unit test -> artifact -> claim`.
+## Final scientific/release authority
 
-Neither layer is silently substituted for the other.
+- Scientific Results and Interpretation Ledger v1.31 SHA-256: `50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
+- final compact replication package SHA-256: `80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943`
+- final submission wrapper SHA-256: `ef34d7e899bd0c1e05dd528a53de7f52af21779c8b68862ec505b91c3f374f0b`
+- Zenodo concept DOI: `10.5281/zenodo.19844729`
+- version-specific DOI: pending publication of the new version
 
-## Canonical source layer
+The full ledger and large numerical arrays are archival payloads; Git carries their exact identities plus canonical source/protocol/provenance records.
 
-The exact recovered/audited source files are under `canonical/`. Their canonical SHA-256 identities are recorded in `reproducibility/SOURCE_IDENTITY_MANIFEST.csv` and summarized in the repository README.
+## Final independent gates
 
-The source-conformance audit is `reproducibility/ADS_TIFS_SOURCE_TO_MANUSCRIPT_SEMANTIC_AUDIT_v1_0_20260911.md`; the independent synthetic/oracle record is `reproducibility/SOURCE_ORACLE_TEST_RESULTS.json` and reports 36/36 PASS.
+The frozen replication package passes:
 
-`canonical/STAGE_B_FINALIZATION_RECOVERY_NOTE.md` documents the metadata-only finalization exception in the exact executed Stage-B source. Scientific outputs were completed before that exception; the documented recovery performed no new PGD, inference, score, or AUC computation.
+- dense-grid reproduction: 96/96 cells, maximum absolute discrepancy `1.88332283102e-08`, global minimum `R_upper = 1.839663980099` (manuscript `1.840`);
+- decisive adaptive bootstrap: 20,000/20,000 estimable, q2.5 / median / q97.5 = `0.6601787590136425 / 0.8010375307621824 / 0.8133185510338008`;
+- EXP-019 5-pp headline reproduction: 72/72 seed-level ratios > 1; minimum seed-level ratio `4.52077855655`; paired family/control mean range `6.54717399809--15.88419867155` (manuscript `6.55--15.88`).
 
-The adaptive files presently under `canonical/` are explicitly pilot implementation lineage. They are not represented as the missing confirmatory v2.7.2 runner.
+The complete scripts and numerical dependencies for these statistical reruns are in the compact replication archive prepared for Zenodo.
 
-## Protocol layer
+## Recovered EXP-019 provenance
 
-`protocols/` contains the available locked full-grid, damage-matched, corrected comparison, specificity, adaptive, and post-audit protocol material. The synchronization workflow reconstructed this protocol payload from an archived exact bundle and verified both the bundle SHA-256 and every individual protocol-file SHA-256 before committing the files.
+The original FMLE Specificity v2.6 result bundle was recovered. The exact canonical damage-matched JSON/CSV and cell-level CSV are co-released inside the frozen replication package. This closes the previously open Table-V artifact-availability gap without changing any scientific result.
 
-The original comparison LOCK-002 JSON bytes remain unavailable; no reconstructed JSON is substituted for them. The locked Markdown semantics and completed corrected comparison artifacts remain preserved.
+## External payload boundary
 
-## Scientific authority
-
-The current ledger identity is recorded in `provenance/SCIENTIFIC_AUTHORITY.md`:
-
-`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_UPDATED_POST_REPO_AUDIT_v1_20_20260911.md`
-
-SHA-256:
-
-`0c232fb8f4e74e5baa8d13f48482e3ae71c2a795e8cbc189130c9d4d6be421e7`
-
-The full append-only ledger is part of the archival reproducibility payload/Zenodo distribution. Git carries the authority pointer plus the source/protocol/provenance material needed for public code conformance.
-
-## External archival payloads
-
-Large checkpoints, saved deltas, per-cell score arrays, and completed-result ZIPs remain external hash-bound dependencies. Their exact identities are recorded in completed audit/reproducibility material. The versioned public archival distribution is Zenodo; persistent concept DOI: `10.5281/zenodo.19844729`.
+The compact archival package does not duplicate the 2,387 saved B1.5 `.pt` attack deltas (~401 GB). Their exact identities are retained separately for byte-level saved-delta re-evaluation. They are not required for the archived-array statistical reproductions.
 
 ## Known archival source gaps
 
-The following are not silently reconstructed:
+The following are still preserved as explicit source-archive gaps rather than silently reconstructed:
 
 - exact confirmatory adaptive v2.7.2 runner/source archive;
-- exact specificity v2.6 execution runner/notebook;
+- exact Specificity v2.6 execution runner/notebook (the original completed result bundle itself has been recovered);
 - original comparison LOCK-002 JSON bytes.
 
-These are archival reproducibility gaps, not detected numerical contradictions.
+These do not create a detected numerical contradiction in the final reported results.
 
-## Final release gate
+## Zenodo handoff
 
-Before the synchronized branch becomes the citable public state:
-
-- verify exact Git blob/byte identity for every canonical source file against the execution/source package;
-- verify the protocol bundle and individual protocol hashes;
-- record repository-to-package conformance;
-- freeze the audited Git source snapshot;
-- archive the final release/reproducibility payload to Zenodo;
-- record the version-specific Zenodo DOI and release-archive SHA-256, while retaining concept DOI `10.5281/zenodo.19844729`;
-- only then insert the audited Git snapshot and DOI identifiers into the reader-facing manuscript/supplement.
-
-The final manuscript may be committed after the source snapshot is frozen; it should cite that immutable audited source snapshot rather than attempting to self-reference the later manuscript-containing repository HEAD.
+GitHub is ready for archival handoff. The remaining external actions are to publish/archive the frozen release through Zenodo, obtain the real version-specific DOI, then update archival identifier metadata in the manuscript/repository and run one final identifier cross-check. No scientific rerun is planned.

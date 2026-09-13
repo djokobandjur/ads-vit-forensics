@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the associated paper and the archived release."
+title: "Attention Divergence Score: A Forensic Metric for Characterizing Parameter-Level Attacks in Vision Transformers"
+type: software
+authors:
+  - family-names: Bandjur
+    given-names: Djoko
+    affiliation: "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+  - family-names: Bandjur
+    given-names: Milos
+    affiliation: "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+repository-code: "https://github.com/djokobandjur/ads-vit-forensics"
+keywords:
+  - Vision Transformer
+  - attention divergence
+  - digital forensics
+  - parameter tampering
+  - positional encoding
+  - adversarial attacks
