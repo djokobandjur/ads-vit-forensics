@@ -1,0 +1,47 @@
+{
+  "release_id": "ADS_TIFS_CANONICAL_REPRO_RELEASE_POST_PHASE2_v3_0_0_20260916",
+  "date": "2026-09-16",
+  "status": "RELEASE_CANDIDATE_READY_FOR_TAG_AND_ZENODO_PUBLICATION",
+  "scientific_change_from_packaging": "NONE",
+  "new_experiment_from_packaging": "NONE",
+  "scientific_authority": {
+    "file": "ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_AUDIT_POSTHOC_v1_62_20260915.md",
+    "sha256": "c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1"
+  },
+  "submission": {
+    "version": "v1.5.2",
+    "zip": "ADS_TIFS_TIFS_SUBMISSION_PACKAGE_v1_5_2_20260916.zip",
+    "sha256": "da888c7c6befa3c9d1b19432def11689ac4397496c1abbcff9f177a3480add0a",
+    "main_pages": 12,
+    "supplement_pages": 6
+  },
+  "prepared_archival_payload": {
+    "filename": "ADS_TIFS_CANONICAL_REPRO_RELEASE_POST_PHASE2_v3_0_0_20260916.zip",
+    "bytes": 13447310,
+    "sha256": "708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396",
+    "manifest_entries": 51,
+    "manifest_failures": 0
+  },
+  "canonical_locks": {
+    "ads_operator_sha256": "093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362",
+    "reference_indices_sha256": "1dda480be595238fdbb1fb3d07898251862ab96fa72c235e5061a28c69981509",
+    "reference_cache_sha256": "01bfd5a5d6e5e2f452e31e737550b9591d25a01c7979c1f82cb3483585537dc4"
+  },
+  "github": {
+    "repository": "https://github.com/djokobandjur/ads-vit-forensics",
+    "historical_corrected_source_snapshot": "ac580b9524c287882d97f4660fd7bf7791ea0c73",
+    "target_tag": "v3.0.0"
+  },
+  "zenodo": {
+    "concept_doi": "10.5281/zenodo.19844729",
+    "version_specific_doi": null,
+    "publication_state": "NOT_YET_PUBLISHED"
+  },
+  "archival_gaps": [
+    "exact confirmatory adaptive v2.7.2 runner/source archive",
+    "exact matched-specificity execution runner/notebook",
+    "original comparison-protocol JSON bytes",
+    "P2-C/P2-D protocol-lock byte files absent from compact project upload",
+    "2387 densified-stress saved deltas (~401 GB), retained separately by hash"
+  ]
+}
