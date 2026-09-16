@@ -1,43 +1,59 @@
 # Canonical repository synchronization status
 
-Date: 2026-09-13  
-Status: **SOURCE/PROTOCOL SYNC COMPLETE — PRE-ZENODO RELEASE READY**
+Date: 2026-09-16  
+Status: **POST-PHASE-2 RELEASE CANDIDATE / ZENODO PAYLOAD PREPARED**
 
-## Immutable audited source snapshot
+## Scientific authority
 
-`ac580b9524c287882d97f4660fd7bf7791ea0c73`
+Ledger v1.62:
+`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_AUDIT_POSTHOC_v1_62_20260915.md`
 
-This remains the source/protocol snapshot cited by the manuscript. Subsequent commits add release metadata and archival pointers; they do not redefine the audited source identity.
+SHA-256: `c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1`.
+
+The prior v1.31 pre-Zenodo freeze is retained as historical provenance and is no longer the current scientific-authority pointer.
 
 ## Closed gates
 
-- canonical source identity/conformance recorded;
-- available locked protocol material restored and hash-checked;
-- independent source/oracle suite 36/36 PASS;
-- final manuscript cross-reference/terminology audit PASS;
-- final main compile: 12 pages, no overfull or unresolved refs/cites;
-- final supplement compile: 7 pages, no overfull or unresolved refs/cites;
-- dense-grid replication PASS;
-- decisive adaptive bootstrap replication PASS;
-- EXP-019 headline artifact recovery and reproduction PASS;
-- final compact replication package manifest/integrity PASS.
+- canonical ADS operator and fixed-reference identities locked;
+- corrected attack protocol and canonical PE surfaces locked;
+- primary full grid and damage-matched analyses complete;
+- corrected comparison/ROC branch complete;
+- canonical specificity and adaptive branches complete;
+- Phase-2 P2-C step-horizon diagnostic complete;
+- Phase-2 P2-D targeted structural confirmatory complete;
+- final main manuscript: 12 pages;
+- final supplement: 6 pages (TIFS hard limit);
+- final submission closure v1.5.2: PASS / SUBMISSION-READY;
+- no new experiment or ledger update caused by this release-packaging step.
 
-## Current scientific authority
+## Final manuscript identity
 
-Ledger v1.31 SHA-256: `50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`.
+Submission package:
+`ADS_TIFS_TIFS_SUBMISSION_PACKAGE_v1_5_2_20260916.zip`
 
-## Release payload identities
+SHA-256: `da888c7c6befa3c9d1b19432def11689ac4397496c1abbcff9f177a3480add0a`.
 
-- submission wrapper SHA-256: `ef34d7e899bd0c1e05dd528a53de7f52af21779c8b68862ec505b91c3f374f0b`
-- compact replication package SHA-256: `80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943`
-- Zenodo concept DOI: `10.5281/zenodo.19844729`
+## Prepared archival payload
 
-## Historical PR #1
+`ADS_TIFS_CANONICAL_REPRO_RELEASE_POST_PHASE2_v3_0_0_20260916.zip`
 
-The original synchronization draft PR #1 is superseded by the direct audited `main` lineage and the v1.31 release-freeze state. It must not be merged or used as the citable release identity.
+SHA-256: `708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396`  
+Size: 13,447,310 bytes  
+Manifest entries: 51; local verification failures: 0.
 
-## Remaining action
+## Source identity
 
-The only release-critical external step is Zenodo publication/versioning: archive the frozen replication payload, obtain the actual version-specific DOI, then perform a metadata-only DOI/citation update and final identifier cross-audit.
+Earlier immutable corrected source/protocol snapshot:
+`ac580b9524c287882d97f4660fd7bf7791ea0c73`.
 
-The exact confirmatory adaptive v2.7.2 runner/source archive, exact Specificity v2.6 execution runner/notebook, and original comparison LOCK-002 JSON bytes remain explicitly documented archival source gaps.
+The post-Phase-2 release commit/tag adds final authority/audit/release metadata and does not silently rewrite this historical source identity.
+
+## Explicit archival gaps
+
+The exact confirmatory adaptive v2.7.2 runner/source archive, exact matched-specificity execution runner/notebook, and original comparison-protocol JSON bytes remain documented gaps. The 2,387 densified-stress saved deltas (approximately 401 GB) remain separately retained by hash. P2-C/P2-D protocol-lock byte files are not present in the compact project upload; their audited hashes remain recorded in final audit/decision artifacts.
+
+## Zenodo
+
+Concept DOI: `10.5281/zenodo.19844729`.
+
+The post-Phase-2 payload and metadata are prepared. A new version-specific DOI is not claimed until publication of the new Zenodo version.
