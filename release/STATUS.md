@@ -1,30 +1,23 @@
-# Final release-freeze status
+# Release status
 
-Date: 2026-09-13  
-Status: **PASS / PRE-ZENODO RELEASE READY**
+Date: 2026-09-16
 
-This record summarizes the final joint manuscript/reproducibility freeze. It does not replace the full audit/checklist shipped in the replication archive.
+Status: **POST-PHASE-2 RELEASE CANDIDATE / READY FOR GITHUB TAG + ZENODO VERSION PUBLICATION**
 
-## Frozen identities
+## Closed internal gates
 
-- audited source/protocol snapshot: `ac580b9524c287882d97f4660fd7bf7791ea0c73`
-- Scientific Results and Interpretation Ledger v1.31 SHA-256: `50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
-- submission wrapper SHA-256: `ef34d7e899bd0c1e05dd528a53de7f52af21779c8b68862ec505b91c3f374f0b`
-- compact replication package SHA-256: `80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943`
+- scientific authority advanced to Ledger v1.62;
+- v1.5.2 manuscript closure PASS (12-page main, 6-page supplement);
+- Phase-2 P2-C and P2-D closure artifacts identified and added to public provenance;
+- release artifact index and archival-gap boundary prepared;
+- local Zenodo payload assembled: 52 files total, 51 manifest entries, 0 manifest failures;
+- local payload ZIP SHA-256: `708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396`;
+- no scientific number/result is created by this release pass.
 
-## Final gates
+## Remaining external publication actions
 
-- main fresh compile: 12 pages; no overfull or unresolved references/citations;
-- supplement fresh compile: 7 pages; no overfull or unresolved references/citations;
-- shipping-vs-fresh render comparison: 0 changed pages (12/12 main, 7/7 supplement);
-- terminology/cross-reference audit: PASS;
-- dense-grid reproduction: 96/96, manuscript minimum `1.840`, PASS;
-- decisive adaptive bootstrap: 20,000/20,000, q2.5 `0.6601787590136425`, PASS;
-- EXP-019 headline: 72/72 seed-level ratios > 1; paired family/control mean range `6.54717399809--15.88419867155`, PASS;
-- replication-package integrity: 44/44, failures=0, PASS.
+1. merge/freeze the post-Phase-2 repository update and create Git tag/release `v3.0.0`;
+2. publish a new version under Zenodo concept DOI `10.5281/zenodo.19844729` using the prepared payload/metadata;
+3. record the actual version-specific DOI in a metadata-only follow-up commit and cross-check it against the Git tag and payload SHA.
 
-## Release boundary
-
-The only intentional external-payload exception is the separately retained set of 2,387 B1.5 saved `.pt` deltas (~401 GB), needed only for byte-level saved-delta reevaluation and not for the archived-array statistical reproductions.
-
-The next release-critical action is Zenodo version publication and assignment of the real version-specific DOI. No scientific branch is open.
+A version-specific DOI must not be invented before publication.
