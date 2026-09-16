@@ -1,43 +1,34 @@
-# Zenodo handoff — user action required
+# Zenodo handoff — post-Phase-2 canonical release
 
-GitHub/source work is prepared through the pre-Zenodo freeze. Do **not** publish a Zenodo version until the remaining metadata choices below are confirmed.
+Concept DOI: `10.5281/zenodo.19844729`
 
-## Archival payload
+Target release version: `3.0.0`
 
-Primary file for the new Zenodo version:
+Prepared payload:
+`ADS_TIFS_CANONICAL_REPRO_RELEASE_POST_PHASE2_v3_0_0_20260916.zip`
 
-`ADS_TIFS_SUBMISSION_REPLICATION_PACKAGE_v1_5_POST_v1_31_FREEZE_20260913.zip`
+SHA-256:
+`708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396`
 
-- bytes: `368622268`
-- SHA-256: `80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943`
+Prepared metadata: `release/ZENODO_METADATA_v3_0_0.json`.
 
-The package already contains the frozen submission wrapper, scientific authority, final audit/checklist, numerical dependencies, recovered EXP-019 canonical artifacts, figure sources, and reproduction scripts.
+## Publication sequence
 
-## Stable identifiers already known
+1. Freeze the GitHub repository state and create tag/release `v3.0.0`.
+2. Create a **new version** under the existing Zenodo concept record; do not create an unrelated concept record.
+3. Upload the exact payload above and apply the prepared metadata.
+4. Publish the Zenodo version.
+5. Record the resulting **version-specific DOI** in a metadata-only GitHub commit and in `CITATION.cff`/`CITATION.md` as appropriate.
+6. Cross-check: Git tag, Git commit, Zenodo version DOI, payload filename, byte count, payload SHA-256, Ledger v1.62 SHA-256, and submission v1.5.2 SHA-256.
 
-- repository: `https://github.com/djokobandjur/ads-vit-forensics`
-- audited source/protocol snapshot cited by the manuscript: `ac580b9524c287882d97f4660fd7bf7791ea0c73`
-- Zenodo concept DOI: `10.5281/zenodo.19844729`
-- version-specific DOI: **pending the new version**
+## DOI rule
 
-## Suggested Zenodo metadata
+The concept DOI is not a substitute for the version-specific DOI. Until publication, repository prose must state that the version-specific DOI is pending.
 
-- Resource type: Software (archival reproducibility release)
-- Title: `Attention Divergence Score: A Forensic Metric for Characterizing Parameter-Level Attacks in Vision Transformers`
-- Creators, in order:
-  1. Djoko Bandjur — Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica
-  2. Milos Bandjur — Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica
-- Visibility: Public
-- Language: English
-- Keywords: Vision Transformer; attention divergence; digital forensics; parameter tampering; positional encoding; adversarial attacks
+## Scientific rule
 
-## User confirmation required before publication
+Zenodo publication is a release/provenance action only. It does not authorize scientific reinterpretation, ledger modification, new optimizer work, or replacement of canonical result identities.
 
-1. **Release/version label** for the new Zenodo version / GitHub release tag.
-2. **License metadata.** The historical repository changelog states MIT for code and CC BY 4.0 for data/documentation, but the current repository does not carry canonical LICENSE files. Zenodo requires licensing terms, so the intended declaration(s) must be confirmed before publication.
-3. Optional ORCID identifiers for either creator, if desired.
-4. Whether to upload only the compact replication ZIP or also the small submission wrapper as a separate convenience file. The replication ZIP already contains the wrapper, so the single-file deposit is sufficient for completeness.
+## Archival gaps
 
-`CITATION.cff` is committed for GitHub citation support. A `.zenodo.json` file is intentionally **not** committed yet because Zenodo would prefer it over `CITATION.cff`, and the license/version fields should not be guessed.
-
-After the version-specific DOI is assigned, update only archival identifier/citation metadata in the repository/manuscript and run a final DOI/Git/hash cross-check. No scientific rerun is expected.
+See `release/ARCHIVAL_GAPS.md`. The compact deposit does not claim inclusion of the approximately 401 GB densified-stress saved-delta payload or byte recovery of explicitly unrecovered runners/protocol bytes.
