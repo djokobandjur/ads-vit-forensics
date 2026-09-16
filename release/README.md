@@ -1,18 +1,29 @@
-# Pre-Zenodo release freeze
+# Release directory — post-Phase-2 canonical state
 
-Status: **PRE_ZENODO_RELEASE_READY** (2026-09-13).
+This directory contains release metadata for the canonical ADS/TIFS reproducibility archive.
 
-The Git repository is the lightweight code/source/provenance companion. The large archival payload is intentionally not committed to Git.
+## Current candidate
 
-- audited canonical source/protocol snapshot cited by the manuscript: `ac580b9524c287882d97f4660fd7bf7791ea0c73`
-- scientific authority: Ledger v1.31, SHA-256 `50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
-- final submission wrapper SHA-256: `ef34d7e899bd0c1e05dd528a53de7f52af21779c8b68862ec505b91c3f374f0b`
-- final compact replication package: `ADS_TIFS_SUBMISSION_REPLICATION_PACKAGE_v1_5_POST_v1_31_FREEZE_20260913.zip`, 368,622,268 bytes, SHA-256 `80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943`
-- Zenodo concept DOI: `10.5281/zenodo.19844729`
-- version-specific DOI: **pending publication of the new Zenodo version**
+Version label: `v3.0.0`  
+Date: 2026-09-16  
+Scientific change caused by release packaging: `NONE`  
+New experiment caused by release packaging: `NONE`
 
-The complete replication ZIP is the file to archive as the new Zenodo version. It already contains the frozen submission wrapper, current main/supplement, scientific-authority ledger, final audit/checklist, numerical dependencies, recovered EXP-019 canonical artifacts, figure sources, and reproduction scripts.
+Scientific authority: Ledger v1.62, SHA-256 `c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1`.
 
-The 2,387 saved B1.5 attack deltas (~401 GB) remain a separately retained byte-level audit payload; they are not required for the statistical reproductions in the compact archive.
+Final submission package: `ADS_TIFS_TIFS_SUBMISSION_PACKAGE_v1_5_2_20260916.zip`, SHA-256 `da888c7c6befa3c9d1b19432def11689ac4397496c1abbcff9f177a3480add0a`.
 
-No scientific result changes are pending. After the Zenodo version DOI exists, only archival identifier/citation metadata should be updated, followed by a final identifier cross-check.
+Prepared Zenodo payload: `ADS_TIFS_CANONICAL_REPRO_RELEASE_POST_PHASE2_v3_0_0_20260916.zip`, SHA-256 `708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396`.
+
+## Files
+
+- `STATUS.md` — current release gate and remaining external publication step.
+- `POST_PHASE2_RELEASE_CANDIDATE.json` — machine-readable identities and state.
+- `ARTIFACT_INDEX.md` — file → experiment/protocol/result/claim map for the compact release.
+- `ARCHIVAL_GAPS.md` — exact boundary of payloads not duplicated/recovered.
+- `GITHUB_RELEASE_NOTES_v3_0_0.md` — prepared GitHub release notes.
+- `ZENODO_METADATA_v3_0_0.json` — prepared metadata for the new Zenodo version.
+- `ZENODO_HANDOFF.md` — publication sequence and DOI policy.
+- `PRE_ZENODO_RELEASE_FREEZE.json` — historical v1.31 pre-Phase-2 freeze, preserved unchanged.
+
+The historical pre-Phase-2 release metadata remains provenance only; it is not silently overwritten or deleted.

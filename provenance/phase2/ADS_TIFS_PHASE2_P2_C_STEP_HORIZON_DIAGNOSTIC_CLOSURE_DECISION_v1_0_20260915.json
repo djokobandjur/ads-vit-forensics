@@ -1,0 +1,30 @@
+{
+  "audit_sha256": "30733c959fca20a3e6566103a518f636a042785d1204745df71623e5dfff841e",
+  "audit_status": "PASS_EXTERNAL_AUDIT",
+  "baseline_authority_sha256": "e33cb781a2905e6a3167435164bc803e1e2784d6391c5289ed0e190426cc1138",
+  "date": "2026-09-15",
+  "decision_id": "ADS_TIFS_P2_C_STEP_HORIZON_DIAGNOSTIC_CLOSURE_v1_0_20260915",
+  "historical_state_preserved": {
+    "P2_C": "CLOSED_AFTER_LOCKED_REFINEMENT / QUALIFIED SUPPORT",
+    "P2_D": "CLOSED / PARTIAL POSITIVE"
+  },
+  "interpretation": {
+    "not_established": "Intrinsic mathematical non-smoothness, multi-basin geometry, or adequacy of any smaller-alpha/decayed-step schedule.",
+    "not_supported": "The hypothesis that simply increasing the iteration horizon at unchanged alpha/epsilon converges the iterate and regularizes the damage window.",
+    "observed": "The exact historical step-20 trajectories change materially when extended under the same fixed alpha/epsilon=0.1 schedule.",
+    "supported": "Public P2-C attack states are horizon-sensitive and remain fixed-step path-dependent/nonconverged through 200 steps under the locked criterion."
+  },
+  "mean_absolute_damage_shift_20_to_200_pp": {
+    "public_deit3_small": 10.082500000000001,
+    "public_rope2d_mixed_small": 43.745000000000005
+  },
+  "model_classifications": {
+    "public_deit3_small": "FIXED_STEP_TRAJECTORY_NOT_CONVERGED_BY_200",
+    "public_rope2d_mixed_small": "FIXED_STEP_TRAJECTORY_NOT_CONVERGED_BY_200"
+  },
+  "next_experiment_status": "NONE_AUTOMATICALLY_AUTHORIZED",
+  "protocol_lock_sha256": "8f6b134a6abdcd9826c862ea262dae01d1881ad3eeab158c393662f5184053e9",
+  "result_bundle_sha256": "b7b59d61d17aaa381f840559d1c0638c434ec0e6fb83276045389707b61f6bb1",
+  "scientific_status": "CLOSED_AFTER_LOCKED_STEP_HORIZON_DIAGNOSTIC",
+  "secondary_cross_model_state": "NOT_TRIGGERED"
+}

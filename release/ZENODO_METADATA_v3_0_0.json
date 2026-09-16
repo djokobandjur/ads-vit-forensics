@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "title": "Attention Divergence Score: Canonical Reproducibility Release — Post-Phase-2",
+    "upload_type": "software",
+    "description": "Canonical post-audit reproducibility package for the IEEE TIFS manuscript 'Attention Divergence Score: A Forensic Metric for Characterizing Parameter-Level Attacks in Vision Transformers'. This version aligns the public archival payload with Ledger v1.62 and the closed v1.5.2 submission (12-page main, 6-page supplement). Packaging introduces no new experiment or scientific result. The release preserves explicit archival gaps and does not duplicate the approximately 401 GB densified-stress delta payload.",
+    "creators": [
+      {
+        "name": "Bandjur, Djoko",
+        "affiliation": "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+      },
+      {
+        "name": "Bandjur, Milos",
+        "affiliation": "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+      }
+    ],
+    "version": "3.0.0",
+    "publication_date": "2026-09-16",
+    "license": "MIT",
+    "keywords": [
+      "Vision Transformer",
+      "attention divergence",
+      "digital forensics",
+      "parameter tampering",
+      "positional encoding",
+      "reproducibility"
+    ],
+    "related_identifiers": [
+      {
+        "identifier": "https://github.com/djokobandjur/ads-vit-forensics",
+        "relation": "isSupplementTo",
+        "resource_type": "software"
+      },
+      {
+        "identifier": "10.5281/zenodo.19844729",
+        "relation": "isVersionOf",
+        "resource_type": "software"
+      }
+    ],
+    "notes": "Record the new version-specific DOI only after publication. The concept DOI is 10.5281/zenodo.19844729."
+  }
+}

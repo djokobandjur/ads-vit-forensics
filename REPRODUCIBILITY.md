@@ -1,50 +1,67 @@
-# Reproducibility and provenance
+# Reproducibility boundary — canonical ADS/TIFS release
 
-The corrected ADS/TIFS workflow separates two verification layers.
+## Authority order
 
-1. **Source conformance:** manuscript equation/prose -> exact source function -> source SHA-256 -> locked protocol -> independent oracle/unit test.
-2. **Numerical replication:** canonical stored artifact/per-image arrays -> derived analysis/table -> manuscript number/claim.
+Use the following precedence when artifacts conflict:
 
-The immutable audited source/protocol snapshot is `ac580b9524c287882d97f4660fd7bf7791ea0c73`. Source conformance/oracle records already present in this repository report 36/36 passing independent checks for the audited core pipeline.
+1. latest explicit protocol lock;
+2. latest completed canonical result artifact with verified provenance;
+3. latest Scientific Results and Interpretation Ledger;
+4. repository/release prose;
+5. historical manuscript text.
 
-## Final scientific/release authority
+Current scientific authority is Ledger v1.62, SHA-256 `c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1`.
 
-- Scientific Results and Interpretation Ledger v1.31 SHA-256: `50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
-- final compact replication package SHA-256: `80f421a22c878a95809c62fea8ae6a1711cef9db4547bc10b1835650fed82943`
-- final submission wrapper SHA-256: `ef34d7e899bd0c1e05dd528a53de7f52af21779c8b68862ec505b91c3f374f0b`
-- Zenodo concept DOI: `10.5281/zenodo.19844729`
-- version-specific DOI: pending publication of the new version
+## Canonical numerical/operator lock
 
-The full ledger and large numerical arrays are archival payloads; Git carries their exact identities plus canonical source/protocol/provenance records.
+Canonical ADS is the mean of per-image KL divergences from native pre-softmax attention logits, with float64 divergence arithmetic, `torch.log_softmax`, no additive epsilon floor, no probability renormalization, mean reduction over heads/query rows per image, then mean over reference images.
 
-## Final independent gates
+Operator SHA-256: `093e0e562f4e8ccc839a920adef251909a2f47f5368166b7d7b6ccf6411a7362`.
 
-The frozen replication package passes:
+Reference-index SHA-256: `1dda480be595238fdbb1fb3d07898251862ab96fa72c235e5061a28c69981509`.
 
-- dense-grid reproduction: 96/96 cells, maximum absolute discrepancy `1.88332283102e-08`, global minimum `R_upper = 1.839663980099` (manuscript `1.840`);
-- decisive adaptive bootstrap: 20,000/20,000 estimable, q2.5 / median / q97.5 = `0.6601787590136425 / 0.8010375307621824 / 0.8133185510338008`;
-- EXP-019 5-pp headline reproduction: 72/72 seed-level ratios > 1; minimum seed-level ratio `4.52077855655`; paired family/control mean range `6.54717399809--15.88419867155` (manuscript `6.55--15.88`).
+Transformed 256-image reference-cache SHA-256: `01bfd5a5d6e5e2f452e31e737550b9591d25a01c7979c1f82cb3483585537dc4`.
 
-The complete scripts and numerical dependencies for these statistical reruns are in the compact replication archive prepared for Zenodo.
+## Canonical attack lock
 
-## Recovered EXP-019 provenance
+Canonical attack experiments use corrected iterative projected CE ascent, `model.eval()`, the full fixed 256-image reference objective, current delta applied before every gradient evaluation, explicit per-group L-infinity projection, saved deltas, and fail-closed behavior when attacked gradients are absent.
 
-The original FMLE Specificity v2.6 result bundle was recovered. The exact canonical damage-matched JSON/CSV and cell-level CSV are co-released inside the frozen replication package. This closes the previously open Table-V artifact-availability gap without changing any scientific result.
+The final manuscript does not claim optimizer-horizon invariance of the primary 5-pp matched-damage estimand.
 
-## External payload boundary
+## Damage matching
 
-The compact archival package does not duplicate the 2,387 saved B1.5 `.pt` attack deltas (~401 GB). Their exact identities are retained separately for byte-level saved-delta re-evaluation. They are not required for the archived-array statistical reproductions.
+The primary cross-family estimand is 5 percentage points of full-validation accuracy drop. Damage matching uses the first adjacent crossing, exact hits directly, otherwise linear interpolation in damage, identical interpolation weight for epsilon/ADS/profile/per-image ADS, and no extrapolation.
 
-## Known archival source gaps
+## Historical material
 
-The following are still preserved as explicit source-archive gaps rather than silently reconstructed:
+Historical pseudo-PGD, aggregate-first `KL(mean||mean)`, degenerate `attn.mean(-1)` attention comparison, leakage-prone probing, and asymmetric historical `all_weights` specificity are retained only as provenance and must not be used for final claims.
+
+## Phase-2 closure
+
+P2-C public-model step-horizon diagnostic: complete; both public models are classified `FIXED_STEP_TRAJECTORY_NOT_CONVERGED_BY_200` under the locked fixed-step criterion.
+
+P2-D targeted structural confirmatory: complete / partial positive; 432-state tree verified, all 12 checkpoint units estimable, low-damage target progress modest, and ADS tracks the independent target with per-seed Spearman association around 0.95.
+
+Exact final audit/decision artifacts are under `provenance/phase2/`.
+
+## Compact release boundary
+
+The compact GitHub/Zenodo release contains authority, audit, protocol/specification, manuscript, and figure-source material needed to trace final claims. It does not duplicate every large execution payload.
+
+Explicit archival gaps:
 
 - exact confirmatory adaptive v2.7.2 runner/source archive;
-- exact Specificity v2.6 execution runner/notebook (the original completed result bundle itself has been recovered);
-- original comparison LOCK-002 JSON bytes.
+- exact matched-specificity execution runner/notebook;
+- original comparison-protocol JSON bytes;
+- P2-C/P2-D protocol-lock byte files absent from the compact project upload (audited hashes retained in closure artifacts);
+- 2,387 densified-stress saved deltas, approximately 401 GB, retained separately by hash.
 
-These do not create a detected numerical contradiction in the final reported results.
+No missing byte is silently reconstructed or represented as original.
 
-## Zenodo handoff
+## Release identities
 
-GitHub is ready for archival handoff. The remaining external actions are to publish/archive the frozen release through Zenodo, obtain the real version-specific DOI, then update archival identifier metadata in the manuscript/repository and run one final identifier cross-check. No scientific rerun is planned.
+Final submission v1.5.2 ZIP SHA-256: `da888c7c6befa3c9d1b19432def11689ac4397496c1abbcff9f177a3480add0a`.
+
+Prepared post-Phase-2 archival payload SHA-256: `708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396`.
+
+Zenodo concept DOI: `10.5281/zenodo.19844729`. Record a new version-specific DOI only after actual publication.
