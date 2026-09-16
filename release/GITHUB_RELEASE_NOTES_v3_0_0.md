@@ -5,9 +5,9 @@ This release synchronizes the public ADS/TIFS repository with the completed cano
 ## Added / advanced
 
 - Scientific authority advanced from the pre-Phase-2 v1.31 freeze to Ledger v1.62.
-- Added final Phase-2 P2-C step-horizon audit/decision and trajectory-dynamics memo.
-- Added final Phase-2 P2-D targeted-structural confirmatory audit/decision.
-- Added final v1.5.2 manuscript closure provenance (12-page main + 6-page supplement).
+- Added byte-identical P2-C step-horizon final audit/decision in Git, plus a SHA-bound pointer to the exact post-hoc trajectory memo carried in the archival payload.
+- Added a SHA-bound P2-D canonical pointer; the byte-identical final audit/decision are carried in the archival payload rather than manually transcribed under original filenames in Git.
+- Added byte-identical final adaptive n=6 external audit and final v1.5.2 manuscript closure audit.
 - Added post-Phase-2 artifact map, machine-readable release manifest, archival-gap boundary, and Zenodo v3.0.0 metadata.
 
 ## Scientific status
