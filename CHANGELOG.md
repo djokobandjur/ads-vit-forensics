@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] — 2026-09-16 post-Phase-2 canonical release candidate
+
+### Added
+
+- Phase-2 P2-C step-horizon external audit, closure decision, and post-hoc trajectory-dynamics memo.
+- Phase-2 P2-D targeted-structural confirmatory external audit and closure decision.
+- Final canonical adaptive n=6 external audit in public provenance.
+- Final manuscript v1.5.2 closure audit (12-page main + 6-page supplement).
+- Machine-readable post-Phase-2 release manifest, artifact index, explicit archival-gap boundary, GitHub release notes, and prepared Zenodo v3.0.0 metadata.
+
+### Changed
+
+- Scientific-authority pointer advanced from Ledger v1.31 to Ledger v1.62 (`c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1`).
+- Repository status advanced from pre-Zenodo v1.31 freeze to post-Phase-2 release candidate.
+- Reproducibility wording now distinguishes compact public payloads from unrecovered or separately hash-retained execution artifacts.
+- Zenodo handoff now targets a new version under concept DOI `10.5281/zenodo.19844729`; no version-specific DOI is claimed before publication.
+
+### Scientific status
+
+No experiment, manuscript scientific number, attack result, interpretation, or attribution decision was created by this release-packaging pass. Historical and superseded states remain preserved rather than overwritten.
+
 ## [Unreleased] — 2026-09-13 pre-Zenodo freeze
 
 ### Added
