@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Phase-2 P2-C step-horizon external audit, closure decision, and post-hoc trajectory-dynamics memo.
-- Phase-2 P2-D targeted-structural confirmatory external audit and closure decision.
+- Byte-identical Phase-2 P2-C step-horizon external audit and closure decision, with a SHA-bound pointer to the exact post-hoc trajectory-dynamics memo in the archival payload.
+- SHA-bound public pointer to the byte-identical P2-D targeted-structural confirmatory external audit and closure decision carried in the archival payload.
 - Final canonical adaptive n=6 external audit in public provenance.
 - Final manuscript v1.5.2 closure audit (12-page main + 6-page supplement).
 - Machine-readable post-Phase-2 release manifest, artifact index, explicit archival-gap boundary, GitHub release notes, and prepared Zenodo v3.0.0 metadata.
