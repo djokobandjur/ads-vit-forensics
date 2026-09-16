@@ -32,7 +32,7 @@ SHA-256: `c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1`.
 The closed manuscript submission is v1.5.2. Submission ZIP SHA-256:
 `da888c7c6befa3c9d1b19432def11689ac4397496c1abbcff9f177a3480add0a`.
 
-Completed Phase-2 P2-C and P2-D audit/decision artifacts are published under `provenance/phase2/`; the final manuscript closure audit is under `provenance/manuscript/`.
+Phase-2 provenance under `provenance/phase2/` distinguishes byte-identical Git copies from canonical SHA pointers to exact artifacts carried in the archival payload. The final manuscript closure audit is under `provenance/manuscript/`.
 
 ## Interpretation boundary
 
