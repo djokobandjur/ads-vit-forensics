@@ -1,0 +1,53 @@
+{
+  "authorized_language": "canonical ADS quantitatively tracks a prespecified structural attention redirection that is optimized independently of ADS, including directly observed low-damage states; attained redirection under <=1pp is modest rather than substantial.",
+  "cell_count_verified": 432,
+  "claims": {
+    "ads_tracks_independent_structural_target": "SUPPORTED",
+    "intrinsic_robustness_from_epsilon": "PROHIBITED",
+    "low_damage_partial_target_progress": "SUPPORTED",
+    "public_or_non_pe_specificity": "NOT_TESTED",
+    "reference_to_holdout_transfer": "SUPPORTED",
+    "substantial_target_attainment_ge_25pct": "NOT_ESTABLISHED",
+    "target_attainment_ge_50pct": "NOT_ESTABLISHED"
+  },
+  "date": "2026-09-15",
+  "decision_id": "ADS_TIFS_PHASE2_P2_D_TARGETED_STRUCTURAL_CONFIRMATORY_CLOSURE_v1_0_20260915",
+  "estimable_units": {"learned": 6, "rope": 6},
+  "execution_package_sha256": "5531b6d8446bc4c5fd66257b92a08b2b9b872f1541736e97abe6e4c9d53f7c7e",
+  "final_audit_sha256": "f2f4faea4fdf3b267815ae619a7df6794a241b7dadebefafe39079837fd55f5c",
+  "manuscript_use_authorized_after_audit": true,
+  "package_manifest_sha256": "4feed37fba363605dde22461f3756ea1147f594846ffbd8d63bdcceb8c3e0f73",
+  "primary": {
+    "interpretation": "modest partial target progress under directly observed <=1pp damage; all 12 units estimable",
+    "learned": {
+      "damage_pp": {"max": 0.9599999999999937, "mean": 0.7266666666666642, "min": 0.47999999999998977, "n": 6, "sd": 0.2092526383744481},
+      "estimable_units": 6,
+      "holdout_target_attainment": {"max": 0.1082178001086791, "mean": 0.08676536174244086, "min": 0.0586735208049195, "n": 6, "sd": 0.016649095939467565},
+      "holdout_whole_profile_ads": {"max": 0.0488699328504528, "mean": 0.0308830113602669, "min": 0.009613377051035673, "n": 6, "sd": 0.014590869385049856},
+      "reference_target_attainment": {"max": 0.10854209337209308, "mean": 0.08748902531829535, "min": 0.05946738198787205, "n": 6, "sd": 0.016452503315422466},
+      "reference_whole_profile_ads": {"max": 0.04871342499998852, "mean": 0.03064844417081815, "min": 0.009519724984557873, "n": 6, "sd": 0.014591082415960686}
+    },
+    "rope": {
+      "damage_pp": {"max": 0.9599999999999937, "mean": 0.8166666666666677, "min": 0.7000000000000028, "n": 6, "sd": 0.10073066398404147},
+      "estimable_units": 6,
+      "holdout_target_attainment": {"max": 0.1907646820168789, "mean": 0.16432813661503562, "min": 0.10947810587001205, "n": 6, "sd": 0.033239447511514156},
+      "holdout_whole_profile_ads": {"max": 0.0256353254758642, "mean": 0.0205797243743177, "min": 0.008399950454708816, "n": 6, "sd": 0.006434304547655199},
+      "reference_target_attainment": {"max": 0.19004923506803217, "mean": 0.16381277777497705, "min": 0.1094119585086899, "n": 6, "sd": 0.033083464238276884},
+      "reference_whole_profile_ads": {"max": 0.025487665231621204, "mean": 0.02045131008058984, "min": 0.008406624249921982, "n": 6, "sd": 0.006358356746679831}
+    }
+  },
+  "protocol_lock_sha256": "ae6285bba423fa0d63d894239ad285bac5dd08c76075e026174082f53c89f697",
+  "reference_holdout_closeness": {
+    "learned": {"ads_max_abs_diff": 0.00039850143380257275, "ads_mean_abs_diff": 0.00023456718944874898, "target_max_abs_diff": 0.001751368337667203, "target_mean_abs_diff": 0.0008827351305038348},
+    "rope": {"ads_max_abs_diff": 0.0002755577443571272, "ads_mean_abs_diff": 0.0001306388921322492, "target_max_abs_diff": 0.0007154469488467319, "target_mean_abs_diff": 0.0005153588400585626}
+  },
+  "result_bundle_sha256": "8a9d0d936071feb33de8172f59a926c09fb8fde00b323ec9a2609ab8213ccafc",
+  "result_json_sha256": "9db0680f5a422e5a4df9515b09f375b0db26238936e93abe783ab20be046d8b1",
+  "secondary_threshold_markers": {"0.25": {"learned": 0, "rope": 0}, "0.5": {"learned": 0, "rope": 0}},
+  "status": "CLOSED_PARTIAL_POSITIVE",
+  "summary_sha256": "51ca4fb4b8c3abd26929122fcdc412b16430e5fc334c9bda34535611a0f6e44a",
+  "target_ads_spearman_summary": {
+    "learned": {"max": 0.9606177606177606, "mean": 0.9521664521664522, "min": 0.9469755469755471, "sd": 0.00615486303995788},
+    "rope": {"max": 0.9701415701415703, "mean": 0.9529815529815531, "min": 0.9397683397683398, "sd": 0.010024299824579974}
+  }
+}
