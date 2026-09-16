@@ -10,10 +10,11 @@ This map preserves file → experiment/protocol → result → manuscript/releas
 | Primary damage matching | `protocols/FULL_GRID_v2_0__DAMAGE_MATCHED_ANALYSIS_SPEC.md` and damage-matched decision/spec material | First adjacent crossing; exact hit direct; linear interpolation in damage; identical weight; no extrapolation. |
 | Comparison/ROC | `protocols/COMPARISON_ROC_v2_3__*` | Corrected same-image ADS/Attn-L2/diagonal-Mahalanobis/LogitKL definitions and benign transforms. |
 | Specificity | locked v2.6 protocol/output material + Ledger v1.62 | Primary 5-pp PE/control comparison; dense attribution gate and conservative controls kept distinct. |
-| Adaptive | `protocols/ADAPTIVE_v2_7__ADAPTIVE_PROTOCOL_LOCK_v2_7.json` + final adaptive audit | Canonical ADS-aware reoptimization; damage–stealth limitation; no adaptive-proof claim. |
-| P2-C | `provenance/phase2/ADS_TIFS_PHASE2_P2_C_STEP_HORIZON_FINAL_EXTERNAL_AUDIT_v1_0_20260915.md`, decision JSON, post-hoc memo | Public-model fixed-step horizon sensitivity; both models nonconverged by step 200 under the locked criterion. |
-| P2-D | `provenance/phase2/ADS_TIFS_PHASE2_P2_D_TARGETED_STRUCTURAL_CONFIRMATORY_FINAL_AUDIT_v1_0_20260915.md` + decision JSON | 432-state target-redirection confirmatory; modest low-damage target progress; ADS tracks independent target. |
-| Manuscript | `provenance/manuscript/ADS_TIFS_SUBMISSION_CLOSURE_v1_5_2_FINAL_AUDIT_20260916.md` | Final 12-page main + 6-page supplement closure; scientific change NONE. |
+| Adaptive | `protocols/ADAPTIVE_v2_7__ADAPTIVE_PROTOCOL_LOCK_v2_7.json` + byte-identical `provenance/adaptive/ADS_TIFS_CANONICAL_ADAPTIVE_N6_v2_7_2_20260910_FINAL_EXTERNAL_AUDIT.md` | Canonical ADS-aware reoptimization; damage–stealth limitation; no adaptive-proof claim. |
+| P2-C locked diagnostic | byte-identical `provenance/phase2/ADS_TIFS_PHASE2_P2_C_STEP_HORIZON_FINAL_EXTERNAL_AUDIT_v1_0_20260915.md` + byte-identical closure-decision JSON | Public-model fixed-step horizon sensitivity; both models nonconverged by step 200 under the locked criterion. |
+| P2-C post-hoc | `provenance/phase2/P2_C_POSTHOC_CANONICAL_POINTER.md` | Exact memo remains in the archival payload under SHA-256 `7b72e1...8ae3`; no non-identical transcription is presented as original. |
+| P2-D | `provenance/phase2/P2_D_CANONICAL_POINTER.md` | Points to exact final-audit SHA `f2f4fa...f5c` and closure-decision SHA `bb3779...77a8` in the archival payload; 432-state partial-positive branch remains closed. |
+| Manuscript | byte-identical `provenance/manuscript/ADS_TIFS_SUBMISSION_CLOSURE_v1_5_2_FINAL_AUDIT_20260916.md` | Final 12-page main + 6-page supplement closure; scientific change NONE. |
 | Archival payload | `release/POST_PHASE2_RELEASE_CANDIDATE.json` | Payload filename, byte count, SHA-256, DOI state, and archival-gap boundary. |
 
 ## Final manuscript package
