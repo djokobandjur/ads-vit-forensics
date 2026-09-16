@@ -1,11 +1,15 @@
-# Latest scientific-results ledger pointer
+# Latest Scientific Results and Interpretation Ledger
 
-Current authority as of 2026-09-13:
+Current authority:
 
-`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_EXP019_RECOVERY_v1_31_20260913.md`
+`ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_AUDIT_POSTHOC_v1_62_20260915.md`
 
 SHA-256:
 
-`50efb67906fa9bc8058c3843cd2036dce25169e0fdf7720b190271881423a9b4`
+`c3cc0a791517671e1e819c7bbd54518236d61a5a80bb4ec0a452b8f4ee4872d1`
 
-The full ledger is carried in the frozen replication/archival payload. v1.31 supersedes the previous release-audit authority only for the recovered EXP-019 artifact-availability closure; scientific conclusions remain unchanged.
+Status: **CURRENT / POST-PHASE-2 / MANUSCRIPT v1.5.2 AUTHORITY**.
+
+The full append-only ledger is included in the prepared post-Phase-2 archival payload and is not silently reconstructed from manuscript prose.
+
+Prior public pointer v1.31 remains historical provenance and is superseded as the current scientific-authority pointer.
