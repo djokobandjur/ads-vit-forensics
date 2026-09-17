@@ -1,0 +1,43 @@
+{
+  "schema": "ADS_TIFS_PUBLIC_REPRODUCIBILITY_RELEASE_v3_1_0",
+  "release_date": "2026-09-17",
+  "version": "3.1.0",
+  "scientific_change": "NONE",
+  "new_experiment": "NONE",
+  "scientific_authority": {
+    "filename": "ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_AUD049_v1_68_20260917.md",
+    "sha256": "17b87ab675c0e6ff8d7ae79dbdbf5dcbc4468322496ffce50df57734501b7ba8"
+  },
+  "external_manuscript_traceability": {
+    "filename": "ADS_TIFS_MANUSCRIPT_v1_6_12_S13_RULE_AND_SUPPLEMENT_HYGIENE_20260917.zip",
+    "sha256": "da31916dec2a9c90d65fb4e5e405d660220e1f0f79a3d5c38d23de9e994c3779",
+    "main_pages": 12,
+    "supplement_pages": 6,
+    "redistributed_in_reproducibility_archive": false
+  },
+  "reproducibility_archive": {
+    "filename": "ADS_TIFS_COMPACT_COMPLETE_REPRODUCIBILITY_v3_1_0_20260917.zip",
+    "sha256": "1097fd77274c5fff54d9e13e56da2bc9b5d0c0f104ad9e5501536cc01fb831e1",
+    "size_bytes": 223252213,
+    "direct_verifier_gates": 29,
+    "direct_gates_status": "PASS",
+    "full_coverage_release_gate": "PASS"
+  },
+  "zenodo": {
+    "concept_doi": "10.5281/zenodo.19844729",
+    "version_doi": "10.5281/zenodo.22802588"
+  },
+  "p2d_source_recovery": {
+    "status": "CLOSED",
+    "execution_package_sha256": "5531b6d8446bc4c5fd66257b92a08b2b9b872f1541736e97abe6e4c9d53f7c7e",
+    "confirmatory_runner_sha256": "3bb50d6393c5cd055ad9e9f1dc20bfb8ea122794cc1ef87b28ce4351dd0561b9",
+    "shared_targeted_core_sha256": "4ff8d7814231b473330d5cde9851cda3d4c7acb1febe2084164125b0c94b019e",
+    "merge_runner_sha256": "edcc9a45eee5b0e9d1fee8c074c44f302de6feb182f37b40ea6d1bea58fbfacf",
+    "package_manifest_sha256": "4feed37fba363605dde22461f3756ea1147f594846ffbd8d63bdcceb8c3e0f73",
+    "target_kl_direction": "D_KL(ROT180(clean attention) || attacked attention)"
+  },
+  "historical_release_preservation": {
+    "v3_0_0_tag_release_unchanged": true,
+    "historical_metadata_retained": true
+  }
+}

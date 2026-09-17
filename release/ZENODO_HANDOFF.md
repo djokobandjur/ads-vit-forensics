@@ -1,34 +1,37 @@
-# Zenodo handoff — post-Phase-2 canonical release
+# Zenodo handoff — v3.1.0 reproducibility release
 
 Concept DOI: `10.5281/zenodo.19844729`
 
-Target release version: `3.0.0`
+v3.1.0 version DOI: `10.5281/zenodo.22802588`
+
+Target release version: `3.1.0`
 
 Prepared payload:
-`ADS_TIFS_CANONICAL_REPRO_RELEASE_POST_PHASE2_v3_0_0_20260916.zip`
+`ADS_TIFS_COMPACT_COMPLETE_REPRODUCIBILITY_v3_1_0_20260917.zip`
 
 SHA-256:
-`708d36074f40447f12705c24dbee36c7095e0dfe9bcac891f689cbcb7f1e6396`
+`1097fd77274c5fff54d9e13e56da2bc9b5d0c0f104ad9e5501536cc01fb831e1`
 
-Prepared metadata: `release/ZENODO_METADATA_v3_0_0.json`.
+Size: `223252213` bytes.
+
+Companion checksum file:
+`ADS_TIFS_COMPACT_COMPLETE_REPRODUCIBILITY_v3_1_0_20260917.zip.sha256.txt`
 
 ## Publication sequence
 
-1. Freeze the GitHub repository state and create tag/release `v3.0.0`.
-2. Create a **new version** under the existing Zenodo concept record; do not create an unrelated concept record.
-3. Upload the exact payload above and apply the prepared metadata.
-4. Publish the Zenodo version.
-5. Record the resulting **version-specific DOI** in a metadata-only GitHub commit and in `CITATION.cff`/`CITATION.md` as appropriate.
-6. Cross-check: Git tag, Git commit, Zenodo version DOI, payload filename, byte count, payload SHA-256, Ledger v1.62 SHA-256, and submission v1.5.2 SHA-256.
+1. Synchronize GitHub `main` with the v3.1.0 reader-facing/release metadata.
+2. Publish a new version under the existing Zenodo concept record using the exact ZIP and checksum file above.
+3. Verify that the published v3.1.0 DOI resolves and that the files match the expected identities.
+4. Create Git tag/release `v3.1.0` on the synchronization commit; do not rewrite the historical v3.0.0 tag/release.
 
-## DOI rule
+## DOI use
 
-The concept DOI is not a substitute for the version-specific DOI. Until publication, repository prose must state that the version-specific DOI is pending.
+Reader-facing manuscript text uses the stable concept DOI `10.5281/zenodo.19844729`. Release/provenance metadata may additionally record the exact v3.1.0 DOI `10.5281/zenodo.22802588`.
 
 ## Scientific rule
 
-Zenodo publication is a release/provenance action only. It does not authorize scientific reinterpretation, ledger modification, new optimizer work, or replacement of canonical result identities.
+Zenodo/GitHub publication is a release/provenance action only. It does not authorize scientific reinterpretation, ledger modification, new optimizer work, or replacement of completed-result identities.
 
-## Archival gaps
+## Scope
 
-See `release/ARCHIVAL_GAPS.md`. The compact deposit does not claim inclusion of the approximately 401 GB densified-stress saved-delta payload or byte recovery of explicitly unrecovered runners/protocol bytes.
+The v3.1.0 archive supports publication-result numerical and figure reproducibility. It intentionally excludes manuscript/supplement documents, ImageNet image bytes, checkpoint binaries, the approximately 401-GB densified-stress saved-delta store, and P2-D `.pt` delta tensors.

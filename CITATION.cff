@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-message: "If you use this repository, please cite the associated paper and the archived release."
-title: "Attention Divergence Score: A Forensic Metric for Characterizing Parameter-Level Attacks in Vision Transformers"
+message: "If you use this repository, please cite the archived v3.1.0 reproducibility release and the associated paper."
+title: "Attention Divergence Score: Reproducibility Package for Vision Transformer Model-State Tampering Experiments"
 type: software
 authors:
   - family-names: Bandjur
@@ -9,11 +9,17 @@ authors:
   - family-names: Bandjur
     given-names: Milos
     affiliation: "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+version: 3.1.0
+date-released: 2026-09-17
+doi: 10.5281/zenodo.22802588
+url: "https://doi.org/10.5281/zenodo.22802588"
 repository-code: "https://github.com/djokobandjur/ads-vit-forensics"
+license: MIT
 keywords:
+  - Attention Divergence Score
   - Vision Transformer
-  - attention divergence
+  - model-state tampering
   - digital forensics
-  - parameter tampering
   - positional encoding
-  - adversarial attacks
+  - reproducibility
+  - adversarial machine learning

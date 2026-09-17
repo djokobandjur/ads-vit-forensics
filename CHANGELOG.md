@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] — 2026-09-17 publication-result reproducibility synchronization
+
+### Added
+
+- Final v3.1.0 reproducibility/archive identity and Zenodo DOI metadata.
+- Exact recovered P2-D confirmatory execution/source identity, closing the ROT180 target-KL direction provenance gap.
+- Direct fail-closed verifier gates for the coarse `3/72` endpoint sensitivity and strict-disjoint dense-control `24/24 > 1` result with minimum `1.1681245478`.
+- Current figure source/generator provenance and source-identity metadata in the compact-complete Zenodo archive.
+- Top-level MIT `LICENSE` matching the public software release metadata.
+
+### Changed
+
+- Scientific-authority pointer advanced from Ledger v1.62 to Ledger v1.68 / AUD-049 (`17b87ab675c0e6ff8d7ae79dbdbf5dcbc4468322496ffce50df57734501b7ba8`).
+- Reader-facing title and repository prose now use **model-state tampering** rather than the older parameter-level wording.
+- Reader-facing manuscript traceability synchronized to v1.6.12 (12-page main + 6-page supplement), package SHA-256 `da31916dec2a9c90d65fb4e5e405d660220e1f0f79a3d5c38d23de9e994c3779`.
+- Reproducibility archive advanced to `ADS_TIFS_COMPACT_COMPLETE_REPRODUCIBILITY_v3_1_0_20260917.zip`, SHA-256 `1097fd77274c5fff54d9e13e56da2bc9b5d0c0f104ad9e5501536cc01fb831e1`.
+
+### Scientific status
+
+No experiment, scientific number, attack result, interpretation, or attribution decision was created or changed by v3.1.0 packaging. Historical v3.0.0 and earlier states remain preserved rather than overwritten.
+
 ## [3.0.0] — 2026-09-16 post-Phase-2 canonical release candidate
 
 ### Added

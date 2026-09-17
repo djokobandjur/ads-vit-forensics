@@ -1,11 +1,24 @@
-# Archival Gaps and External Payload Boundary
+# Archival and execution-provenance boundary
 
-This file is normative for what the compact post-Phase-2 GitHub/Zenodo release does **not** claim.
+This file is normative for what the current compact GitHub/Zenodo release does **not** claim. Version 3.1.0 is complete for the defined publication-result numerical/figure reproducibility scope while remaining explicit about material intentionally not distributed.
 
-1. **Confirmatory adaptive v2.7.2 source.** The exact confirmatory runner/source archive is not recovered as byte-identical source. Final result artifacts and their external audit remain authoritative; no replacement source is inferred.
-2. **Matched-specificity execution source.** The exact specificity v2.6 execution runner/notebook is not recovered as byte-identical source. Audited result artifacts and locked protocol/output rules remain authoritative.
-3. **Original comparison-protocol JSON bytes.** The original JSON byte payload is not recovered. The locked corrected comparison/ROC textual specifications in `protocols/` remain the public protocol authority.
-4. **P2-C/P2-D protocol-lock bytes.** The compact project upload used to build this release does not contain the original LOCK-008 / LOCK-007 protocol-lock files. Their audited SHA-256 identities are preserved in the corresponding final audits/closure decisions. No synthetic replacement is created.
-5. **Densified-stress deltas.** The 2,387 saved deltas (approximately 401 GB) remain separately retained by hash and are not duplicated in this compact release.
+## Intentionally external or omitted
 
-Historical/superseded scripts and numerical artifacts remain provenance only. A missing source byte or large payload is not silently reconstructed, reinterpreted, or promoted to canonical status.
+1. **Densified-stress deltas.** The 2,387 saved deltas (approximately 401 GB) remain separately retained by hash and are not duplicated in the compact release.
+2. **P2-D delta tensors.** The 432 P2-D `.pt` delta tensors are not distributed. The canonical result-bundle identity remains hash-bound by the public derivative.
+3. **Dataset/checkpoint bytes.** ImageNet image bytes and model checkpoint binaries are not included.
+4. **Confirmatory adaptive execution source.** The exact confirmatory-adaptive runner/source archive remains a historical execution-provenance gap where recorded. Canonical completed results, protocol/source identities, and numerical material needed for publication-result recomputation are retained.
+5. **Matched-specificity execution source.** The exact matched-specificity runner/notebook remains a historical execution-provenance gap where recorded. Audited result artifacts and protocol/output rules remain authoritative.
+6. **Comparison protocol JSON.** The original comparison-protocol JSON byte payload was not recovered. The corrected comparison protocol/specification documents and completed results are retained.
+7. **P2-C raw result bundle.** The step-horizon raw result bundle remains externally hash-bound. The exact final audit/post-hoc sufficient statistics used by the publication are included and verifier-checked.
+
+## Closed in v3.1.0
+
+The **P2-D confirmatory execution-source gap is closed**. Exact execution package SHA-256:
+`5531b6d8446bc4c5fd66257b92a08b2b9b872f1541736e97abe6e4c9d53f7c7e`.
+
+The v3.1.0 Zenodo archive co-releases the recovered execution/source package and records exact runner/core/merge/package-manifest identities. The ROT180 target-KL direction is therefore source-traceable as:
+
+`D_KL(ROT180(clean attention) || attacked attention)`.
+
+Historical/superseded scripts and numerical artifacts remain provenance only. No missing byte is silently reconstructed, reinterpreted, or promoted to current scientific authority.

@@ -1,0 +1,40 @@
+{
+  "title": "Attention Divergence Score: Reproducibility Package for Vision Transformer Model-State Tampering Experiments",
+  "upload_type": "software",
+  "version": "3.1.0",
+  "publication_date": "2026-09-17",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Bandjur, Djoko",
+      "affiliation": "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+    },
+    {
+      "name": "Bandjur, Milos",
+      "affiliation": "Faculty of Technical Sciences, University of Pristina -- Kosovska Mitrovica"
+    }
+  ],
+  "description": "Reproducibility package supporting the numerical results, tables, and figures reported in ‘Attention Divergence Score: A Forensic Metric for Characterizing Model-State Tampering in Vision Transformers.’ The release contains analysis code, protocol and provenance records, compact numerical result artifacts, selected per-image arrays, figure and table source data, and automated verification tools. It supports publication-result numerical and figure reproducibility; it does not include ImageNet image bytes, model checkpoint binaries, or large saved perturbation stores. Version 3.1.0 incorporates the final provenance synchronization, the recovered execution source required to fully specify the ROT180 structural-target analysis, and expanded direct verification of publication-reported results.",
+  "keywords": [
+    "Attention Divergence Score",
+    "Vision Transformer",
+    "Model-State Tampering",
+    "Forensics",
+    "Positional Encoding",
+    "Reproducibility",
+    "Adversarial Machine Learning"
+  ],
+  "repository_url": "https://github.com/djokobandjur/ads-vit-forensics",
+  "zenodo_concept_doi": "10.5281/zenodo.19844729",
+  "zenodo_version_doi": "10.5281/zenodo.22802588",
+  "scientific_authority": {
+    "filename": "ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_AUD049_v1_68_20260917.md",
+    "sha256": "17b87ab675c0e6ff8d7ae79dbdbf5dcbc4468322496ffce50df57734501b7ba8"
+  },
+  "archive": {
+    "filename": "ADS_TIFS_COMPACT_COMPLETE_REPRODUCIBILITY_v3_1_0_20260917.zip",
+    "sha256": "1097fd77274c5fff54d9e13e56da2bc9b5d0c0f104ad9e5501536cc01fb831e1",
+    "size_bytes": 223252213
+  },
+  "notes": "No scientific result changed by v3.1.0 packaging. The manuscript and supplement are not redistributed in the reproducibility-only archive."
+}
