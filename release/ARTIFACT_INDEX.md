@@ -1,6 +1,6 @@
-# Artifact Index — v3.1.0
+# Artifact Index — current public state
 
-This map preserves file → protocol/result → interpretation/release traceability for the current publication-result reproducibility release.
+This map preserves file → protocol/result → interpretation/release/manuscript traceability for the current publication-result reproducibility release and final reader-facing manuscript package.
 
 | Layer | Public artifact / pointer | Role |
 |---|---|---|
@@ -14,13 +14,15 @@ This map preserves file → protocol/result → interpretation/release traceabil
 | P2-C | Phase-2 final audit/closure records + post-hoc sufficient statistics in the Zenodo archive | Public-model fixed-step horizon sensitivity; raw result bundle remains externally hash-bound. |
 | P2-D | Phase-2 final audit/closure records + recovered exact execution source in the Zenodo archive | 432-state targeted structural analysis; exact ROT180 target-KL direction source identity closed in v3.1.0. |
 | Figure production | Current figure-source/provenance material in the v3.1.0 Zenodo archive | Final figure source data, active generators/provenance, and figure outputs; obsolete production material retained separately as historical. |
-| Reader-facing manuscript traceability | external package identity below | 12-page main + 6-page supplement; not redistributed in the reproducibility-only archive. |
-| Reproducibility archive | `release/REPRODUCIBILITY_RELEASE_v3_1_0.json` | Exact ZIP identity, DOI identities, authority identity, scope and verifier state. |
+| Reader-facing manuscript traceability | external package identity below | Final 12-page main + 6-page supplement; not redistributed in the reproducibility-only archive. |
+| Reproducibility archive | `release/REPRODUCIBILITY_RELEASE_v3_1_0.json` | Exact published ZIP identity, DOI identities, authority identity, scope and verifier state. |
 
-## External reader-facing manuscript package
+## Final external reader-facing manuscript package
 
-`ADS_TIFS_MANUSCRIPT_v1_6_12_S13_RULE_AND_SUPPLEMENT_HYGIENE_20260917.zip`  
-SHA-256: `da31916dec2a9c90d65fb4e5e405d660220e1f0f79a3d5c38d23de9e994c3779`.
+`ADS_TIFS_MANUSCRIPT_v1_6_13_FINAL_PUBLIC_RELEASE_SYNC_20260917.zip`  
+SHA-256: `7bbc433dda9b829e412085797a33e1e8691457c2cb940d6077eed880624fd00b`.
+
+Version v1.6.13 is a final public-release identity synchronization of v1.6.12 and changes no scientific result or interpretation.
 
 ## Zenodo reproducibility archive
 
@@ -30,5 +32,7 @@ Size: `223252213` bytes.
 
 Concept DOI: `10.5281/zenodo.19844729`  
 v3.1.0 DOI: `10.5281/zenodo.22802588`
+
+GitHub tag/release `v3.1.0` remains the published release snapshot at commit `30bc80108f102a0687d8a7989a909abae2e9c066`. Current-main manuscript-traceability metadata may advance without rewriting that tag/release.
 
 See `ARCHIVAL_GAPS.md` for intentionally omitted or still-unrecovered execution material. Historical v3.0.0 release metadata remains preserved under its version-specific files and Git tag.

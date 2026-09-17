@@ -70,8 +70,10 @@ Historical pseudo-PGD, aggregate-first `KL(mean||mean)`, degenerate `attn.mean(-
 
 Scientific authority: `ADS_TIFS_SCIENTIFIC_RESULTS_AND_INTERPRETATION_LEDGER_POST_AUD049_v1_68_20260917.md`, SHA-256 `17b87ab675c0e6ff8d7ae79dbdbf5dcbc4468322496ffce50df57734501b7ba8`.
 
-External reader-facing manuscript package: `ADS_TIFS_MANUSCRIPT_v1_6_12_S13_RULE_AND_SUPPLEMENT_HYGIENE_20260917.zip`, SHA-256 `da31916dec2a9c90d65fb4e5e405d660220e1f0f79a3d5c38d23de9e994c3779`.
+Final external reader-facing manuscript package: `ADS_TIFS_MANUSCRIPT_v1_6_13_FINAL_PUBLIC_RELEASE_SYNC_20260917.zip`, SHA-256 `7bbc433dda9b829e412085797a33e1e8691457c2cb940d6077eed880624fd00b`.
 
 Zenodo concept DOI: `10.5281/zenodo.19844729`.
 
 Zenodo v3.1.0 DOI: `10.5281/zenodo.22802588`.
+
+GitHub v3.1.0 tag/release remains the published release snapshot at commit `30bc80108f102a0687d8a7989a909abae2e9c066`; this current-main manuscript traceability update does not rewrite that release.

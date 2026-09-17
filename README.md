@@ -4,7 +4,7 @@
 
 This repository is the public code, source, and provenance companion for the corrected IEEE TIFS manuscript and its audited reproducibility release.
 
-> **Release state (2026-09-17): v3.1.0 PUBLICATION-RESULT REPRODUCIBILITY SYNCHRONIZATION.** The experimental program is closed. The current scientific authority is Ledger v1.68 / AUD-049. The externally synchronized reader-facing manuscript package is v1.6.12 (12-page main + 6-page supplement). This repository/release synchronization introduces no new experiment and changes no scientific result.
+> **Current state (2026-09-17): v3.1.0 PUBLIC RELEASE COMPLETE / MANUSCRIPT TRACEABILITY v1.6.13.** The experimental program is closed. The current scientific authority is Ledger v1.68 / AUD-049. The final reader-facing manuscript package is v1.6.13 (12-page main + 6-page supplement). The v3.1.0 GitHub/Zenodo release remains the publication-result reproducibility snapshot; this post-release main-branch update changes only manuscript traceability metadata and no scientific result.
 
 ## ADS operator
 
@@ -48,6 +48,15 @@ The archive supports publication-result numerical and figure reproducibility. It
 
 It deliberately excludes manuscript/supplement documents, ImageNet image bytes, model checkpoint binaries, the approximately 401-GB densified-stress saved-delta store, and P2-D `.pt` delta tensors.
 
+## Final reader-facing manuscript package
+
+`ADS_TIFS_MANUSCRIPT_v1_6_13_FINAL_PUBLIC_RELEASE_SYNC_20260917.zip`
+
+SHA-256: `7bbc433dda9b829e412085797a33e1e8691457c2cb940d6077eed880624fd00b`  
+Main: 12 pages. Supplement: 6 pages.
+
+Version v1.6.13 differs from v1.6.12 only by final public-release synchronization of the reproducibility archive identity and the corresponding reader-facing wording; it introduces no new scientific result or interpretation.
+
 ## Repository layout
 
 ```text
@@ -70,4 +79,4 @@ The concept DOI resolves to the latest published Zenodo version; the version DOI
 
 ## Source identity
 
-The earlier immutable corrected source/protocol snapshot remains `ac580b9524c287882d97f4660fd7bf7791ea0c73`. The public v3.0.0 release and its metadata remain historical provenance and are not rewritten by v3.1.0.
+The earlier immutable corrected source/protocol snapshot remains `ac580b9524c287882d97f4660fd7bf7791ea0c73`. The public v3.0.0 and v3.1.0 tags/releases remain historical release snapshots and are not rewritten by this post-release manuscript-traceability update.
